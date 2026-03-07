@@ -47,35 +47,35 @@ Push checkpoint:
 
 ### 1A. Resource model (CRDs)
 
-- [ ] CRD: Agent (or Team)
-- [ ] CRD: Tool integration reference
-- [ ] CRD: MCP server reference (or integration path with kmcp-managed server resources)
-- [ ] CRD: Run (execution request + status)
-- [ ] Resource model for run artifacts (at minimum: stable references associated with a run)
-- [ ] Resource model for model endpoint reference (configuration/discovery target)
+- [x] CRD: Agent (or Team)
+- [x] CRD: Tool integration reference
+- [x] CRD: MCP server reference (or integration path with kmcp-managed server resources)
+- [x] CRD: Run (execution request + status)
+- [x] Resource model for run artifacts (at minimum: stable references associated with a run)
+- [x] Resource model for model endpoint reference (configuration/discovery target)
 
 Acceptance criteria:
 
-- [ ] CRDs exist for the MVP resource model and can be managed via GitOps.
+- [x] CRDs exist for the MVP resource model and can be managed via GitOps.
 
 Push checkpoint:
 
-- [ ] Push after CRDs compile/validate, controller unit tests pass, and PRD/Architecture alignment is re-verified.
+- [x] Push after CRDs compile/validate, controller unit tests pass, and PRD/Architecture alignment is re-verified.
 
 ### 1B. Control plane skeleton
 
-- [ ] Controller reconciles Agent resources into runnable configuration
-- [ ] Controller reconciles Tool/MCP resources into invokable configuration
-- [ ] Controller reconciles Run resources and drives execution state
-- [ ] Status conditions and events are written for key transitions
+- [x] Controller reconciles Agent resources into runnable configuration
+- [x] Controller reconciles Tool/MCP resources into invokable configuration
+- [x] Controller reconciles Run resources and drives execution state
+- [x] Status conditions and events are written for key transitions
 
 Acceptance criteria:
 
-- [ ] Creating resources results in deterministic status updates without manual intervention.
+- [x] Creating resources results in deterministic status updates without manual intervention.
 
 Push checkpoint:
 
-- [ ] Push after control-plane reconciliation loops are stable and test coverage exists for key transitions.
+- [x] Push after control-plane reconciliation loops are stable and test coverage exists for key transitions.
 
 ### 1C. Execution engine + embedded DAG
 
