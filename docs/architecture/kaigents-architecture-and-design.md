@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="../../assets/kaigents.png" alt="Kaigents" width="720" />
+</p>
+
 # Kaigents: Architecture & Design
 
 ## 1. Overview

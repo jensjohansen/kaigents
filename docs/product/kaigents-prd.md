@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="../../assets/kaigents.png" alt="Kaigents" width="720" />
+</p>
+
 # Kaigents: Product Requirements Document (PRD)
 
 ## 1. Overview

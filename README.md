@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/kaigents.png" alt="Kaigents" width="720" />
+</p>
+
 # Kaigents Platform
 
 Kaigents is a Kubernetes-native platform for building, running, and operating AI agents in production environments, optimized for low total cost of ownership (TCO) with a strong focus on AMD Ryzen AI hardware.
