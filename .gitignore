@@ -252,3 +252,6 @@ trivy-reports/
 amdxdna/
 xrt/
 flm-logs/
+
+# Rust
+**/target/

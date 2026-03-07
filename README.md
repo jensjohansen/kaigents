@@ -10,10 +10,18 @@ This repository is the Kaigents **platform** (distinct from any future marketing
 
 ## Canonical docs
 
-- `docs/product/kaigents-prd.md`
-- `docs/architecture/kaigents-architecture-and-design.md`
-- `docs/implementation/kaigents-implementation-tracker.md`
-- `docs/CODING_STANDARDS_AND_DOD.md`
+- [`docs/product/kaigents-prd.md`](docs/product/kaigents-prd.md)
+  - Product goals, MVP scope, functional requirements, UX requirements (run timeline), and milestones.
+- [`docs/architecture/kaigents-architecture-and-design.md`](docs/architecture/kaigents-architecture-and-design.md)
+  - Canonical system design: boundaries, data flows, and the role of tool plane, run timeline, artifacts, and RAG.
+- [`docs/implementation/kaigents-implementation-tracker.md`](docs/implementation/kaigents-implementation-tracker.md)
+  - Milestone tracker and push/review gates (when we are allowed to push working code).
+- [`docs/CODING_STANDARDS_AND_DOD.md`](docs/CODING_STANDARDS_AND_DOD.md)
+  - Coding standards, CI quality gates, and definition of done.
+- [`docs/research/technology/itd-register.md`](docs/research/technology/itd-register.md)
+  - Important Technical Decisions (ITDs) that constrain implementation choices.
+- [`docs/research/technology/oss-components-commercially-permissible.md`](docs/research/technology/oss-components-commercially-permissible.md)
+  - OSS due diligence list and licensing posture (redistribute vs integrate-only vs exclude).
 
 ## License and OSS posture
 
