@@ -3,4 +3,16 @@ name = "kaigents-core"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+default = []
+rethinkdb = ["dep:unreql"]
+
 [dependencies]
+tokio = { version = "1", features = ["full"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+async-trait = "0.1"
+sha2 = "0.10"
+reqwest = { workspace = true }
+unreql = { version = "0.2.1", optional = true }

@@ -1,0 +1,19 @@
+[package]
+name = "kaigents-cli"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = []
+rethinkdb = ["kaigents-core/rethinkdb"]
+
+[[bin]]
+name = "kaigents"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+tokio = { workspace = true }
+serde_json = { workspace = true }
+uuid = { workspace = true }
+kaigents-core = { path = "../kaigents-core" }

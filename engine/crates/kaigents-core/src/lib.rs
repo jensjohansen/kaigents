@@ -1,33 +1,41 @@
 //! File: engine/crates/kaigents-core/src/lib.rs
 //! Purpose: Core domain primitives for the Kaigents execution engine.
-//! Product/business importance: defines stable run identifiers used across the platform.
+//! Product/business importance: defines stable run identifiers, DAG execution model, run timeline events, MCP tool plane integration, model serving, and artifacts used across the platform.
 //!
 //! Copyright (c) 2026 John K Johansen
 //! License: MIT (see LICENSE)
 
-/// RunId is a stable identifier for a Kaigents run.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct RunId(pub String);
+pub mod artifacts;
+pub mod dag;
+pub mod file_backed;
+pub mod model_serving;
+#[cfg(feature = "rethinkdb")]
+pub mod rethinkdb_store;
+pub mod run_id;
+pub mod timeline;
+pub mod tool_plane;
 
-impl RunId {
-    /// Creates a new RunId from a string-like value.
-    pub fn new(value: impl Into<String>) -> Self {
-        Self(value.into())
-    }
+// Re-export key public types for convenience
+pub use artifacts::{
+    Artifact, ArtifactId, ArtifactKind, ArtifactMetadata, ArtifactPlane, ArtifactStorageRef,
+    ArtifactStore, InMemoryArtifactStore,
+};
+pub use dag::{CancellationToken, DAGExecutor, ExecutionResult, Node, NodeId, StepType, DAG};
+pub use file_backed::{
+    artifacts_root_dir, default_state_dir, parse_uuid, timeline_events_path, FileArtifactStore,
+    FileTimelineStore, FileToolContractStore,
+};
+pub use model_serving::{
+    ChatChoice, ChatCompletionRequest, ChatCompletionResponse, ChatMessage, Embedding,
+    EmbeddingsRequest, EmbeddingsResponse, InMemoryModelClient, ModelCapabilities, ModelClient,
+    ModelEndpoint, ModelPlane, Usage,
+};
+pub use run_id::RunId;
+pub use timeline::{EventId, EventType, TimelineEvent, TimelineStore};
+pub use tool_plane::{
+    HttpMcpClient, InMemoryMCPClient, InMemoryToolContractSink, MCPClient, TimelineSink,
+    ToolContract, ToolContractSink, ToolPlane,
+};
 
-    /// Returns the underlying run identifier string.
-    pub fn as_str(&self) -> &str {
-        &self.0
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn run_id_round_trips() {
-        let run_id = RunId::new("run-001");
-        assert_eq!(run_id.as_str(), "run-001");
-    }
-}
+#[cfg(feature = "rethinkdb")]
+pub use rethinkdb_store::{RethinkDbArtifactStore, RethinkDbConfig, RethinkDbTimelineStore};

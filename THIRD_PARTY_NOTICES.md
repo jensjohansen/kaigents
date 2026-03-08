@@ -17,4 +17,36 @@ When adding or updating a dependency:
 
 ## Notices
 
-_No third-party notices have been recorded yet._
+### Rust crates (engine)
+
+The Rust execution engine crates depend on the following third-party components. Licenses are permissive (MIT / Apache-2.0 / BSD-family) per the project OSS posture.
+
+- **tokio** — async runtime
+  - **License**: MIT
+  - **Homepage**: https://tokio.rs/
+- **uuid** — UUID generation/parsing
+  - **License**: Apache-2.0 OR MIT
+  - **Homepage**: https://crates.io/crates/uuid
+- **serde_json** — JSON serialization
+  - **License**: Apache-2.0 OR MIT
+  - **Homepage**: https://crates.io/crates/serde_json
+- **async-trait** — async traits
+  - **License**: Apache-2.0 OR MIT
+  - **Homepage**: https://crates.io/crates/async-trait
+- **sha2** — SHA-2 hashing
+  - **License**: Apache-2.0 OR MIT
+  - **Homepage**: https://crates.io/crates/sha2
+- **clap** — CLI argument parsing
+  - **License**: Apache-2.0 OR MIT
+  - **Homepage**: https://crates.io/crates/clap
+- **reqwest** — HTTP client
+  - **License**: Apache-2.0 OR MIT
+  - **Homepage**: https://crates.io/crates/reqwest
+
+### Rust crates (optional RethinkDB backend)
+
+The RethinkDB backend is optional and is enabled via a Cargo feature flag. It uses the following third-party component:
+
+- **unreql** — Unofficial RethinkDB driver for Rust
+  - **License**: MIT
+  - **Homepage**: https://crates.io/crates/unreql
