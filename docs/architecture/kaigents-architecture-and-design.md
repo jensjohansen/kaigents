@@ -38,7 +38,7 @@ The following items are treated as “locked” unless the ITD register is updat
 - **Model serving:** Lemonade Server (FastFlowLM NPU kernels integrate-only)
 - **Tool plane:** kMCP (kmcp), MCP-first
 - **Workflow substrate:** embedded Rust DAG substrate with K8s offload escape hatch
-- **Stores:** Qdrant (vector), NebulaGraph (graph), RethinkDB (document/state)
+- **Stores:** Qdrant (vector), NebulaGraph (graph), RethinkDB (document/state), S3-compatible object store for artifact bytes (Ceph RGW) (ITD-13)
 - **Identity:** Keycloak (OIDC)
 - **Observability:** OpenTelemetry + Prometheus + Grafana (Langfuse optional)
 - **Languages:** Rust-first execution engine; Go for controllers/CLI; Python optional runtime lane
@@ -170,6 +170,11 @@ Conceptual flow:
 - Artifacts must be accessible via stable, environment-scoped URLs.
 - Clients must not require object-store credentials.
 - The artifact access layer must support large-object semantics needed for preview/streaming (e.g., range reads) where applicable.
+
+Implementation constraints (from ITDs):
+
+- Artifact **bytes** should be stored in an **S3-compatible object store** in production (Ceph RGW), while indexed stores persist artifact metadata and run timelines (ITD-13).
+- When buckets are private, artifact access should follow a **server-side signing/proxy** pattern (or deployment-specific equivalent) so clients do not need object-store credentials, while preserving key HTTP semantics (e.g., `Range`, `ETag`, `Last-Modified`, `Content-Range`) (ITD-14).
 
 ### 6.4 Model calls and Hybrid Execution routing
 

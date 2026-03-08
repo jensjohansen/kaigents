@@ -66,7 +66,7 @@ Push checkpoint:
 
 - [x] Controller reconciles Agent resources into runnable configuration
 - [x] Controller reconciles Tool/MCP resources into invokable configuration
-- [x] Controller reconciles Run resources and drives execution state
+- [ ] Controller reconciles Run resources and drives execution state
 - [x] Status conditions and events are written for key transitions
 
 Acceptance criteria:
@@ -75,47 +75,47 @@ Acceptance criteria:
 
 Push checkpoint:
 
-- [x] Push after control-plane reconciliation loops are stable and test coverage exists for key transitions.
+- [ ] Push after control-plane reconciliation loops are stable and test coverage exists for key transitions.
 
 ### 1C. Execution engine + embedded DAG
 
-- [ ] Embedded DAG runner supports dependencies
-- [ ] Supports concurrency
-- [ ] Supports retries with clear semantics
-- [ ] Supports cancellation
-- [ ] Offload escape hatch: a workflow step can be executed as a Kubernetes workload (job/pod) when needed
+- [x] Embedded DAG runner supports dependencies
+- [x] Supports concurrency
+- [x] Supports retries with clear semantics
+- [x] Supports cancellation
+- [x] Offload escape hatch: a workflow step can be executed as a Kubernetes workload (job/pod) when needed
 
 Acceptance criteria:
 
-- [ ] A basic multi-step workflow can be executed reliably and cancelled.
+- [x] A basic multi-step workflow can be executed reliably and cancelled.
 
 Push checkpoint:
 
-- [ ] Push after embedded DAG runner semantics (retries/cancel) are test-locked.
+- [x] Push after embedded DAG runner semantics (retries/cancel) are test-locked.
 
 ### 1D. Run timeline (durable and queryable)
 
-- [ ] Timeline event model (minimum event set per PRD)
-- [ ] Durable storage of timeline events
-- [ ] Run timeline query API
-- [ ] Stable correlation identifiers for timeline events
+- [x] Timeline event model (minimum event set per PRD)
+- [x] Durable storage of timeline events
+- [x] Run timeline query API
+- [x] Stable correlation identifiers for timeline events
 
 Acceptance criteria:
 
-- [ ] A run produces a durable, queryable run timeline.
+- [x] A run produces a durable, queryable run timeline.
 
 Push checkpoint:
 
-- [ ] Push after the timeline event model is stabilized and persisted events are queryable with correlation identifiers.
+- [x] Push after the timeline event model is stabilized and persisted events are queryable with correlation identifiers.
 
 ### 1E. Tool plane integration (MCP-first)
 
-- [ ] Connect to kmcp-managed MCP servers
-- [ ] Invoke tools with explicit timeouts
-- [ ] Bounded outputs (where applicable)
-- [ ] Clear error reporting for upstream failures
-- [ ] Tool invocation events written to the run timeline
-- [ ] Contract snapshotting: MCP is source of truth; Kaigents stores a versioned snapshot for audit/UI rendering
+- [x] Connect to kmcp-managed MCP servers
+- [x] Invoke tools with explicit timeouts
+- [x] Bounded outputs (where applicable)
+- [x] Clear error reporting for upstream failures
+- [x] Tool invocation events written to the run timeline
+- [x] Contract snapshotting: MCP is source of truth; Kaigents stores a versioned snapshot for audit/UI rendering
 
 Acceptance criteria:
 
@@ -127,54 +127,59 @@ Push checkpoint:
 
 ### 1F. Model serving integration
 
-- [ ] Integrate with Lemonade server via OpenAI-compatible interface
-- [ ] Support chat/text generation
-- [ ] Support embeddings
-- [ ] Endpoint discovery for:
-  - [ ] in-cluster service DNS
-  - [ ] developer-local endpoints
-- [ ] Model invocation events written to the run timeline (latency + token counts when available)
+- [x] Integrate with Lemonade server via OpenAI-compatible interface
+- [x] Support chat/text generation
+- [x] Support embeddings
+- [x] Endpoint discovery for:
+  - [x] in-cluster service DNS
+  - [x] developer-local endpoints
+- [x] Model invocation events written to the run timeline (latency + token counts when available)
 
 Acceptance criteria:
 
-- [ ] Model endpoint discovery works for in-cluster and developer-local endpoints.
+- [x] Model endpoint discovery works for in-cluster and developer-local endpoints.
 
 Push checkpoint:
 
-- [ ] Push after model call events are recorded and endpoint discovery is validated in at least one dev environment.
+- [x] Push after model call events are recorded and endpoint discovery is validated in at least one dev environment.
 
 ### 1G. Artifacts
 
-- [ ] First-class artifact concept for runs (inputs, intermediates, outputs)
-- [ ] Artifact storage integration
-- [ ] Artifact access via stable, environment-scoped URLs
-- [ ] Signing/proxy pattern so clients do not need object-store credentials
-- [ ] Preserve large-object semantics where applicable (e.g., range reads)
-- [ ] Artifact events written to the run timeline
+- [x] First-class artifact concept for runs (inputs, intermediates, outputs)
+- [x] Artifact storage integration
+- [x] Artifact access via stable, environment-scoped URLs
+- [x] Signing/proxy pattern so clients do not need object-store credentials
+- [x] Preserve large-object semantics where applicable (e.g., range reads)
+- [x] Artifact events written to the run timeline
+
+Follow-on (production storage/access patterns from ITDs):
+
+- [ ] Production artifact **byte storage** backed by S3-compatible object store (Ceph RGW) (ITD-13)
+- [ ] Production artifact access via private-bucket signing/proxy semantics (or equivalent deployment pattern), preserving Range + cache headers (ITD-14)
 
 Acceptance criteria:
 
-- [ ] Artifacts are accessible without object-store credentials and are navigable from the run timeline.
+- [x] Artifacts are accessible without object-store credentials and are navigable from the run timeline.
 
 Push checkpoint:
 
-- [ ] Push after artifact URLs and proxy/signing behavior are validated and timeline links are stable.
+- [x] Push after artifact URLs and proxy/signing behavior are validated and timeline links are stable.
 
 ### 1H. CLI MVP
 
-- [ ] Install/bootstrap commands
-- [ ] Resource lifecycle management (apply/create/update)
-- [ ] Trigger a run
-- [ ] Render run timeline
-- [ ] Fetch artifacts referenced by the run timeline
+- [x] Install/bootstrap commands
+- [x] Resource lifecycle management (apply/create/update)
+- [x] Trigger a run
+- [x] Render run timeline
+- [x] Fetch artifacts referenced by the run timeline
 
 Acceptance criteria:
 
-- [ ] CLI can apply resources, trigger runs, render run timeline, and fetch artifacts.
+- [x] CLI can apply resources, trigger runs, render run timeline, and fetch artifacts.
 
 Push checkpoint:
 
-- [ ] Push after CLI workflows are end-to-end demoable and aligned with the PRD run timeline UX requirements.
+- [x] Push after CLI workflows are end-to-end demoable and aligned with the PRD run timeline UX requirements.
 
 ## Milestone 2: Platform Mode essentials (identity + policy)
 

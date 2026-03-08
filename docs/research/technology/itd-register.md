@@ -15,7 +15,7 @@ Status values:
 | Control plane + runtime | ITD-01, ITD-07 |
 | Models and inference | ITD-02 |
 | Tool plane | ITD-03 |
-| Storage | ITD-04, ITD-05, ITD-06 |
+| Storage | ITD-04, ITD-05, ITD-06, ITD-13, ITD-14 |
 | Workflow substrate | ITD-08 |
 | Product surfaces | ITD-09 |
 | Identity and access | ITD-10 |
@@ -36,6 +36,8 @@ Status values:
 | ITD-10 | AuthN/AuthZ integration | Completed |
 | ITD-11 | Observability baseline | Completed |
 | ITD-12 | Primary implementation languages/tooling | Completed |
+| ITD-13 | Artifact blob storage (S3-compatible object store) | Completed |
+| ITD-14 | Secure artifact access pattern for private buckets | Completed |
 
 ## ITDs
 
@@ -250,3 +252,38 @@ Status values:
 - Impacts:
   - Kaigents should define clear component boundaries so the Rust execution engine can evolve independently of the Go control plane.
   - Kaigents must define a stable “execution engine” contract (inputs/outputs/events/status) so multiple runtimes (Rust, Python) can be supported.
+
+### ITD-13 — Artifact blob storage (S3-compatible object store)
+- Status: Completed
+- Business problem:
+  - We need a durable, scalable, cost-effective storage substrate for large/binary artifacts that is decoupled from the indexed document/state store.
+  - We want to support cluster deployments using Ceph RGW while staying compatible with S3 semantics.
+- Options considered:
+  - Store artifact bytes directly in the document/state store (not suitable for large blobs)
+  - Store artifact bytes on local disk/PVC (simple but less portable; harder multi-node scaling)
+  - Store artifact bytes in an S3-compatible object store (Ceph RGW) (chosen)
+- Chosen option:
+  - Use **S3-compatible object storage** (Ceph RGW in-cluster) as the preferred production storage for artifact bytes.
+  - Keep indexed metadata (artifact records, timeline events) in the document/state store; artifact records reference object storage locations.
+- Primary reason:
+  - Object storage is the right durability/performance/cost fit for large media/files; indexed stores are optimized for metadata and query.
+- Impacts:
+  - Kaigents artifact metadata should support a storage reference that can point to object storage (e.g., `s3://bucket/key`).
+  - Kaigents should adopt stable key-prefix conventions (tenant/project/agent) so artifacts can be listed and lifecycle-managed without storing every run immutably.
+
+### ITD-14 — Secure artifact access pattern for private buckets
+- Status: Completed
+- Business problem:
+  - We need browser- and CLI-friendly artifact access without making buckets public.
+  - We need correct streaming behavior for media (Range requests) and predictable headers for caches and clients.
+- Options considered:
+  - Public bucket policies / static website hosting (rejected)
+  - Client-side presigned URLs exposed directly to users (acceptable in some deployments, but not the baseline)
+  - Server-side SigV4 signing proxy to private buckets (chosen baseline)
+- Chosen option:
+  - Use a **server-side SigV4 proxy pattern** to access private S3 buckets, preserving important HTTP semantics.
+- Primary reason:
+  - Keeps buckets private while still enabling simple URLs and browser access patterns.
+- Impacts:
+  - Kaigents (or a companion gateway) should preserve: `Range`, `ETag`, `Last-Modified`, `Accept-Ranges`, `Content-Range`, and `Cache-Control` headers when proxying.
+  - Kaigents should avoid coupling core requirements to any specific gateway product scope; this is an implementation pattern that can be applied by multiple services.

@@ -234,6 +234,9 @@ cython_debug/
 .local/
 local/
 
+# Kaigents local runtime state
+engine/.kaigents/
+
 # Backup files
 *.bak
 *.backup
