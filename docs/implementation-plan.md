@@ -10,40 +10,24 @@ Source-of-truth references:
 - `docs/research/technology/itd-register.md`
 - `docs/implementation/kaigents-implementation-tracker.md`
 
-## Milestone 1 completion plan (Solo Mode MVP)
+## Milestone 1 close-out and handoff (Solo Mode MVP)
 
-Milestone 1 is considered complete when the system can execute a real agent run **in-cluster**, with a durable run timeline and a durable output artifact.
+Milestone 1 is closed as the point where Kaigents can execute a real agent run **in-cluster**, with a durable run timeline and durable artifact plumbing, through the CRD-driven operator and runner path.
 
 Acceptance criteria agent:
 
 - `docs/implementation/milestone-1-acceptance-student-research-assistant.md`
 
-Remaining work to finish Milestone 1:
+Milestone 1 close-out notes:
 
-- **CRD-driven execution (Run reconciler drives execution)**
-  - Reconcile `Run` resources into actual execution (e.g., create a Kubernetes Job/Pod runner).
-  - Update `Run.status` phase/conditions through terminal completion.
-  - Emit timeline events for key lifecycle transitions.
-- **OS-hosted Lemonade model endpoints (OpenAI-compatible)**
-  - These endpoints are hosted on the OS, not in Kubernetes.
-  - The hostnames are expected to resolve via `/etc/hosts` on the cluster nodes.
-  - `http://llai03:8000` model `gpt-oss-20b-mxfp4-GGUF`
-  - `http://jc01:8000` model `Qwen3-Coder-30B-A3B-Instruct-GGUF`
-  - `http://mts01:8000` model `nomic-embedd-text-v2-moe-GGUF`
-  - `http://mts02:8000` model `bge-reranker-v2-m3-GGUF`
-- **Acceptance agent workflow implementation (Student Research Assistant)**
-  - Minimal multi-step workflow: web search -> select 3-5 insights -> read sources -> synthesize markdown -> store artifact.
-  - Tool invocation events and model invocation events must appear consistently in the run timeline.
-- **Demo manifests + reproducible cluster steps**
-  - Provide manifests for Agent + Tool/MCP refs + MCPServer + ModelEndpoint + Run.
-  - Include proxy requirements and cluster pre-reqs.
-- **Verification gates**
-  - Close the tool timeline consistency acceptance (Milestone 1E acceptance criteria).
-  - Run `make ci` and fix failures.
+- The in-cluster Student Research Assistant acceptance path has been validated through the operator-managed `Run` -> `Job` execution path.
+- Timeline, tool/model integration, and artifact plumbing are considered sufficient to close Milestone 1 as the Solo Mode MVP execution baseline.
+- Result visibility and authoritative output surfacing on `Run.status` are intentionally deferred rather than used to extend Milestone 1 scope.
+- Milestone 1 should be treated as closed so Milestone 2 can start with a clean focus on domain-model hardening and productization.
 
-### Milestone 1 completion checklist
+### Milestone 1 close-out checklist
 
-Use this checklist before declaring Milestone 1 complete.
+Use this checklist as the close-out record for Milestone 1.
 
 - **Acceptance criteria agent is actually demoable**
   - Execute the Student Research Assistant acceptance flow end-to-end:
@@ -100,6 +84,10 @@ Use this checklist before declaring Milestone 1 complete.
   - Tool failures/timeouts, if exercised, are visible and understandable in the timeline.
   - The final artifact is retrievable from the CLI using the run timeline references.
 
+- **Deferred to early Milestone 2 hardening**
+  - Result visibility and authoritative output references on `Run.status` are not treated as Milestone 1 blockers.
+  - These are part of the next-step domain-model clarification and control-plane surfacing work.
+
 - **Demo and reproducibility are in place**
   - Provide manifests for the Milestone 1 demo path:
     - Agent
@@ -130,13 +118,13 @@ Use this checklist before declaring Milestone 1 complete.
   - Resolve any conflicts in docs before pushing.
 
 - **Push/review checkpoint for Milestone 1**
-  - Do not push Milestone 1 as complete until:
-    - the acceptance workflow is demoable end-to-end
-    - the `Run` reconciler drives real execution
-    - the run timeline is durable and queryable
-    - artifacts are fetchable from the CLI
-    - `make ci` passes
-    - the tracker and gate documents reflect the actual implementation state
+  - Milestone 1 has been closed only after:
+    - the acceptance workflow was demoable end-to-end
+    - the `Run` reconciler drove real execution
+    - the run timeline was durable and queryable
+    - artifacts were fetchable from the CLI
+    - `make ci` passed
+    - the tracker and gate documents were updated to reflect the actual implementation state
 
 Milestone 1 scope note:
 
@@ -166,6 +154,22 @@ This is the **must improve immediately** list. These items exist to prevent Mile
 - **Surface execution outputs back onto the control-plane resources**
   - Populate `Run.status` with authoritative output references and execution summary information.
   - Reduce dependence on ad hoc filesystem knowledge or out-of-band inspection to understand run results.
+
+### Immediate next steps for tomorrow morning
+
+- **Spike 1: speed up GPT-OSS-20B on `llai03:8000`**
+  - Reproduce the successful acceleration approach already used for `Qwen3-Coder-30B` on `jc01:8000`.
+  - Capture the deployment/configuration changes in source-controlled docs or manifests rather than relying on environment-only fixes.
+  - Revalidate the acceptance path against the faster serving configuration.
+
+- **Spike 2: add a file management MCP tool and standardize on Markdown outputs**
+  - Prioritize a file management capability for Student Research Assistant and CodeKnowl before broader document-suite integrations.
+  - Prefer Markdown artifacts and file-management workflows over Google Docs or LibreOffice for the next increment.
+
+- **Start the Milestone 2 research/deep dive**
+  - Clarify the next-step domain model for results, artifact visibility, and execution summaries.
+  - Turn the Milestone 1 must-have improvements into a concrete M2 work plan.
+  - Identify which additional MCP tools are worth adding first for Student Research Assistant and CodeKnowl after file management.
 
 - **Harden persistence and retrieval paths**
   - Ensure the default supported Milestone 1 deployment path uses a durable timeline/artifact backend appropriate for in-cluster runs.

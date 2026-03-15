@@ -70,7 +70,7 @@ Push checkpoint:
 
 - [x] Controller reconciles Agent resources into runnable configuration
 - [x] Controller reconciles Tool/MCP resources into invokable configuration
-- [ ] Controller reconciles Run resources and drives execution state
+- [x] Controller reconciles Run resources and drives execution state
 - [x] Status conditions and events are written for key transitions
 
 Acceptance criteria:
@@ -79,7 +79,7 @@ Acceptance criteria:
 
 Push checkpoint:
 
-- [ ] Push after control-plane reconciliation loops are stable and test coverage exists for key transitions.
+- [x] Push after control-plane reconciliation loops are stable and test coverage exists for key transitions.
 
 ### 1C. Execution engine + embedded DAG
 
@@ -95,6 +95,11 @@ Milestone 1 scope note:
 - Explicit rework loops/cycles are part of the later durable process model, not the embedded DAG substrate.
 
 ### 1C.1 Temporal stop/go spike (execution substrate)
+
+Deferred note:
+
+- This exploratory spike does not gate Milestone 1 close-out.
+- Durable execution-engine-of-record work remains part of the later ITD-16 / Milestone 3 decision path.
 
 - [ ] Timebox: <= 4 hours (stop when exit criteria is met)
 - [ ] Deploy minimal self-hosted Temporal Service in a dev namespace and record baseline footprint (CPU/mem/storage + required backing services)
@@ -146,11 +151,11 @@ Push checkpoint:
 
 Acceptance criteria:
 
-- [ ] Tool invocations are observable, auditable, and show up consistently in the run timeline.
+- [x] Tool invocations are observable, auditable, and show up consistently in the run timeline.
 
 Push checkpoint:
 
-- [ ] Push after MCP tool invocation and contract snapshotting are implemented and recorded in the run timeline.
+- [x] Push after MCP tool invocation and contract snapshotting are implemented and recorded in the run timeline.
 
 ### 1F. Model serving integration
 
@@ -207,6 +212,13 @@ Acceptance criteria:
 Push checkpoint:
 
 - [x] Push after CLI workflows are end-to-end demoable and aligned with the PRD run timeline UX requirements.
+
+### Milestone 1 close-out decision
+
+- [x] Milestone 1 is closed as the Solo Mode MVP execution baseline.
+- [x] A real in-cluster acceptance run completed through the CRD-driven operator and runner path.
+- [x] Run timeline, tool/model integration, and artifact plumbing are considered sufficient for Milestone 1 closure.
+- [x] Result visibility and authoritative output surfacing on control-plane resources are explicitly deferred to early Milestone 2 hardening.
 
 ## Milestone 2: Platform Mode essentials (identity + policy)
 
