@@ -1,3 +1,10 @@
+# File: charts/kaigents-operator/Chart.yaml
+# Purpose: Declares the Helm chart metadata for packaging and deploying the Kaigents operator.
+# Product/business importance: Provides a standard deployment artifact for installing the Kaigents control plane in Kubernetes.
+#
+# Copyright (c) 2026 John K Johansen
+# License: MIT (see LICENSE)
+
 apiVersion: v2
 name: kaigents-operator
 description: Kaigents operator (controller) for core.kaigents.io CRDs

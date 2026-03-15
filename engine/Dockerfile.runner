@@ -1,3 +1,10 @@
+# File: engine/Dockerfile.runner
+# Purpose: Builds the Kaigents runner container image used for Milestone 1 run execution.
+# Product/business importance: Provides the runnable engine image that executes agent runs in Kubernetes.
+#
+# Copyright (c) 2026 John K Johansen
+# License: MIT (see LICENSE)
+
 # syntax=docker/dockerfile:1
 
 FROM rust:1.85-bookworm AS builder

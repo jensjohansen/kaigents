@@ -1,3 +1,10 @@
+# File: engine/crates/kaigents-core/Cargo.toml
+# Purpose: Declares the kaigents-core crate package metadata, features, and dependencies.
+# Product/business importance: Defines the core runtime library that powers Kaigents execution, model access, and tool orchestration.
+#
+# Copyright (c) 2026 John K Johansen
+# License: MIT (see LICENSE)
+
 [package]
 name = "kaigents-core"
 version = "0.1.0"

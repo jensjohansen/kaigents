@@ -1,3 +1,12 @@
+{{/*
+File: charts/kaigents-operator/templates/_helpers.tpl
+Purpose: Defines shared Helm template helper functions for naming Kaigents operator resources.
+Product/business importance: Ensures consistent, predictable resource naming across operator chart deployments.
+
+Copyright (c) 2026 John K Johansen
+License: MIT (see LICENSE)
+*/}}
+
 {{- define "kaigents-operator.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}

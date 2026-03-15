@@ -1,3 +1,10 @@
+# File: operator/Dockerfile
+# Purpose: Builds the Kaigents operator controller container image.
+# Product/business importance: Provides the control-plane image that reconciles Kaigents resources into runnable Kubernetes jobs.
+#
+# Copyright (c) 2026 John K Johansen
+# License: MIT (see LICENSE)
+
 # syntax=docker/dockerfile:1
 
 FROM golang:1.23-bookworm AS builder

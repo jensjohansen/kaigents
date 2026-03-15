@@ -1,3 +1,10 @@
+# File: charts/kaigents-operator/templates/clusterrolebinding.yaml
+# Purpose: Renders the ClusterRoleBinding connecting the Kaigents operator service account to its cluster-scoped role.
+# Product/business importance: Grants the deployed control plane the permissions it needs to manage Kaigents resources.
+#
+# Copyright (c) 2026 John K Johansen
+# License: MIT (see LICENSE)
+
 {{- if .Values.rbac.create -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
