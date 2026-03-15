@@ -39,6 +39,10 @@ make lint
 make test
 ```
 
+## Operations
+
+- [Temporal installation](docs/ops/temporal-installation.md)
+
 ## Project status
 
 Implementation scope, milestones, and acceptance criteria are tracked in `docs/implementation/kaigents-implementation-tracker.md`.

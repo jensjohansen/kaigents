@@ -37,7 +37,8 @@ The following items are treated as “locked” unless the ITD register is updat
 
 - **Model serving:** Lemonade Server (FastFlowLM NPU kernels integrate-only)
 - **Tool plane:** kMCP (kmcp), MCP-first
-- **Workflow substrate:** embedded Rust DAG substrate with K8s offload escape hatch
+- **Workflow substrate (Milestone 1):** embedded Rust DAG substrate with K8s offload escape hatch (ITD-08)
+- **Durable process execution engine of record:** Pending decision (ITD-16) for long-running Work Requests (human-in-loop waits, bounded rework loops, durable resumability)
 - **Stores:** Qdrant (vector), NebulaGraph (graph), RethinkDB (document/state), S3-compatible object store for artifact bytes (Ceph RGW) (ITD-13)
 - **Identity:** Keycloak (OIDC)
 - **Observability:** OpenTelemetry + Prometheus + Grafana (Langfuse optional)
@@ -124,16 +125,19 @@ graph TB
 - **Tool / Connector**
   - A callable capability (typically via MCP) with a documented JSON input/output contract.
 
-- **Run**
-  - A single execution instance of an agent/team.
+- **Work Request (Run in Milestone 1)**
+  - A single execution instance of work.
+  - In the refined product domain model, a Work Request is an execution of a Process; in Milestone 1, this is represented as a Run that executes an embedded workflow.
   - Produces:
-    - run status
-    - run timeline events
+    - execution status
+    - run/work-request timeline events
     - artifacts
 
-- **Workflow (DAG)**
-  - A multi-step plan associated with a run.
+- **Embedded workflow (DAG) (Milestone 1 substrate)**
+  - A multi-step plan associated with a Run.
   - Supports dependencies, concurrency, retries, cancellation.
+  - Retries are node-execution semantics and do not change the topology into a cyclic graph.
+  - Note: this substrate is not assumed sufficient for long-running, human-in-the-loop process execution; that is governed by ITD-16.
 
 ## 6. Key data flows
 

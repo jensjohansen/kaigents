@@ -135,6 +135,12 @@ A third mode is anticipated (not required for MVP or v1):
   - historical run summaries
   - failure reasons and retries
 
+ Terminology note (product vs MVP naming):
+
+ - In the refined Kaigents product domain model, an execution instance is a **Work Request**.
+ - In Milestone 1 MVP (and current CRDs/CLI), this is represented as a **Run**.
+ - This PRD uses **Work Request** when describing the product domain, and uses **Run** when describing Milestone 1 acceptance criteria and existing UX surfaces.
+
 ### 5.4 Hybrid Execution policies (cost + performance)
 
 - Users/teams can declare preferences or constraints for execution:
@@ -183,6 +189,19 @@ MVP resource model (minimum):
 - Artifact references associated with a run
 - Model endpoint reference (configuration/discovery target)
 
+ Product domain model (authoritative terminology):
+
+ - **Process**: reusable definition of a business procedure.
+ - **Task**: step/activity definition inside a process.
+ - **Work Request**: execution instance of a process (maps to **Run** in Milestone 1).
+ - **Work Item**: instance of a task created within a work request.
+ - **Work Attempt**: one attempt to perform a work item.
+
+ MVP scope note:
+
+ - Milestone 1 may represent Process/Task definitions using an embedded workflow/DAG representation associated with a Run.
+ - The first-class Process/Task definition model and its lifecycle (create/update/versioning) is expected to mature in later milestones.
+
 ### 6.2 Tool plane
 
 - Support a standardized mechanism for tool integration, discovery, and invocation.
@@ -214,6 +233,16 @@ Minimum bar (connector UX):
   - retries with clear semantics
   - cancellation
 - The platform must support an “offload” mechanism for steps that require stronger isolation.
+
+ Process semantics requirements (from the product domain model):
+
+ - The product-level process graph must support **explicit rework loops** (cycles), not just DAGs.
+ - Rework must be **bounded** (attempt limits, time limits, or escalation policies).
+ - Human-in-the-loop steps (approval/review/assignment) must be representable as first-class waiting states.
+ - The execution engine must provide durable semantics for:
+   - waiting (timers, signals)
+   - resumption after component restarts
+   - reconstructable execution history suitable for audit
 
 ### 6.4 Artifacts and asset access
 
@@ -325,6 +354,12 @@ Kaigents is composed of:
 - **Data plane**: stores run state, artifacts, and metadata.
 - **UX surfaces**: CLI and dashboard.
 
+ Execution engine requirement (clarification):
+
+ - Kaigents requires a **durable execution substrate** capable of long-running Work Requests that may block on humans and external systems.
+ - The execution engine must preserve the separation between **definitions** (Process/Task) and **executions** (Work Request / Work Item / Work Attempt) so definitions can evolve without mutating execution history.
+ - The specific engine implementation is an architectural decision tracked in the ITD register.
+
 (Technical implementation details belong in Architecture & Design; this section is intended to help stakeholders understand the product’s major capability areas.)
 
 ## 9. Buy vs Build Evaluation
@@ -360,13 +395,18 @@ Acceptance criteria:
 
 - install Kaigents
 - define an agent and tools declaratively
+
+Acceptance criteria agent:
+
+- `docs/implementation/milestone-1-acceptance-student-research-assistant.md`
 - run an agent and view a run timeline
-- embedded DAG orchestration for multi-step tasks
+- embedded DAG orchestration for multi-step tasks, **noting that this milestone does not include cyclic rework or process-graph semantics**
 
 Acceptance criteria:
 
 - A user can install Kaigents in a cluster and run a basic multi-step agent workload.
 - A run produces a durable, queryable run timeline.
+- The run timeline includes, at minimum, tool invocation events, model invocation events, workflow step events, and artifact events.
 
 MVP definition of done (testable):
 

@@ -45,6 +45,10 @@ Push checkpoint:
 
 ## Milestone 1: Solo Mode MVP (CRD + CLI + embedded workflow)
 
+Acceptance criteria agent:
+
+- `docs/implementation/milestone-1-acceptance-student-research-assistant.md`
+
 ### 1A. Resource model (CRDs)
 
 - [x] CRD: Agent (or Team)
@@ -84,6 +88,29 @@ Push checkpoint:
 - [x] Supports retries with clear semantics
 - [x] Supports cancellation
 - [x] Offload escape hatch: a workflow step can be executed as a Kubernetes workload (job/pod) when needed
+
+Milestone 1 scope note:
+
+- Retries are execution semantics on DAG nodes; they do not make the Milestone 1 execution model a cyclic workflow/process graph.
+- Explicit rework loops/cycles are part of the later durable process model, not the embedded DAG substrate.
+
+### 1C.1 Temporal stop/go spike (execution substrate)
+
+- [ ] Timebox: <= 4 hours (stop when exit criteria is met)
+- [ ] Deploy minimal self-hosted Temporal Service in a dev namespace and record baseline footprint (CPU/mem/storage + required backing services)
+- [ ] Implement a thin Temporal adapter service (Go) that exposes Kaigents-native operations:
+- [ ] Start execution (WorkRequest)
+- [ ] Signal execution (human-in-loop / rework)
+- [ ] Query execution state
+- [ ] Implement a minimal Go Worker that can:
+- [ ] Run a trivial Workflow that blocks on a Signal and then completes
+- [ ] Execute one Activity that represents a Kaigents WorkAttempt
+- [ ] Validate Rust backend calls adapter (no Temporal SDK usage from Rust) and that no Temporal concepts leak into core domain types
+- [ ] Exit criteria (decision checkpoint):
+- [ ] Ops footprint is acceptable for baseline on-prem cluster assumptions
+- [ ] Integration boundary is acceptable (Rust <-> adapter stable, minimal surface)
+- [ ] Developer experience is acceptable (workflow determinism constraints are manageable)
+- [ ] Record outcome as an ITD: Adopt Temporal backend vs Build custom thin engine
 
 Acceptance criteria:
 
@@ -210,7 +237,72 @@ Push checkpoint:
 
 - [ ] Push after allowlisting enforcement is test-locked and denials show clear reasons in the run timeline.
 
-## Milestone 3: Hybrid Execution routing (CPU/GPU/NPU)
+## Milestone 3: Durable process execution engine decision + integration (ITD-16)
+
+This milestone establishes the durable execution engine of record for long-running Work Requests.
+
+Key constraint:
+
+- Temporal (or any engine) concepts must remain hidden behind Kaigents product/domain terms.
+
+### 3A. Temporal stop/go spike (execution engine of record)
+
+- [ ] Validate self-hosted Temporal operational footprint on the on-prem baseline (CPU/mem/storage + required backing services)
+- [ ] Define a minimal Kaigents **Process/Task** definition representation suitable for POC validation (may be code or JSON; CRDs are not required in this milestone)
+- [ ] Implement a minimal “compiler”/mapping from Process/Task graph semantics to the durable engine execution model, including:
+- [ ] explicit rework edges (cycles)
+- [ ] bounded rework limits/escalation
+- [ ] at least one human approval/wait gate
+- [ ] Implement a thin Temporal adapter service (Go) that exposes Kaigents-native operations:
+- [ ] Start execution (WorkRequest)
+- [ ] Signal execution (human-in-loop / rework)
+- [ ] Query execution state
+- [ ] Implement a minimal Go Worker that can:
+- [ ] Run a representative workflow that blocks on a Signal and then completes
+- [ ] Execute one Activity that represents a Kaigents WorkAttempt
+- [ ] Validate the integration boundary (Rust backend calls adapter; no Temporal SDK usage from Rust)
+- [ ] Demonstrate that a Work Request execution produces a reconstructable history that maps cleanly to:
+- [ ] WorkRequest state transitions
+- [ ] WorkItem state transitions
+- [ ] WorkAttempt attempts (including retries/rework)
+
+Exit criteria (decision checkpoint):
+
+- [ ] Ops footprint is acceptable for baseline on-prem cluster assumptions
+- [ ] Integration boundary is acceptable (Rust <-> adapter stable, minimal surface)
+- [ ] Developer experience is acceptable (workflow determinism constraints are manageable)
+- [ ] The Process/Task definition model remains simple-first and does not collapse into engine-specific workflow code
+- [ ] Record outcome as ITD-16: Adopt Temporal backend vs Build custom durable engine
+
+Push checkpoint:
+
+- [ ] Push only after ITD-16 is recorded and the POC code is reproducible.
+
+## Milestone 4: Process definition model (Process/Task) + execution mapping
+
+This milestone makes the refined product domain model real in the control plane and runtime surfaces.
+
+### 4A. Definition model (CRD + CLI first)
+
+- [ ] CRD: Process definition
+- [ ] CRD: Task definition
+- [ ] Validation: simple-first graph constraints (explicit rework edges; bounded rework semantics declared)
+- [ ] CLI: create/apply/update Process/Task resources
+
+### 4B. Execution model mapping
+
+- [ ] Map WorkRequest/WorkItem/WorkAttempt concepts to underlying execution engine without leaking engine-specific concepts
+- [ ] Timeline events and query surfaces align to WorkRequest/WorkItem/WorkAttempt
+
+Acceptance criteria:
+
+- [ ] A user can define a simple-first process and execute it as a Work Request.
+
+Push checkpoint:
+
+- [ ] Push after Process/Task definitions are validated and a Work Request produces a queryable execution history.
+
+## Milestone 5: Hybrid Execution routing (CPU/GPU/NPU)
 
 - [ ] Operator-visible routing configuration
 - [ ] Policy surfaces for execution preferences/constraints (CPU/GPU/NPU)
@@ -224,7 +316,7 @@ Push checkpoint:
 
 - [ ] Push after routing policy is operator-visible and correlation is demonstrated in both timeline and telemetry.
 
-## Milestone 4: Dashboard MVP
+## Milestone 6: Dashboard MVP
 
 - [ ] Browse agents/teams
 - [ ] Trigger runs

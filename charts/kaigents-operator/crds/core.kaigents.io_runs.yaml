@@ -58,7 +58,6 @@ spec:
                 modelName:
                   type: string
                   description: Optional OpenAI-compatible model id override for this run.
-              additionalProperties: false
             status:
               type: object
               properties:
@@ -89,4 +88,4 @@ spec:
                         format: int64
                       sha256:
                         type: string
-              additionalProperties: false
+

@@ -16,10 +16,10 @@ Status values:
 | Models and inference | ITD-02 |
 | Tool plane | ITD-03 |
 | Storage | ITD-04, ITD-05, ITD-06, ITD-13, ITD-14 |
-| Workflow substrate | ITD-08 |
+| Workflow substrate | ITD-08, ITD-16 |
 | Product surfaces | ITD-09 |
 | Identity and access | ITD-10 |
-| Operations | ITD-11 |
+| Operations | ITD-11, ITD-15 |
 | Development stack | ITD-12 |
 
 | ID | Decision area | Status |
@@ -38,6 +38,8 @@ Status values:
 | ITD-12 | Primary implementation languages/tooling | Completed |
 | ITD-13 | Artifact blob storage (S3-compatible object store) | Completed |
 | ITD-14 | Secure artifact access pattern for private buckets | Completed |
+| ITD-15 | Harbor image pull robot naming convention | Completed |
+| ITD-16 | Durable process execution engine of record | Pending |
 
 ## ITDs
 
@@ -172,8 +174,15 @@ Status values:
   - The offload escape hatch preserves step isolation and Kubernetes scheduling when needed without forcing every step into that model.
 - Impacts:
   - Kaigents must implement persistence for DAG state (node status, retries, timing, outputs) in the document/state store so runs are durable across process restarts.
+  - Retries do not change the execution topology; Milestone 1 remains a DAG substrate rather than a general workflow graph with cycles.
   - Kaigents must implement first-class execution visibility (events, logs, traces) since we are not inheriting Argo UI/CRD status semantics.
   - Kaigents can still support Argo/Tekton by generating workflows or running them as an integration path, but the platform core does not depend on them.
+
+ Milestone scope clarification:
+
+ - This decision describes the **Milestone 1** embedded workflow substrate for short-lived, batch-y DAG execution.
+ - Retries and cancellation are execution semantics on DAG nodes; they do not imply rework loops or cyclic process graphs.
+ - Longer-lived process semantics (human-in-the-loop waiting, durable resumability across restarts over days/weeks, bounded rework loops) are tracked separately as ITD-16.
 
 ### ITD-09 — UX modality sequencing (CRD + CLI + UI)
 - Status: Completed
@@ -287,3 +296,89 @@ Status values:
 - Impacts:
   - Kaigents (or a companion gateway) should preserve: `Range`, `ETag`, `Last-Modified`, `Accept-Ranges`, `Content-Range`, and `Cache-Control` headers when proxying.
   - Kaigents should avoid coupling core requirements to any specific gateway product scope; this is an implementation pattern that can be applied by multiple services.
+
+### ITD-15 — Harbor image pull robot naming convention
+- Status: Completed
+- Business problem:
+  - Kaigents (and other platform workloads) run in Kubernetes namespaces and pull private images from Harbor.
+  - Harbor robot accounts are often created as project-scoped credentials for image pulls.
+  - If robot names are not discoverable, operators waste time correlating Harbor robot credentials to Kubernetes namespaces.
+- Options considered:
+  - Free-form robot naming (inconsistent; hard to correlate)
+  - Encode repository or chart name into the robot (still ambiguous when namespaces change)
+  - Standardize on a *reference implementation* convention for our deployments, without imposing it on Kaigents users (chosen)
+- Chosen option:
+  - Kaigents **does not require** a specific Kubernetes namespace naming scheme, registry choice, or IdP choice.
+  - For Kaigents’ **default reference implementation** (including Keycloak-backed Harbor where local Harbor users may be disabled), standardize on:
+    - Kubernetes namespace: `kaigents`
+    - Harbor robot account: `robot$kaigents+kaigents`
+  - This convention is recommended for our internal environments and examples because it is searchable and easy to correlate, but it is not a Kaigents platform requirement.
+- Primary reason:
+  - Keeps our docs/runbooks consistent while preserving customer freedom to choose namespaces and auth models.
+- Impacts:
+  - The cluster operator runbook should standardize on a single pull-secret name per namespace (e.g. `harbor-regcred`) whose credentials map to a Harbor robot chosen by the cluster operator.
+  - Our reference implementation runbook should use the defaults above; if a deployment uses a different namespace, the robot/secret should be created accordingly.
+
+### ITD-16 — Durable process execution engine of record
+- Status: Pending
+
+Decision statement:
+
+- Decide the **durable process execution engine of record** for Kaigents Work Requests that require long-running durability (hours to days/weeks), human-in-the-loop waits, bounded rework loops (cycles), cancellation, and a reconstructable history for audit.
+
+Scope boundary (relationship to ITD-08):
+
+- ITD-08 covers the **Milestone 1** embedded DAG substrate for short-lived, batch-y workflows.
+- ITD-16 governs the **long-running durable execution path** and must support waiting on humans/external systems and resuming safely across restarts.
+- ITD-16 is about a broader **process/workflow graph** model that may include explicit rework edges (cycles); it is not a claim that Milestone 1 DAG execution already supports those semantics.
+- This ITD does not require replacing the embedded DAG substrate; both may coexist.
+
+Non-negotiables / acceptance criteria:
+
+- **Product-model alignment (substrate + definition model):**
+  - Kaigents can define a minimal **Process/Task** model (code or JSON is acceptable for the POC; CRDs are not required to decide this ITD).
+  - Kaigents can compile/map that model into the durable engine execution model without exposing engine-native concepts to end users.
+  - The model supports:
+    - at least one explicit **rework loop** (cycle)
+    - bounded rework semantics (attempt limits, time limits, and/or escalation)
+    - at least one **human approval/wait** gate
+- **Durability and recovery:**
+  - Work Requests remain durable while waiting.
+  - Resumption is reliable after worker restarts.
+  - Cancellation and retries have predictable, observable semantics.
+- **Audit/history:**
+  - A Work Request produces a durable history sufficient to reconstruct:
+    - WorkRequest state timeline
+    - WorkItem state timeline
+    - WorkAttempt attempts (including retries/rework)
+    - key events required for the Kaigents run/work-request timeline
+- **Operational footprint:**
+  - The server footprint (CPU/mem/storage + required backing services) is acceptable for the on-prem baseline where most resources are reserved for models/tools.
+- **Commercial-safe OSS posture:**
+  - Dependencies required for the durable engine-of-record must be redistributable and compatible with Kaigents’ OSS posture.
+
+Options considered:
+
+- Adopt **Temporal** as the durable execution engine of record.
+- Build a **Kaigents-specific** durable process engine.
+
+Decision inputs:
+
+- `docs/research/technology/process-engine-evaluation.md`
+- `docs/research/technology/temporal-poc.md`
+
+Decision record (to be completed when finalized):
+
+- Chosen option: TBD
+- Primary reason: TBD
+
+Impacts (regardless of chosen engine):
+
+- The product domain model becomes authoritative:
+  - Process/Task (definitions)
+  - Work Request / Work Item / Work Attempt (executions)
+- Kaigents must define a stable execution-engine interface that:
+  - hides engine-specific concepts behind Kaigents terminology
+  - emits a consistent event stream to the run/work-request timeline
+  - supports human-in-the-loop waits and bounded rework semantics
+- Milestone 1 embedded DAG is not invalidated; it remains a lightweight substrate for short-lived workflows, while ITD-16 governs the long-running durable execution path.

@@ -7,14 +7,23 @@
 
 use crate::run_id::RunId;
 use crate::timeline::{EventType, TimelineEvent, TimelineStore};
+use futures_util::StreamExt;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use tokio::sync::Mutex;
 use uuid::Uuid;
 
+fn current_unix_timestamp() -> u64 {
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map(|d| d.as_secs())
+        .unwrap_or(0)
+}
+
 /// ModelEndpoint represents a discovered model endpoint.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ModelEndpoint {
     pub name: String,
     pub url: String,
@@ -24,7 +33,7 @@ pub struct ModelEndpoint {
 }
 
 /// ModelCapabilities describes what the endpoint supports.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ModelCapabilities {
     pub chat: bool,
     pub embeddings: bool,
@@ -54,7 +63,7 @@ pub trait ModelClient: Send + Sync {
 }
 
 /// ChatCompletionRequest mirrors OpenAI chat completions.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChatCompletionRequest {
     pub model: String,
     pub messages: Vec<ChatMessage>,
@@ -63,14 +72,14 @@ pub struct ChatCompletionRequest {
     pub stream: bool,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChatMessage {
     pub role: String, // "user", "assistant", "system"
     pub content: String,
 }
 
 /// ChatCompletionResponse mirrors OpenAI chat completions response.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChatCompletionResponse {
     pub id: String,
     pub object: String,
@@ -80,22 +89,44 @@ pub struct ChatCompletionResponse {
     pub usage: Option<Usage>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChatChoice {
     pub index: u32,
     pub message: ChatMessage,
     pub finish_reason: Option<String>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Usage {
     pub prompt_tokens: u32,
     pub completion_tokens: u32,
     pub total_tokens: u32,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct ChatCompletionStreamChunk {
+    pub id: Option<String>,
+    pub object: Option<String>,
+    pub created: Option<u64>,
+    pub model: Option<String>,
+    pub choices: Vec<ChatCompletionStreamChoice>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct ChatCompletionStreamChoice {
+    pub index: u32,
+    pub delta: ChatCompletionDelta,
+    pub finish_reason: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+struct ChatCompletionDelta {
+    pub role: Option<String>,
+    pub content: Option<String>,
+}
+
 /// EmbeddingsRequest mirrors OpenAI embeddings.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EmbeddingsRequest {
     pub model: String,
     pub input: Vec<String>, // array of strings or array of token arrays
@@ -103,7 +134,7 @@ pub struct EmbeddingsRequest {
 }
 
 /// EmbeddingsResponse mirrors OpenAI embeddings response.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EmbeddingsResponse {
     pub object: String,
     pub model: String,
@@ -111,11 +142,90 @@ pub struct EmbeddingsResponse {
     pub usage: Usage,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Embedding {
     pub object: String,
     pub embedding: Vec<f32>,
     pub index: u32,
+}
+
+#[derive(Debug, Clone)]
+pub struct HttpOpenAIModelClient {
+    http: reqwest::Client,
+    endpoints: Vec<ModelEndpoint>,
+    api_key: Option<String>,
+}
+
+impl HttpOpenAIModelClient {
+    /// Create a client from environment variables.
+    ///
+    /// Required:
+    /// - KAIGENTS_MODEL_ENDPOINT_URL
+    ///
+    /// Optional:
+    /// - KAIGENTS_MODEL_ENDPOINT_NAME (default: "default")
+    /// - KAIGENTS_MODEL_ENDPOINT_PROVIDER (default: "openai-compatible")
+    /// - KAIGENTS_MODEL_ENDPOINT_CHAT (default: "true")
+    /// - KAIGENTS_MODEL_ENDPOINT_EMBEDDINGS (default: "false")
+    /// - KAIGENTS_MODEL_ENDPOINT_SUPPORTS_STREAMING (default: "false")
+    /// - KAIGENTS_MODEL_ENDPOINT_MAX_TOKENS (u32)
+    /// - KAIGENTS_MODEL_API_KEY (optional)
+    pub fn from_env() -> Result<Self, String> {
+        let url = std::env::var("KAIGENTS_MODEL_ENDPOINT_URL")
+            .map_err(|_| "KAIGENTS_MODEL_ENDPOINT_URL is required".to_string())?;
+        let name =
+            std::env::var("KAIGENTS_MODEL_ENDPOINT_NAME").unwrap_or_else(|_| "default".to_string());
+        let provider = std::env::var("KAIGENTS_MODEL_ENDPOINT_PROVIDER")
+            .unwrap_or_else(|_| "openai-compatible".to_string());
+
+        let chat = std::env::var("KAIGENTS_MODEL_ENDPOINT_CHAT")
+            .ok()
+            .map(|v| v != "false")
+            .unwrap_or(true);
+        let embeddings = std::env::var("KAIGENTS_MODEL_ENDPOINT_EMBEDDINGS")
+            .ok()
+            .map(|v| v == "true")
+            .unwrap_or(false);
+        let supports_streaming = std::env::var("KAIGENTS_MODEL_ENDPOINT_SUPPORTS_STREAMING")
+            .ok()
+            .map(|v| v == "true")
+            .unwrap_or(false);
+        let max_tokens = std::env::var("KAIGENTS_MODEL_ENDPOINT_MAX_TOKENS")
+            .ok()
+            .and_then(|v| v.parse::<u32>().ok());
+
+        let api_key = std::env::var("KAIGENTS_MODEL_API_KEY").ok();
+
+        let endpoint = ModelEndpoint {
+            name,
+            url,
+            capabilities: ModelCapabilities {
+                chat,
+                embeddings,
+                max_tokens,
+                supports_streaming,
+            },
+            provider,
+            metadata: HashMap::new(),
+        };
+
+        Ok(Self {
+            http: reqwest::Client::new(),
+            endpoints: vec![endpoint],
+            api_key,
+        })
+    }
+
+    fn endpoint_by_name(&self, endpoint_name: &str) -> Result<&ModelEndpoint, String> {
+        self.endpoints
+            .iter()
+            .find(|e| e.name == endpoint_name)
+            .ok_or_else(|| format!("Endpoint '{}' not found", endpoint_name))
+    }
+
+    fn endpoint_base_url(endpoint_url: &str) -> String {
+        endpoint_url.trim_end_matches('/').to_string()
+    }
 }
 
 /// InMemoryModelClient is a placeholder for testing and MVP.
@@ -163,6 +273,200 @@ impl InMemoryModelClient {
 impl Default for InMemoryModelClient {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+#[async_trait::async_trait]
+impl ModelClient for HttpOpenAIModelClient {
+    async fn discover_endpoints(&self) -> Result<Vec<ModelEndpoint>, String> {
+        Ok(self.endpoints.clone())
+    }
+
+    async fn chat_completion(
+        &self,
+        endpoint_name: &str,
+        request: ChatCompletionRequest,
+        timeout: Duration,
+    ) -> Result<ChatCompletionResponse, String> {
+        let endpoint = self.endpoint_by_name(endpoint_name)?;
+        if !endpoint.capabilities.chat {
+            return Err(format!(
+                "Endpoint '{}' does not support chat",
+                endpoint_name
+            ));
+        }
+
+        let url = format!(
+            "{}/v1/chat/completions",
+            Self::endpoint_base_url(&endpoint.url)
+        );
+
+        let mut builder = self
+            .http
+            .post(url)
+            .timeout(timeout)
+            .header("accept", "application/json, text/event-stream")
+            .json(&request);
+        if let Some(api_key) = &self.api_key {
+            builder = builder.bearer_auth(api_key);
+        }
+
+        let response = builder.send().await.map_err(|e| {
+            format!(
+                "Model request failed: {} (endpoint={}, timeout_ms={})",
+                e,
+                endpoint.url,
+                timeout.as_millis()
+            )
+        })?;
+        if !response.status().is_success() {
+            let status = response.status();
+            let body = response
+                .text()
+                .await
+                .unwrap_or_else(|_| "<failed to read body>".to_string());
+            return Err(format!("Model request failed: HTTP {status} {body}"));
+        }
+
+        let content_type = response
+            .headers()
+            .get(reqwest::header::CONTENT_TYPE)
+            .and_then(|v| v.to_str().ok())
+            .unwrap_or("")
+            .to_string();
+
+        if request.stream || content_type.starts_with("text/event-stream") {
+            let mut aggregated_content = String::new();
+            let mut finish_reason: Option<String> = None;
+            let mut response_id: Option<String> = None;
+            let mut response_model: Option<String> = None;
+            let mut response_created: Option<u64> = None;
+            let mut response_object: Option<String> = None;
+            let mut role: Option<String> = None;
+
+            let mut stream = response.bytes_stream();
+            let mut buf: Vec<u8> = Vec::new();
+
+            while let Some(item) = stream.next().await {
+                let chunk = item.map_err(|e| format!("Model stream read failed: {e}"))?;
+                buf.extend_from_slice(&chunk);
+
+                while let Some(pos) = buf.windows(2).position(|w| w == b"\n\n") {
+                    let frame = buf.drain(..pos + 2).collect::<Vec<u8>>();
+                    let frame_text = String::from_utf8_lossy(&frame);
+
+                    for line in frame_text.lines() {
+                        let trimmed = line.trim();
+                        if let Some(rest) = trimmed.strip_prefix("data:") {
+                            let data = rest.trim();
+                            if data == "[DONE]" {
+                                let id = response_id
+                                    .unwrap_or_else(|| format!("chatcmpl-{}", Uuid::new_v4()));
+                                let model = response_model.unwrap_or_else(|| request.model.clone());
+                                let created =
+                                    response_created.unwrap_or_else(current_unix_timestamp);
+                                let object = response_object
+                                    .unwrap_or_else(|| "chat.completion".to_string());
+                                let role = role.unwrap_or_else(|| "assistant".to_string());
+
+                                return Ok(ChatCompletionResponse {
+                                    id,
+                                    object,
+                                    created,
+                                    model,
+                                    choices: vec![ChatChoice {
+                                        index: 0,
+                                        message: ChatMessage {
+                                            role,
+                                            content: aggregated_content,
+                                        },
+                                        finish_reason,
+                                    }],
+                                    usage: None,
+                                });
+                            }
+
+                            let parsed: ChatCompletionStreamChunk = serde_json::from_str(data)
+                                .map_err(|e| {
+                                    format!("Failed to parse model stream chunk: {e} (data={data})")
+                                })?;
+
+                            if response_id.is_none() {
+                                response_id = parsed.id;
+                            }
+                            if response_model.is_none() {
+                                response_model = parsed.model;
+                            }
+                            if response_created.is_none() {
+                                response_created = parsed.created;
+                            }
+                            if response_object.is_none() {
+                                response_object = parsed.object;
+                            }
+
+                            if let Some(choice) = parsed.choices.first() {
+                                if role.is_none() {
+                                    role = choice.delta.role.clone();
+                                }
+                                if let Some(content) = &choice.delta.content {
+                                    aggregated_content.push_str(content);
+                                }
+                                if choice.finish_reason.is_some() {
+                                    finish_reason = choice.finish_reason.clone();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return Err("Model stream ended without [DONE]".to_string());
+        }
+
+        response
+            .json::<ChatCompletionResponse>()
+            .await
+            .map_err(|e| format!("Failed to parse model response: {e}"))
+    }
+
+    async fn embeddings(
+        &self,
+        endpoint_name: &str,
+        request: EmbeddingsRequest,
+        timeout: Duration,
+    ) -> Result<EmbeddingsResponse, String> {
+        let endpoint = self.endpoint_by_name(endpoint_name)?;
+        if !endpoint.capabilities.embeddings {
+            return Err(format!(
+                "Endpoint '{}' does not support embeddings",
+                endpoint_name
+            ));
+        }
+
+        let url = format!("{}/v1/embeddings", Self::endpoint_base_url(&endpoint.url));
+
+        let mut builder = self.http.post(url).timeout(timeout).json(&request);
+        if let Some(api_key) = &self.api_key {
+            builder = builder.bearer_auth(api_key);
+        }
+
+        let response = builder
+            .send()
+            .await
+            .map_err(|e| format!("Embeddings request failed: {e}"))?;
+        if !response.status().is_success() {
+            let status = response.status();
+            let body = response
+                .text()
+                .await
+                .unwrap_or_else(|_| "<failed to read body>".to_string());
+            return Err(format!("Embeddings request failed: HTTP {status} {body}"));
+        }
+
+        response
+            .json::<EmbeddingsResponse>()
+            .await
+            .map_err(|e| format!("Failed to parse embeddings response: {e}"))
     }
 }
 

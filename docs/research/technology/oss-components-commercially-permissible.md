@@ -84,6 +84,12 @@ Licensing permissiveness is an explicit, valid reason to push back on or revise 
   - **License:** Apache-2.0
   - **Note:** validate maturity and dependency footprint before adopting.
 
+### 2.4 Temporal (durable execution engine)
+- **Primary source (license):** https://github.com/temporalio/temporal/blob/master/LICENSE
+- **License posture:** Redistribute (bundle)
+- **License:** MIT
+- **Why:** Permissive OSS license; suitable as a server-side dependency for a durable execution engine of record.
+
 ## 3) Evaluation / observability tools
 
 ### 3.1 Langfuse
@@ -122,3 +128,26 @@ Licensing permissiveness is an explicit, valid reason to push back on or revise 
 - **License posture:** Redistribute (bundle)
 - **Why:** Apache-2.0.
 - **Kaigents note:** candidate for Platform Mode UI via plugins.
+
+## 6) Model serving runtimes and model-serving control planes
+
+### 6.1 Lemonade (Lemonade Server)
+- **Primary source (license):** https://github.com/lemonade-sdk/lemonade/blob/main/LICENSE
+- **License posture:** Redistribute (bundle)
+- **License:** Apache-2.0
+
+### 6.2 FastFlowLM orchestration / CLI
+- **Primary source (license):** https://github.com/FastFlowLM/FastFlowLM/blob/main/LICENSE_RUNTIME.txt
+- **License posture:** Redistribute (bundle)
+- **License:** MIT
+
+### 6.3 FastFlowLM NPU-accelerated kernels (proprietary binaries)
+- **Primary source (binary license):** https://github.com/FastFlowLM/FastFlowLM/blob/main/LICENSE_BINARY.txt
+- **Primary source (terms):** https://github.com/FastFlowLM/FastFlowLM/blob/main/TERMS.md
+- **License posture:** Integrate-only (user-supplied)
+- **Why:** The binary kernels are proprietary and explicitly restrict redistribution and commercial use beyond a revenue threshold; Kaigents should not bundle/redistribute them.
+
+### 6.4 KServe
+- **Primary source (license):** https://github.com/kserve/kserve/blob/master/LICENSE
+- **License posture:** Redistribute (bundle)
+- **License:** Apache-2.0

@@ -1,16 +1,16 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: agents.core.kaigents.io
+  name: teams.core.kaigents.io
 spec:
   group: core.kaigents.io
   scope: Namespaced
   names:
-    plural: agents
-    singular: agent
-    kind: Agent
+    plural: teams
+    singular: team
+    kind: Team
     shortNames:
-      - ka
+      - kt
   versions:
     - name: v1alpha1
       served: true
@@ -32,28 +32,27 @@ spec:
             spec:
               type: object
               properties:
-                runtime:
-                  type: string
-                  description: Runtime identifier (runtime-agnostic). Optional in v1alpha1.
-                systemPrompt:
-                  type: string
-                  description: Base system prompt for this agent.
-                modelEndpointRef:
-                  type: string
-                  description: Optional ModelEndpoint name used as the default for runs targeting this agent.
-                modelName:
-                  type: string
-                  description: Optional OpenAI-compatible model id used as the default for runs targeting this agent.
-                tools:
+                agents:
                   type: array
+                  description: Agent bindings for this team.
                   items:
                     type: object
                     required:
                       - name
+                      - agentRef
                     properties:
                       name:
                         type: string
-              additionalProperties: false
+                        description: Stable binding name within the team.
+                      agentRef:
+                        type: string
+                        description: Name of the referenced Agent resource in the same namespace.
+                      systemPromptOverride:
+                        type: string
+                        description: Optional system prompt override for this team binding.
+                      contextPrompt:
+                        type: string
+                        description: Optional additional context prompt for this team binding.
             status:
               type: object
               properties:
@@ -62,4 +61,4 @@ spec:
                   format: int64
                 phase:
                   type: string
-              additionalProperties: false
+

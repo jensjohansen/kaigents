@@ -19,9 +19,11 @@ type AgentToolRef struct {
 
 // AgentSpec defines the desired state of an Agent.
 type AgentSpec struct {
-	Runtime      string         `json:"runtime,omitempty"`
-	SystemPrompt string         `json:"systemPrompt,omitempty"`
-	Tools        []AgentToolRef `json:"tools,omitempty"`
+	Runtime          string         `json:"runtime,omitempty"`
+	SystemPrompt     string         `json:"systemPrompt,omitempty"`
+	Tools            []AgentToolRef `json:"tools,omitempty"`
+	ModelEndpointRef string         `json:"modelEndpointRef,omitempty"`
+	ModelName        string         `json:"modelName,omitempty"`
 }
 
 // ConditionType names for Kaigents resources.

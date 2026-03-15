@@ -1,0 +1,23 @@
+# syntax=docker/dockerfile:1
+
+FROM rust:1.85-bookworm AS builder
+
+WORKDIR /src
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends pkg-config libssl-dev ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY . .
+
+RUN cargo build -p kaigents-cli --release
+
+FROM debian:bookworm-slim AS runtime
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /src/target/release/kaigents /usr/local/bin/kaigents
+
+ENTRYPOINT ["/usr/local/bin/kaigents"]

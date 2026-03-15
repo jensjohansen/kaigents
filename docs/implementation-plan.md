@@ -1,475 +1,228 @@
-# AI Agent Engine Implementation Plan
 
-**Project:** AI Customer Agents - General Purpose Agent Engine  
-**Version:** 1.0  
-**Timeline:** 8 Weeks (2026-03-06 to 2026-05-01)  
-**Status:** Ready to Start  
+# Kaigents Implementation Plan
+
+This document translates the Kaigents PRD into an execution-oriented implementation plan.
+
+Source-of-truth references:
+
+- `docs/product/kaigents-prd.md`
+- `docs/architecture/kaigents-architecture-and-design.md`
+- `docs/research/technology/itd-register.md`
+- `docs/implementation/kaigents-implementation-tracker.md`
+
+## Milestone 1 completion plan (Solo Mode MVP)
+
+Milestone 1 is considered complete when the system can execute a real agent run **in-cluster**, with a durable run timeline and a durable output artifact.
+
+Acceptance criteria agent:
+
+- `docs/implementation/milestone-1-acceptance-student-research-assistant.md`
+
+Remaining work to finish Milestone 1:
+
+- **CRD-driven execution (Run reconciler drives execution)**
+  - Reconcile `Run` resources into actual execution (e.g., create a Kubernetes Job/Pod runner).
+  - Update `Run.status` phase/conditions through terminal completion.
+  - Emit timeline events for key lifecycle transitions.
+- **OS-hosted Lemonade model endpoints (OpenAI-compatible)**
+  - These endpoints are hosted on the OS, not in Kubernetes.
+  - The hostnames are expected to resolve via `/etc/hosts` on the cluster nodes.
+  - `http://llai03:8000` model `gpt-oss-20b-mxfp4-GGUF`
+  - `http://jc01:8000` model `Qwen3-Coder-30B-A3B-Instruct-GGUF`
+  - `http://mts01:8000` model `nomic-embedd-text-v2-moe-GGUF`
+  - `http://mts02:8000` model `bge-reranker-v2-m3-GGUF`
+- **Acceptance agent workflow implementation (Student Research Assistant)**
+  - Minimal multi-step workflow: web search -> select 3-5 insights -> read sources -> synthesize markdown -> store artifact.
+  - Tool invocation events and model invocation events must appear consistently in the run timeline.
+- **Demo manifests + reproducible cluster steps**
+  - Provide manifests for Agent + Tool/MCP refs + MCPServer + ModelEndpoint + Run.
+  - Include proxy requirements and cluster pre-reqs.
+- **Verification gates**
+  - Close the tool timeline consistency acceptance (Milestone 1E acceptance criteria).
+  - Run `make ci` and fix failures.
+
+### Milestone 1 completion checklist
+
+Use this checklist before declaring Milestone 1 complete.
+
+- **Acceptance criteria agent is actually demoable**
+  - Execute the Student Research Assistant acceptance flow end-to-end:
+    - web search
+    - select 3-5 insights
+    - read sources
+    - synthesize markdown
+    - store a durable artifact
+  - Verify the run succeeds in-cluster, not only in a mocked or local-only environment.
+
+- **PRD alignment is preserved**
+  - Confirm Milestone 1 remains **Solo Mode MVP (CRD + CLI + embedded workflow)**.
+  - Confirm scope still matches the PRD Milestone 1 definition of done:
+    - install Kaigents in a cluster
+    - define an agent and tools declaratively
+    - run a basic multi-step agent workload
+    - produce a durable, queryable run timeline
+    - fetch artifacts via stable URLs
+  - Do not pull Milestone 3 concerns into Milestone 1:
+    - no requirement for Temporal adoption
+    - no requirement for first-class Process/Task resources
+    - no requirement for long-running human waits / bounded rework loops
+  - Treat retries as DAG node-execution behavior, not as evidence that Milestone 1 supports cyclic process graphs.
+
+- **Architecture and design constraints are satisfied**
+  - `Run` reconciliation drives actual execution from CRDs through terminal completion.
+  - Embedded DAG execution remains the Milestone 1 workflow substrate.
+  - Tool calls, model calls, workflow-step events, and artifact events all flow into one durable run timeline.
+  - Artifact access preserves the intended stable URL / proxy pattern.
+  - Model endpoint discovery works for both:
+    - in-cluster service DNS
+    - developer-local / OS-hosted Lemonade endpoints used by the current environment
+
+- **ITD constraints are respected**
+  - ITD-02:
+    - Lemonade remains the primary model-serving runtime for Milestone 1 integration.
+    - FastFlowLM proprietary kernels are treated as integrate-only and are not bundled into Kaigents.
+  - ITD-08:
+    - Milestone 1 uses the embedded DAG substrate with retries/cancellation semantics already chosen.
+    - Milestone 1 DAG semantics must remain acyclic; explicit rework edges/cycles belong to the later process/workflow graph model.
+  - ITD-13 / ITD-14:
+    - Artifact behavior remains compatible with S3-style durable artifact storage and private-bucket access patterns, even if the full production storage pattern is deferred.
+  - ITD-16:
+    - Milestone 1 does not pretend to solve the durable execution-engine-of-record decision.
+    - Any exploratory Temporal work must not be required to mark Milestone 1 complete.
+
+- **Observable acceptance evidence exists**
+  - A completed demo run shows, in the run timeline:
+    - workflow step events
+    - tool invocation events
+    - model invocation events
+    - artifact events
+    - stable correlation identifiers
+  - Tool failures/timeouts, if exercised, are visible and understandable in the timeline.
+  - The final artifact is retrievable from the CLI using the run timeline references.
+
+- **Demo and reproducibility are in place**
+  - Provide manifests for the Milestone 1 demo path:
+    - Agent
+    - Tool / MCP references
+    - MCPServer (or equivalent integration resource)
+    - ModelEndpoint references
+    - Run
+  - Document cluster prerequisites and environment assumptions:
+    - proxy/network requirements
+    - hostname resolution for OS-hosted Lemonade endpoints
+    - any required secrets or credentials
+  - A fresh developer/operator can follow the documented steps and reproduce the Milestone 1 demo.
+
+- **Coding standards and Definition of Done are met**
+  - Review `docs/CODING_STANDARDS_AND_DOD.md` before push.
+  - Run `make ci` and fix format/lint/test failures across all present lanes.
+  - Ensure any new dependency or packaging choice remains compatible with the OSS posture and licensing guidance.
+  - Ensure tests and validation cover the new/changed Run execution path and timeline/event behavior.
 
----
+- **Tracker and gate documents are updated to reflect reality**
+  - Update `docs/implementation/kaigents-implementation-tracker.md` checkboxes only for work that is actually complete.
+  - Re-check alignment against:
+    - `docs/product/kaigents-prd.md`
+    - `docs/architecture/kaigents-architecture-and-design.md`
+    - `docs/research/technology/itd-register.md`
+    - `docs/research/technology/oss-components-commercially-permissible.md`
+    - `docs/CODING_STANDARDS_AND_DOD.md`
+  - Resolve any conflicts in docs before pushing.
 
-## 🎯 EXECUTIVE SUMMARY
-
-**Objective:** Build a general-purpose AI agent execution engine optimized for AMD Ryzen AI hardware, providing a commercial-safe alternative to existing platforms with significant performance advantages.
+- **Push/review checkpoint for Milestone 1**
+  - Do not push Milestone 1 as complete until:
+    - the acceptance workflow is demoable end-to-end
+    - the `Run` reconciler drives real execution
+    - the run timeline is durable and queryable
+    - artifacts are fetchable from the CLI
+    - `make ci` passes
+    - the tracker and gate documents reflect the actual implementation state
 
-**Key Differentiators:**
-- 🚀 **First AMD NPU-optimized agent platform**
-- ⚡ **2x performance, 10x efficiency** vs GPU-only
-- 💰 **Commercial-safe licensing** (no n8n restrictions)
-- 🏗️ **Kubernetes-native** from day one
-
----
-
-## 📅 IMPLEMENTATION TIMELINE
-
-### **Phase 1: Foundation Setup (Week 1-2)**
-**Goal:** Establish core infrastructure and agent orchestration
-
-| **Week** | **Tasks** | **Owner** | **Dependencies** |
-|---|---|---|---|
-| **Week 1** | Deploy Kubernetes cluster with Istio<br>Install Kagent + Google ADK<br>Setup kmcp and built-in MCP servers<br>Deploy Qdrant vector store | DevOps | Cluster access |
-| **Week 2** | Deploy RethinkDB and NebulaGraph<br>Configure monitoring stack<br>Setup CI/CD pipeline<br>Create development environment | Backend | Week 1 completion |
-
-**Deliverables:**
-- ✅ Kubernetes cluster with agent engine foundation
-- ✅ Working Kagent + Google ADK setup
-- ✅ MCP server management with kmcp
-- ✅ Data layer deployed and operational
-
----
-
-### **Phase 2: AMD Optimization (Week 3-4)**
-**Goal:** Integrate AMD NPU support and hybrid model serving
-
-| **Week** | **Tasks** | **Owner** | **Dependencies** |
-|---|---|---|---|
-| **Week 3** | Setup AMD NPU drivers on jc01<br>Install FastFlowLM and Lemonade<br>Configure hybrid execution<br>Deploy Qwen3-Coder-30B model | Hardware | Phase 1 |
-| **Week 4** | Performance testing and benchmarking<br>Optimize NPU+GPU+CPU orchestration<br>Create model management API<br>Document hybrid execution patterns | ML Engineering | Week 3 |
-
-**Deliverables:**
-- ✅ AMD NPU+GPU+CPU hybrid execution
-- ✅ 2x performance improvement validated
-- ✅ Model serving API with AMD optimization
-- ✅ Performance benchmarking suite
-
----
-
-### **Phase 3: Agent Development (Week 5-6)**
-**Goal:** Build agent workflows and tool integration
-
-| **Week** | **Tasks** | **Owner** | **Dependencies** |
-|---|---|---|---|
-| **Week 5** | Implement LangGraph workflow engine<br>Setup NebulaGraph knowledge graphs<br>Develop custom MCP tools<br>Create agent templates | Backend | Phase 2 |
-| **Week 6** | Build first domain-specific agent<br>Implement approval gate system<br>Create testing framework<br>Integration testing | Full Stack | Week 5 |
-
-**Deliverables:**
-- ✅ LangGraph workflow orchestration
-- ✅ Knowledge graph integration
-- ✅ Custom MCP tool ecosystem
-- ✅ First production-ready agent
-
----
-
-### **Phase 4: Production Readiness (Week 7-8)**
-**Goal:** Complete platform with UI, security, and documentation
-
-| **Week** | **Tasks** | **Owner** | **Dependencies** |
-|---|---|---|---|
-| **Week 7** | Implement React web UI<br>Setup FastAPI services<br>Configure Keycloak authentication<br>Deploy monitoring dashboards | Frontend | Phase 3 |
-| **Week 8** | Load testing and optimization<br>Security audit and hardening<br>Documentation and tutorials<br>Go-to-market preparation | DevOps | Week 7 |
-
-**Deliverables:**
-- ✅ Production-ready web interface
-- ✅ Secure authentication system
-- ✅ Comprehensive monitoring
-- ✅ Complete documentation
-
----
-
-## 🔧 DETAILED TASK BREAKDOWN
-
-### **Phase 1 Tasks**
-
-#### **Week 1 - Infrastructure Foundation**
-```yaml
-Task 1.1: Kubernetes Cluster Setup
-  Duration: 1 day
-  Owner: DevOps
-  Dependencies: Cluster access
-  Deliverables:
-    - Kubernetes cluster with Istio service mesh
-    - Namespace configuration
-    - Resource quotas and policies
-
-Task 1.2: Kagent + Google ADK Installation
-  Duration: 2 days
-  Owner: Backend
-  Dependencies: Task 1.1
-  Deliverables:
-    - Kagent controller deployed
-    - Google ADK runtime configured
-    - Agent CRDs installed
-    - Sample agent running
-
-Task 1.3: kmcp and MCP Server Setup
-  Duration: 1 day
-  Owner: Backend
-  Dependencies: Task 1.2
-  Deliverables:
-    - kmcp deployed and configured
-    - Built-in MCP servers running
-    - MCP server registry operational
-
-Task 1.4: Qdrant Vector Store
-  Duration: 1 day
-  Owner: Backend
-  Dependencies: Task 1.1
-  Deliverables:
-    - Qdrant cluster deployed
-    - Vector collections configured
-    - Embedding service connected
-```
-
-#### **Week 2 - Data Layer and CI/CD**
-```yaml
-Task 2.1: RethinkDB and NebulaGraph
-  Duration: 2 days
-  Owner: Backend
-  Dependencies: Week 1 completion
-  Deliverables:
-    - RethinkDB cluster deployed
-    - NebulaGraph cluster deployed
-    - Database schemas created
-    - Connection pools configured
-
-Task 2.2: Monitoring Stack
-  Duration: 1 day
-  Owner: DevOps
-  Dependencies: Task 1.1
-  Deliverables:
-    - Prometheus deployed
-    - Grafana dashboards configured
-    - OpenTelemetry integration
-    - Alerting rules created
-
-Task 2.3: CI/CD Pipeline
-  Duration: 1 day
-  Owner: DevOps
-  Dependencies: Task 2.1
-  Deliverables:
-    - GitHub Actions pipeline
-    - Automated testing workflow
-    - Deployment automation
-    - Environment promotion process
-
-Task 2.4: Development Environment
-  Duration: 1 day
-  Owner: Full Stack
-  Dependencies: All previous tasks
-  Deliverables:
-    - Local development setup
-    - Docker compose environment
-    - Development documentation
-    - Onboarding guide
-```
-
-### **Phase 2 Tasks**
-
-#### **Week 3 - AMD NPU Integration**
-```yaml
-Task 3.1: AMD NPU Driver Setup
-  Duration: 2 days
-  Owner: Hardware
-  Dependencies: jc01 access
-  Deliverables:
-    - AMD XDNA drivers installed
-    - FastFlowLM installed
-    - NPU firmware updated
-    - NPU validation passing
-
-Task 3.2: Lemonade + FLM Integration
-  Duration: 2 days
-  Owner: ML Engineering
-  Dependencies: Task 3.1
-  Deliverables:
-    - Lemonade server deployed
-    - FLM NPU integration working
-    - Hybrid execution configured
-    - Model loading functional
-
-Task 3.3: Model Deployment
-  Duration: 1 day
-  Owner: ML Engineering
-  Dependencies: Task 3.2
-  Deliverables:
-    - Qwen3-Coder-30B model loaded
-    - Hybrid execution validated
-    - Performance baseline established
-    - Model management API created
-```
-
-#### **Week 4 - Performance Optimization**
-```yaml
-Task 4.1: Performance Benchmarking
-  Duration: 2 days
-  Owner: ML Engineering
-  Dependencies: Week 3 completion
-  Deliverables:
-    - GPU-only baseline metrics
-    - Hybrid execution metrics
-    - Performance comparison report
-    - Optimization recommendations
-
-Task 4.2: NPU+GPU+CPU Orchestration
-  Duration: 2 days
-  Owner: ML Engineering
-  Dependencies: Task 4.1
-  Deliverables:
-    - Hybrid execution engine
-    - Dynamic workload distribution
-    - Performance monitoring
-    - Auto-scaling policies
-
-Task 4.3: Model Management API
-  Duration: 1 day
-  Owner: Backend
-  Dependencies: Task 4.2
-  Deliverables:
-    - Model CRUD operations
-    - Performance tracking
-    - Health monitoring
-    - API documentation
-```
-
-### **Phase 3 Tasks**
-
-#### **Week 5 - Agent Workflows**
-```yaml
-Task 5.1: LangGraph Integration
-  Duration: 2 days
-  Owner: Backend
-  Dependencies: Phase 2 completion
-  Deliverables:
-    - LangGraph workflow engine
-    - Agent state management
-    - Workflow templates
-    - Error handling
-
-Task 5.2: Knowledge Graph Setup
-  Duration: 2 days
-  Owner: Backend
-  Dependencies: Task 5.1
-  Deliverables:
-    - NebulaGraph integration
-    - Code analysis pipeline
-    - Knowledge extraction
-    - Graph querying API
-
-Task 5.3: Custom MCP Tools
-  Duration: 1 day
-  Owner: Backend
-  Dependencies: Task 5.1
-  Deliverables:
-    - Code analysis tools
-    - Documentation tools
-    - Testing tools
-    - Tool registry
-```
-
-#### **Week 6 - Agent Implementation**
-```yaml
-Task 6.1: Domain-Specific Agent
-  Duration: 2 days
-  Owner: Full Stack
-  Dependencies: Week 5 completion
-  Deliverables:
-    - CodeKnowl integration agent
-    - Agent workflow implementation
-    - Tool integration
-    - Performance testing
-
-Task 6.2: Approval Gate System
-  Duration: 2 days
-  Owner: Backend
-  Dependencies: Task 6.1
-  Deliverables:
-    - Human approval workflow
-    - Diff/preview system
-    - Audit logging
-    - Rollback capabilities
-
-Task 6.3: Testing Framework
-  Duration: 1 day
-  Owner: QA
-  Dependencies: Task 6.2
-  Deliverables:
-    - Agent testing suite
-    - Performance tests
-    - Integration tests
-    - Test automation
-```
-
-### **Phase 4 Tasks**
-
-#### **Week 7 - UI and API**
-```yaml
-Task 7.1: React Web UI
-  Duration: 2 days
-  Owner: Frontend
-  Dependencies: Phase 3 completion
-  Deliverables:
-    - Agent management interface
-    - Workflow visualization
-    - Performance dashboards
-    - User management
-
-Task 7.2: FastAPI Services
-  Duration: 2 days
-  Owner: Backend
-  Dependencies: Task 7.1
-  Deliverables:
-    - REST API layer
-    - Authentication middleware
-    - Request validation
-    - API documentation
-
-Task 7.3: Keycloak Integration
-  Duration: 1 day
-  Owner: DevOps
-  Dependencies: Task 7.2
-  Deliverables:
-    - OIDC authentication
-    - User management
-    - Role-based access
-    - SSO configuration
-```
-
-#### **Week 8 - Production Readiness**
-```yaml
-Task 8.1: Load Testing
-  Duration: 2 days
-  Owner: QA
-  Dependencies: Week 7 completion
-  Deliverables:
-    - Load test scenarios
-    - Performance benchmarks
-    - Scalability analysis
-    - Optimization report
-
-Task 8.2: Security Audit
-  Duration: 2 days
-  Owner: Security
-  Dependencies: Task 8.1
-  Deliverables:
-    - Security assessment
-    - Vulnerability scan
-    - Penetration testing
-    - Security hardening
-
-Task 8.3: Documentation
-  Duration: 1 day
-  Owner: Technical Writer
-  Dependencies: Task 8.2
-  Deliverables:
-    - User documentation
-    - Developer guide
-    - API documentation
-    - Deployment guide
-
-Task 8.4: Go-to-Market Prep
-  Duration: 1 day
-  Owner: Product
-  Dependencies: Task 8.3
-  Deliverables:
-    - Product demo
-    - Marketing materials
-    - Pricing strategy
-    - Launch plan
-```
-
----
-
-## 🎯 SUCCESS CRITERIA
-
-### **Technical Success Metrics**
-- ✅ **Performance:** 2x tokens/second vs GPU-only baseline
-- ✅ **Efficiency:** 10x power efficiency improvement
-- ✅ **Availability:** 99.9% uptime in production
-- ✅ **Latency:** <100ms agent response time
-- ✅ **Scalability:** Support 100+ concurrent agents
-
-### **Business Success Metrics**
-- ✅ **Time-to-Market:** 8-week delivery timeline met
-- ✅ **Cost Efficiency:** 50% reduction vs cloud-only solutions
-- ✅ **Competitive Advantage:** First AMD NPU-optimized platform
-- ✅ **Commercial Viability:** Clear path to revenue
-- ✅ **Technical Debt:** Minimal, maintainable codebase
-
----
-
-## 🔒 RISK MANAGEMENT
-
-### **High-Risk Items**
-| **Risk** | **Impact** | **Mitigation** | **Owner** |
-|---|---|---|---|
-| AMD NPU driver issues | High | Alternative GPU-only fallback | Hardware |
-| Performance targets missed | Medium | Continuous optimization | ML Engineering |
-| Integration complexity | Medium | Incremental testing | Full Stack |
-| Resource constraints | Low | Cloud backup resources | DevOps |
-
-### **Contingency Plans**
-- **NPU Issues:** Fall back to GPU-only execution
-- **Performance Issues:** Optimize model quantization
-- **Integration Delays:** Prioritize core features
-- **Resource Shortages:** Scale with cloud resources
-
----
-
-## 📊 RESOURCE ALLOCATION
-
-### **Team Composition**
-- **DevOps Engineer:** 2 FTE (infrastructure, deployment)
-- **Backend Developer:** 2 FTE (agent engine, APIs)
-- **ML Engineer:** 1 FTE (model optimization)
-- **Frontend Developer:** 1 FTE (web UI)
-- **QA Engineer:** 1 FTE (testing, validation)
-
-### **Infrastructure Requirements**
-- **Development:** 2x AMD Ryzen AI workstations
-- **Testing:** Kubernetes cluster with NPU support
-- **Production:** Cloud Kubernetes with GPU instances
-- **Monitoring:** Prometheus, Grafana, OpenTelemetry
-
----
-
-## 🔄 WEEKLY REVIEW PROCESS
-
-### **Weekly Status Meetings**
-- **When:** Every Friday at 2:00 PM PT
-- **Attendees:** Project team, stakeholders
-- **Agenda:** Progress review, risk assessment, next week planning
-
-### **Milestone Reviews**
-- **Phase 1:** Week 2 - Foundation validation
-- **Phase 2:** Week 4 - AMD optimization validation
-- **Phase 3:** Week 6 - Agent workflow validation
-- **Phase 4:** Week 8 - Production readiness validation
-
----
-
-## 📈 NEXT STEPS
-
-### **Immediate Actions (This Week)**
-1. ✅ **Save research and analysis** in project docs
-2. 🔧 **Fix FLM NPU setup** on jc01 using build-from-source
-3. 🚀 **Switch development** to ai-customer-agents project
-4. 📋 **Create detailed task tickets** for Week 1
-
-### **Preparation for Week 1**
-- [ ] Provision Kubernetes cluster access
-- [ ] Setup development environments
-- [ ] Create project repositories
-- [ ] Schedule team kickoff meeting
-
----
-
-*This implementation plan provides a clear, actionable roadmap for building our AMD-optimized AI agent engine with measurable success criteria and comprehensive risk management.*
+Milestone 1 scope note:
+
+- Milestone 1 uses a **Run + embedded DAG** execution substrate (ITD-08).
+- Milestone 1 is not expected to provide full process semantics (human-in-the-loop waits over long durations, bounded rework loops, or a first-class Process/Task definition model).
+
+## Milestone 2+ plan
+
+Once Milestone 1 is stable and demoable, the plan shifts to making the refined product domain model real and introducing a durable execution engine of record.
+
+### First step after Milestone 1: productize and harden the Milestone 1 path
+
+This is the **must improve immediately** list. These items exist to prevent Milestone 1 shortcuts from becoming the de facto architecture.
+
+- **Replace env-var-heavy runner handoff with a clearer execution contract**
+  - Keep Kubernetes job env vars as a transport mechanism when useful, but do not let them become the source of truth for execution semantics.
+  - Move toward a Kaigents-owned execution request contract derived from the resource/domain model.
+
+- **Preserve the domain model as authoritative**
+  - `Agent`, `Tool`, `MCPServer`, `ModelEndpoint`, and `Run` resources remain the source of truth.
+  - Do not hardcode specific tool names or single-model assumptions into the runner as a long-term design.
+
+- **Introduce capability-aware model/tool selection**
+  - Kaigents must be able to reason over available model endpoints and tool capabilities instead of relying on one preselected synthesis model and a fixed pair of tool names.
+  - Support differentiated model roles such as synthesis, embeddings, reranking, and coding/planning where appropriate.
+
+- **Surface execution outputs back onto the control-plane resources**
+  - Populate `Run.status` with authoritative output references and execution summary information.
+  - Reduce dependence on ad hoc filesystem knowledge or out-of-band inspection to understand run results.
+
+- **Harden persistence and retrieval paths**
+  - Ensure the default supported Milestone 1 deployment path uses a durable timeline/artifact backend appropriate for in-cluster runs.
+  - Avoid runner-local filesystem behavior being mistaken for a durable production path.
+
+- **Reduce acceptance-path hardcoding**
+  - The Student Research Assistant flow is a valid acceptance path, but it should not define the permanent execution architecture.
+  - Refactor acceptance-agent-specific assumptions into configurable or resource-derived behavior.
+
+- **Prepare the transition to the expanded domain model without skipping Milestone boundaries**
+  - Milestone 1 remains `Run + Agent + embedded DAG`.
+  - The next implementation step should prepare for the richer Process/Task and Work Request / Work Item / Work Attempt model rather than fight it.
+  - Do not backfit Milestone 3 durable-process semantics into Milestone 1 code as a hidden rewrite.
+
+### Milestone 2: Platform Mode essentials (identity + policy)
+
+Focus:
+
+- OIDC authentication for API/UI
+- authorization for core resources
+- tool allowlisting enforcement
+- audit trail of user actions
+
+### Milestone 3: Durable process execution engine decision + integration (ITD-16)
+
+Focus:
+
+- Run the stop/go POC for Temporal as the durable execution substrate
+- Decide and record ITD-16
+- If adopting Temporal:
+  - define the Kaigents execution-engine interface boundary (Rust core calls adapter; do not leak Temporal types into Kaigents domain primitives)
+  - define a minimal Kaigents **Process/Task** definition representation for the POC (code or JSON; CRDs are not required in this milestone)
+  - demonstrate one representative process compiled from that definition model, with:
+    - at least one bounded rework loop
+    - at least one human approval gate
+    - reconstructable history mapped into Work Request / Work Item / Work Attempt + timeline events
+
+### Milestone 4: Process definition model + UX surface sequencing
+
+Focus:
+
+- Introduce first-class Process/Task definition resources (CRD + CLI first)
+- Ensure definition vs execution separation is preserved
+- Add a minimal “process graph view” representation suitable for later dashboard rendering
+
+### Milestone 5: Hybrid Execution routing (CPU/GPU/NPU)
+
+Focus:
+
+- Operator-visible routing policies and observability surfaces
+- Correlation in timeline and telemetry
+
+### Milestone 6: Dashboard MVP
+
+Focus:
+
+- browse agents/processes/work requests
+- trigger executions
+- render timeline/history consistently
+

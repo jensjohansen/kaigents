@@ -23,6 +23,7 @@ type ModelEndpointCapabilities struct {
 type ModelEndpointSpec struct {
 	URL          string                    `json:"url,omitempty"`
 	ServiceDNS   string                    `json:"serviceDns,omitempty"`
+	Model        string                    `json:"model,omitempty"`
 	Provider     string                    `json:"provider,omitempty"`
 	Capabilities ModelEndpointCapabilities `json:"capabilities,omitempty"`
 }

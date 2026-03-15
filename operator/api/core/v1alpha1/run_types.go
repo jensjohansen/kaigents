@@ -20,8 +20,10 @@ type RunTargetRef struct {
 
 // RunSpec defines the desired run request.
 type RunSpec struct {
-	Target RunTargetRef `json:"target"`
-	Input  string       `json:"input,omitempty"`
+	Target           RunTargetRef `json:"target"`
+	Input            string       `json:"input,omitempty"`
+	ModelEndpointRef string       `json:"modelEndpointRef,omitempty"`
+	ModelName        string       `json:"modelName,omitempty"`
 }
 
 // RunArtifactRef describes a produced artifact reference for a run.

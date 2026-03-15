@@ -38,6 +38,9 @@ spec:
                 serviceDns:
                   type: string
                   description: In-cluster service DNS name for endpoint discovery (optional).
+                model:
+                  type: string
+                  description: OpenAI-compatible model id served by this endpoint (optional).
                 provider:
                   type: string
                   description: Provider identifier (e.g. lemonade).

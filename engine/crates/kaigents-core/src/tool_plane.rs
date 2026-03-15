@@ -75,6 +75,7 @@ pub struct HttpMcpClient {
     endpoint: String,
     http: reqwest::Client,
     headers: HashMap<String, String>,
+    session_id: Arc<Mutex<Option<String>>>,
 }
 
 impl HttpMcpClient {
@@ -84,6 +85,7 @@ impl HttpMcpClient {
             endpoint,
             http: reqwest::Client::new(),
             headers: HashMap::new(),
+            session_id: Arc::new(Mutex::new(None)),
         }
     }
 
@@ -92,10 +94,65 @@ impl HttpMcpClient {
         self
     }
 
-    async fn jsonrpc(
+    async fn ensure_session(&self) -> Result<String, String> {
+        {
+            let guard = self.session_id.lock().await;
+            if let Some(session_id) = guard.clone() {
+                return Ok(session_id);
+            }
+        }
+
+        let result = self
+            .mcp_request(
+                "initialize",
+                serde_json::json!({
+                    "protocolVersion": "2024-11-05",
+                    "capabilities": {},
+                    "clientInfo": {
+                        "name": "kaigents",
+                        "version": "0",
+                    },
+                }),
+                None,
+            )
+            .await?;
+
+        let session_id = result
+            .get("_mcp_session_id")
+            .and_then(|v| v.as_str())
+            .ok_or_else(|| format!("MCP initialize missing mcp-session-id: {}", result))?
+            .to_string();
+
+        let mut guard = self.session_id.lock().await;
+        *guard = Some(session_id.clone());
+        Ok(session_id)
+    }
+
+    fn parse_sse_json(body: &str) -> Result<serde_json::Value, String> {
+        let mut last_data: Option<&str> = None;
+        for line in body.lines() {
+            let trimmed = line.trim();
+            if let Some(rest) = trimmed.strip_prefix("data:") {
+                last_data = Some(rest.trim());
+            }
+        }
+
+        let data = last_data.ok_or_else(|| {
+            format!(
+                "MCP SSE response missing data frame. First 200 bytes: {}",
+                body.chars().take(200).collect::<String>()
+            )
+        })?;
+
+        serde_json::from_str(data)
+            .map_err(|e| format!("MCP SSE JSON decode error: {} (data={})", e, data))
+    }
+
+    async fn mcp_request(
         &self,
         method: &str,
         params: serde_json::Value,
+        session_id: Option<String>,
     ) -> Result<serde_json::Value, String> {
         let req = serde_json::json!({
             "jsonrpc": "2.0",
@@ -104,9 +161,18 @@ impl HttpMcpClient {
             "params": params,
         });
 
-        let mut request_builder = self.http.post(self.endpoint.clone()).json(&req);
+        let mut request_builder = self
+            .http
+            .post(self.endpoint.clone())
+            .header("accept", "application/json, text/event-stream")
+            .json(&req);
+
         for (k, v) in &self.headers {
             request_builder = request_builder.header(k, v);
+        }
+
+        if let Some(session_id) = session_id {
+            request_builder = request_builder.header("mcp-session-id", session_id);
         }
 
         let response = request_builder
@@ -115,22 +181,62 @@ impl HttpMcpClient {
             .map_err(|e| format!("MCP HTTP error: {}", e))?;
 
         let status = response.status();
-        let body: serde_json::Value = response
-            .json()
+        let response_session_id = response
+            .headers()
+            .get("mcp-session-id")
+            .and_then(|v| v.to_str().ok())
+            .map(|s| s.to_string());
+        let content_type = response
+            .headers()
+            .get(reqwest::header::CONTENT_TYPE)
+            .and_then(|v| v.to_str().ok())
+            .unwrap_or("")
+            .to_string();
+
+        let body_text = response
+            .text()
             .await
-            .map_err(|e| format!("MCP JSON decode error: {}", e))?;
+            .map_err(|e| format!("MCP body read error: {}", e))?;
+
+        let body_json = if content_type.starts_with("text/event-stream") {
+            Self::parse_sse_json(&body_text)?
+        } else {
+            serde_json::from_str(&body_text)
+                .map_err(|e| format!("MCP JSON decode error: {} (body={})", e, body_text))?
+        };
 
         if !status.is_success() {
-            return Err(format!("MCP HTTP status {}: {}", status, body));
+            return Err(format!("MCP HTTP status {}: {}", status, body_json));
         }
 
-        if let Some(err) = body.get("error") {
+        if let Some(err) = body_json.get("error") {
             return Err(format!("MCP JSON-RPC error: {}", err));
         }
 
-        body.get("result")
+        let mut result = body_json
+            .get("result")
             .cloned()
-            .ok_or_else(|| format!("MCP missing result field: {}", body))
+            .ok_or_else(|| format!("MCP missing result field: {}", body_json))?;
+
+        if let Some(session_id) = response_session_id {
+            if let Some(obj) = result.as_object_mut() {
+                obj.insert(
+                    "_mcp_session_id".to_string(),
+                    serde_json::Value::String(session_id),
+                );
+            }
+        }
+
+        Ok(result)
+    }
+
+    async fn jsonrpc(
+        &self,
+        method: &str,
+        params: serde_json::Value,
+    ) -> Result<serde_json::Value, String> {
+        let session_id = self.ensure_session().await?;
+        self.mcp_request(method, params, Some(session_id)).await
     }
 }
 

@@ -1,0 +1,19 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "kaigents-operator.fullname" . }}
+rules:
+  - apiGroups: ["core.kaigents.io"]
+    resources: ["agents", "teams", "runs", "tools", "mcpservers", "modelendpoints"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["core.kaigents.io"]
+    resources: ["agents/status", "teams/status", "runs/status", "tools/status", "mcpservers/status", "modelendpoints/status"]
+    verbs: ["get", "update", "patch"]
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: [""]
+    resources: ["pods", "pods/log", "events"]
+    verbs: ["get", "list", "watch", "create", "patch"]
+{{- end -}}

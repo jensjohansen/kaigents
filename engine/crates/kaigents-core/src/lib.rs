@@ -27,8 +27,8 @@ pub use file_backed::{
 };
 pub use model_serving::{
     ChatChoice, ChatCompletionRequest, ChatCompletionResponse, ChatMessage, Embedding,
-    EmbeddingsRequest, EmbeddingsResponse, InMemoryModelClient, ModelCapabilities, ModelClient,
-    ModelEndpoint, ModelPlane, Usage,
+    EmbeddingsRequest, EmbeddingsResponse, HttpOpenAIModelClient, InMemoryModelClient,
+    ModelCapabilities, ModelClient, ModelEndpoint, ModelPlane, Usage,
 };
 pub use run_id::RunId;
 pub use timeline::{EventId, EventType, TimelineEvent, TimelineStore};
