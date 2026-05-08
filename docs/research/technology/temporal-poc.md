@@ -1,4 +1,9 @@
-# Temporal POC for Kaigents Process Execution (Draft)
+# Temporal POC for Kaigents Process Execution
+
+**Status**: COMPLETE — ITD-16 decided 2026-05-08. Temporal adopted as durable execution engine.
+**Outcome**: Temporal deployed to ai-agents-k8s-cluster 2026-03-15; 54 days healthy operation confirms acceptable footprint and integration feasibility. See `process-engine-evaluation.md` for the recorded ITD.
+
+---
 
 ## Purpose
 This proof-of-concept (POC) evaluates whether Temporal can serve as Kaigents’ process execution engine **without** forcing end users to learn technical workflow concepts and **without** imposing unacceptable overhead for on-prem Kubernetes deployments.

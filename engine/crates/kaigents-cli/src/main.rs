@@ -10,7 +10,8 @@ use kaigents_core::{
     artifacts_root_dir, default_state_dir, parse_uuid, timeline_events_path, ArtifactId,
     ArtifactKind, CancellationToken, ChatCompletionRequest, ChatMessage, DAGExecutor, EventType,
     FileArtifactStore, FileTimelineStore, FileToolContractStore, HttpMcpClient,
-    HttpOpenAIModelClient, Node, NodeId, RunId, StepType, TimelineEvent, ToolPlane, DAG,
+    HttpOpenAIModelClient, Node, NodeId, RunId, StartWorkRequestRequest, StepType,
+    TemporalAdapterClient, TemporalWorkItemDef, TimelineEvent, ToolPlane, DAG,
 };
 use std::collections::HashMap;
 use std::io;
@@ -427,6 +428,30 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
             } else {
                 timeline_store.append(TimelineEvent::new(run_id.clone(), EventType::RunStarted))?;
+            }
+
+            if let Ok(adapter_url) = std::env::var("KAIGENTS_TEMPORAL_ADAPTER_URL") {
+                let adapter = TemporalAdapterClient::new(adapter_url);
+                let req = StartWorkRequestRequest {
+                    work_request_id: run_id.as_uuid().to_string(),
+                    process_name: Some("runner-execution".to_string()),
+                    steps: vec![TemporalWorkItemDef {
+                        work_item_id: format!("{}-research", run_id.as_uuid()),
+                        step_name: "research".to_string(),
+                        agent_name: Some(
+                            std::env::var("KAIGENTS_RUN_TARGET_NAME")
+                                .unwrap_or_else(|_| "agent".to_string()),
+                        ),
+                        prompt: Some(topic.clone()),
+                        requires_gate: None,
+                    }],
+                };
+                if let Err(e) = adapter.start_work_request(req).await {
+                    eprintln!(
+                        "Warning: temporal adapter registration failed (continuing): {}",
+                        e
+                    );
+                }
             }
 
             let contracts_path = state_dir.join("tool_contracts.jsonl");

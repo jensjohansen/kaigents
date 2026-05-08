@@ -60,6 +60,11 @@ spec:
                     properties:
                       name:
                         type: string
+                allowedTools:
+                  type: array
+                  description: Explicit allowlist of tool names permitted at invocation time. If non-empty, any tool not in this list will block execution and set the Run to Failed.
+                  items:
+                    type: string
             status:
               type: object
               properties:

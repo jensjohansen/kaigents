@@ -1,0 +1,76 @@
+# File: kaigents/temporal-adapter/deploy/deployment.yaml
+# Purpose: Kubernetes Deployment and Service manifests for the kaigents-temporal-adapter.
+# Product/business importance: This manifest is what runs the M3 durable execution bridge in the cluster.
+# Without it, WorkRequests cannot be executed durably.
+#
+# Copyright (c) 2026 John K Johansen
+# License: MIT (see LICENSE)
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kaigents-temporal-adapter
+  namespace: kaigents
+  labels:
+    app.kubernetes.io/name: kaigents-temporal-adapter
+    app.kubernetes.io/part-of: kaigents
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kaigents-temporal-adapter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kaigents-temporal-adapter
+        app.kubernetes.io/part-of: kaigents
+    spec:
+      serviceAccountName: default
+      containers:
+        - name: adapter
+          image: harbor.ai-agents.private/kaigents/kaigents-temporal-adapter:latest
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: TEMPORAL_HOST
+              value: "temporal-frontend.kaigents.svc.cluster.local:7233"
+            - name: TEMPORAL_NAMESPACE
+              value: "kaigents"
+            - name: LISTEN_ADDR
+              value: ":8080"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kaigents-temporal-adapter
+  namespace: kaigents
+  labels:
+    app.kubernetes.io/name: kaigents-temporal-adapter
+    app.kubernetes.io/part-of: kaigents
+spec:
+  selector:
+    app.kubernetes.io/name: kaigents-temporal-adapter
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080

@@ -24,6 +24,7 @@ type AgentSpec struct {
 	Tools            []AgentToolRef `json:"tools,omitempty"`
 	ModelEndpointRef string         `json:"modelEndpointRef,omitempty"`
 	ModelName        string         `json:"modelName,omitempty"`
+	AllowedTools     []string       `json:"allowedTools,omitempty"`
 }
 
 // ConditionType names for Kaigents resources.
@@ -89,6 +90,9 @@ func (in *Agent) DeepCopyObject() runtime.Object {
 	}
 	if in.Spec.Tools != nil {
 		out.Spec.Tools = append([]AgentToolRef(nil), in.Spec.Tools...)
+	}
+	if in.Spec.AllowedTools != nil {
+		out.Spec.AllowedTools = append([]string(nil), in.Spec.AllowedTools...)
 	}
 	return out
 }

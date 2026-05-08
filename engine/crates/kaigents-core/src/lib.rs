@@ -12,6 +12,7 @@ pub mod model_serving;
 #[cfg(feature = "rethinkdb")]
 pub mod rethinkdb_store;
 pub mod run_id;
+pub mod temporal_adapter;
 pub mod timeline;
 pub mod tool_plane;
 
@@ -31,6 +32,10 @@ pub use model_serving::{
     ModelCapabilities, ModelClient, ModelEndpoint, ModelPlane, Usage,
 };
 pub use run_id::RunId;
+pub use temporal_adapter::{
+    StartWorkRequestRequest, TemporalAdapterClient, WorkItemDef as TemporalWorkItemDef,
+    WorkRequestState as TemporalWorkRequestState,
+};
 pub use timeline::{EventId, EventType, TimelineEvent, TimelineStore};
 pub use tool_plane::{
     HttpMcpClient, InMemoryMCPClient, InMemoryToolContractSink, MCPClient, TimelineSink,

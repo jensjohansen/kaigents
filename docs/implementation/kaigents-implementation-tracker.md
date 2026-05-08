@@ -224,12 +224,13 @@ Push checkpoint:
 
 ### 2A. Authentication
 
-- [ ] Keycloak OIDC integration for UI/API
+- [x] Keycloak OIDC integration for UI/API — `ai-agents` realm; `kubernetes` client; API server wired with `--oidc-issuer-url`, `--oidc-client-id`, `--oidc-username-claim`, `--oidc-groups-claim`, `--oidc-ca-file` on all 3 control plane nodes
+- [x] Groups created in Keycloak: `kaigents-admins`, `kaigents-operators`, `kaigents-viewers`; bound to RBAC ClusterRoles via ClusterRoleBindings
 - [ ] Audit trail of user actions
 
 Acceptance criteria:
 
-- [ ] Users authenticate via SSO-compatible mechanism.
+- [x] Users authenticate via SSO-compatible mechanism (OIDC via Keycloak `ai-agents` realm; impersonation test confirms group→ClusterRole→CRD access works end-to-end)
 
 Push checkpoint:
 
@@ -237,9 +238,9 @@ Push checkpoint:
 
 ### 2B. Authorization + tool allowlisting
 
-- [ ] RBAC for key resources (at minimum: view vs execute)
-- [ ] Tool allowlisting policy enforced at invocation time
-- [ ] Denied tool calls show clear reasons in run timeline
+- [x] RBAC for key resources (viewer / operator / admin ClusterRoles deployed — `charts/kaigents-operator/templates/user-clusterroles.yaml`)
+- [x] Tool allowlisting policy enforced at invocation time (`AgentSpec.AllowedTools`; run controller blocks disallowed tools before Job creation)
+- [ ] Denied tool calls show clear reasons in run timeline (run controller sets Failed status with reason; full timeline integration deferred to M3/Temporal adapter)
 
 Acceptance criteria:
 
@@ -257,34 +258,30 @@ Key constraint:
 
 - Temporal (or any engine) concepts must remain hidden behind Kaigents product/domain terms.
 
-### 3A. Temporal stop/go spike (execution engine of record)
+### 3A. Temporal adapter service (execution engine integration)
 
-- [ ] Validate self-hosted Temporal operational footprint on the on-prem baseline (CPU/mem/storage + required backing services)
-- [ ] Define a minimal Kaigents **Process/Task** definition representation suitable for POC validation (may be code or JSON; CRDs are not required in this milestone)
-- [ ] Implement a minimal “compiler”/mapping from Process/Task graph semantics to the durable engine execution model, including:
-- [ ] explicit rework edges (cycles)
-- [ ] bounded rework limits/escalation
-- [ ] at least one human approval/wait gate
-- [ ] Implement a thin Temporal adapter service (Go) that exposes Kaigents-native operations:
-- [ ] Start execution (WorkRequest)
-- [ ] Signal execution (human-in-loop / rework)
-- [ ] Query execution state
-- [ ] Implement a minimal Go Worker that can:
-- [ ] Run a representative workflow that blocks on a Signal and then completes
-- [ ] Execute one Activity that represents a Kaigents WorkAttempt
-- [ ] Validate the integration boundary (Rust backend calls adapter; no Temporal SDK usage from Rust)
-- [ ] Demonstrate that a Work Request execution produces a reconstructable history that maps cleanly to:
-- [ ] WorkRequest state transitions
-- [ ] WorkItem state transitions
-- [ ] WorkAttempt attempts (including retries/rework)
+- [x] Validate self-hosted Temporal operational footprint — 54-day production deployment on ai-agents-k8s-cluster (decided as ITD-16 2026-05-08)
+- [x] Define Kaigents Process/Task representation — `WorkRequestInput` + `WorkItemDef` in `temporal-adapter/internal/workflow/workrequest.go`; pure domain types, no Temporal SDK leakage
+- [x] Implement mapping from Kaigents process graph to Temporal execution model:
+  - [x] Explicit rework edges (cycles) — `SignalRework` signal restarts from step 0
+  - [x] Bounded rework limits/escalation — `MaxReworkAttempts=3`; exceeding triggers `Failed` with clear message
+  - [x] Human approval/wait gate — `SignalApprove` / `SignalRework` signals; workflow blocks at `requiresGate` steps
+- [x] Temporal adapter service (Go) deployed at `kaigents-temporal-adapter.kaigents.svc.cluster.local:8080`:
+  - [x] `POST /v1/workrequests` — start WorkRequest (maps to Temporal Workflow)
+  - [x] `POST /v1/workrequests/{id}/signal` — approve or rework signal
+  - [x] `GET /v1/workrequests/{id}` — query WorkRequest state (Kaigents domain only)
+- [x] Go Worker running on `kaigents-workrequest` task queue; workflows and activities registered
+- [x] End-to-end test: 3-step workflow with human gate executed; approved via signal; `Succeeded` state confirmed
+- [x] Validate integration boundary: `TemporalAdapterClient` in `kaigents-core/src/temporal_adapter.rs` calls adapter over plain HTTP; no Temporal SDK in Rust; runner registers WorkRequest via `KAIGENTS_TEMPORAL_ADAPTER_URL` env var (opt-in, non-blocking)
+- [ ] WorkRequest execution history maps cleanly to WorkItem/WorkAttempt state transitions — deferred to M4 (timeline integration)
 
 Exit criteria (decision checkpoint):
 
-- [ ] Ops footprint is acceptable for baseline on-prem cluster assumptions
-- [ ] Integration boundary is acceptable (Rust <-> adapter stable, minimal surface)
-- [ ] Developer experience is acceptable (workflow determinism constraints are manageable)
-- [ ] The Process/Task definition model remains simple-first and does not collapse into engine-specific workflow code
-- [ ] Record outcome as ITD-16: Adopt Temporal backend vs Build custom durable engine
+- [x] Ops footprint acceptable — Temporal 54-day production deployment confirmed
+- [x] Integration boundary acceptable — HTTP adapter isolates Temporal from Rust engine
+- [x] Developer experience acceptable — simple workflow code; determinism constraints manageable
+- [x] Process/Task definition model remains simple-first — `WorkItemDef` is a plain struct; no Temporal concepts exposed
+- [x] ITD-16 recorded as ADOPTED (see `docs/research/technology/process-engine-evaluation.md`)
 
 Push checkpoint:
 

@@ -66,11 +66,14 @@ Kaigents aims to be a “production substrate” where agents are:
   - dashboard
 - Be viable as a commercial-safe open-source product:
   - core dependencies permissive
-  - “integrate-only” optional components allowed but separated and clearly labeled
+  - "integrate-only" optional components allowed but separated and clearly labeled
+- Support a dual-layer licensing model:
+  - **core platform**: MIT licensed and freely redistributable
+  - **managed service layer** (hosted deployments, AI team configurations, the Link-Labs.AI cluster product, and the at-risk worker platform): commercial license required; not included in the OSS distribution
 
 ### 3.2 Non-Goals (initial releases)
 
-- Building a fully managed SaaS offering.
+- Building a fully managed SaaS offering under the MIT license.
 - Competing with full low-code workflow automation platforms with large connector catalogs as a primary goal.
 - Guaranteeing perfect agent correctness; the focus is on guardrails, traceability, and iterative improvement.
 - Building a single agent framework to rule them all; Kaigents aims to support multiple runtimes via a stable execution contract.
@@ -328,16 +331,34 @@ Run timeline UX requirements:
   - least privilege
   - tool allowlisting and auditing
 - **Commercial-safe OSS posture**: core must remain viable for commercial adoption and redistribution.
+- **Dual-layer licensing**: the OSS core (MIT) and the commercial managed service layer are distinct boundaries; see licensing policy below.
 
 ## 7.1 Assumptions and Constraints
 
-- Kaigents’ core differentiation includes:
+- Kaigents' core differentiation includes:
   - Kubernetes-native operations
   - AMD Ryzen AI optimization for lower TCO
 - The platform must support on-prem and self-hosted deployments.
 - The product must maintain a clear boundary between:
-  - redistributable permissive OSS core
+  - redistributable permissive OSS core (MIT)
   - integrate-only optional components that may have additional terms
+  - commercial managed service layer (not OSS; separate license required)
+
+## 7.2 Licensing Policy
+
+### Core platform (MIT)
+The Kaigents control plane, execution engine, CLI, and CRDs are MIT licensed. Anyone may use, modify, and distribute the core platform, including for commercial purposes.
+
+### Managed service layer (commercial license required)
+The following are **not** part of the MIT distribution and require a separate commercial license:
+- Hosted or managed deployments of Kaigents sold as a service
+- Pre-built AI team configurations (software engineering team, sales team, tech support team, secops team, etc.)
+- The Link-Labs.AI cluster product (consolidated multi-team AI infrastructure)
+- The at-risk worker platform (workforce + AI hybrid delivery system)
+- Any tooling, automation, or integration built specifically to deliver Kaigents as a managed service to third parties
+
+### License evolution
+The MIT license applies to the core platform. If and when Kaigents achieves significant traction, the license may be revisited (e.g., Apache-2.0 for stronger patent protection, or AGPL to protect the managed service layer from commoditization by large cloud providers). Any license change will apply to future releases only; existing MIT releases remain MIT.
 
 MVP tenancy assumption:
 

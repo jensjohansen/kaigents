@@ -191,6 +191,23 @@ Common workflow-engine equivalents:
 
 **Preliminary classification**: **Inspire**
 
+## ITD-16 Decision: ADOPTED — Temporal as Kaigents process execution engine
+
+**Decision date**: 2026-05-08
+**Decision**: Adopt Temporal as the durable execution engine of record for Kaigents WorkRequests.
+
+**Evidence**:
+- Temporal has been self-hosted on the ai-agents-k8s-cluster for 54+ days (deployed 2026-03-15).
+- Deployment includes: frontend, history, matching, worker, admin tools, and a 3-node PostgreSQL cluster.
+- Footprint is acceptable for the on-prem baseline: all services healthy with minimal resource impact relative to model serving.
+- Temporal's Workflow/Activity model maps cleanly to Kaigents WorkRequest/WorkItem/WorkAttempt domain terms.
+- No Temporal concepts need to be exposed to end users — Kaigents owns the simple-first process graph model and compiles it to Temporal internals.
+
+**Consequences**:
+- Kaigents is **durable-workflow-first**, not BPMN-first. The modeling layer is a Kaigents product concern (simple graph → Temporal).
+- The M1 embedded DAG engine is retained for lightweight synchronous steps. Temporal is the engine for durable, long-running WorkRequests with human-in-the-loop gates and rework loops.
+- The Temporal adapter service (Go) must keep Temporal concepts hidden behind Kaigents domain terms in all API surfaces, CRDs, CLI output, and dashboard views.
+
 ## Recommended decision path
 1. Decide if Kaigents is **BPMN-first** (business analysts model in BPMN) or **durable-workflow-first** (engine for reliability; modeling layer is a Kaigents product concern).
 2. If durable-workflow-first:

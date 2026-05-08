@@ -17,8 +17,19 @@ This is not legal advice; it is a technical due diligence checklist.
 - the component can be integrated as an optional external dependency that customers install and run themselves, **or**
 - the component is permissible for internal use but may be problematic to redistribute or bundle.
 
+## Dual-layer licensing model
+
+Kaigents uses a two-layer licensing model:
+
+- **Core platform (MIT)**: the control plane, execution engine, CLI, and CRDs are MIT licensed and freely redistributable. This is what lives in the public GitHub repository.
+- **Managed service layer (commercial license)**: hosted deployments, pre-built AI team configurations, the Link-Labs.AI cluster product, and the at-risk worker platform are **not** part of the MIT distribution. A separate commercial license is required to deliver these as a service or product to third parties.
+
+This distinction must be respected when evaluating third-party components:
+- Components used only in the **core platform** must meet the "Redistribute (bundle)" bar below.
+- Components used only in the **managed service layer** have more flexibility but must not create redistribution obligations that conflict with the commercial license.
+
 ## OSS publication and redistribution policy (permissive-friendly)
-Kaigents’ goal is to be safe and legal to publish as open source under a permissive license.
+Kaigents' goal is to be safe and legal to publish as open source under a permissive license.
 
 Accordingly, for every third-party component we consider, we must clearly classify:
 
@@ -28,7 +39,7 @@ Accordingly, for every third-party component we consider, we must clearly classi
 
 - **Integrate-only (user-supplied)**
   - Kaigents can support invoking it (CLI/API) and ingesting outputs, but **we do not bundle or redistribute**.
-  - Typical triggers: source-available licenses, copyleft constraints we don’t want to inherit, “terms and conditions” licenses, or branding restrictions.
+  - Typical triggers: source-available licenses, copyleft constraints we don't want to inherit, "terms and conditions" licenses, or branding restrictions.
 
 - **Exclude**
   - Not supported in Kaigents OSS offering due to licensing/terms risk.

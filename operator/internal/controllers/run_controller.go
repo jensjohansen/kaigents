@@ -105,10 +105,25 @@ func (r *RunReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 				resolvedModelName = firstNonEmpty(runModelName, agent.Spec.ModelName)
 				resolvedSystemPrompt = agent.Spec.SystemPrompt
 
+				allowedSet := make(map[string]struct{}, len(agent.Spec.AllowedTools))
+				for _, t := range agent.Spec.AllowedTools {
+					allowedSet[t] = struct{}{}
+				}
+				hasAllowlist := len(allowedSet) > 0
+
 				for _, toolRef := range agent.Spec.Tools {
 					tool := &corev1alpha1.Tool{}
 					if err := r.Client.Get(ctx, types.NamespacedName{Name: toolRef.Name, Namespace: req.Namespace}, tool); err != nil {
 						continue
+					}
+
+					if hasAllowlist {
+						if _, permitted := allowedSet[tool.Spec.ToolName]; !permitted {
+							_ = r.updateRunStatus(ctx, run, "Failed",
+								fmt.Sprintf("tool %q (toolName=%q) is not in the agent allowedTools list; execution blocked", toolRef.Name, tool.Spec.ToolName),
+								corev1alpha1.ConditionReconcileError, "True")
+							return ctrl.Result{}, nil
+						}
 					}
 
 					if resolvedSearchToolName == "" && tool.Spec.ToolName == "searxng_web_search" {
@@ -173,6 +188,7 @@ func (r *RunReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 			"KAIGENTS_RETHINKDB_USER",
 			"KAIGENTS_RETHINKDB_PASSWORD",
 			"KAIGENTS_MODEL_TIMEOUT_SECS",
+			"KAIGENTS_TEMPORAL_ADAPTER_URL",
 		}
 		for _, name := range passThroughEnvNames {
 			if value := os.Getenv(name); value != "" {

@@ -17,6 +17,9 @@ runnerImage:
   pullPolicy: IfNotPresent
   tag: ""
 
+temporalAdapter:
+  url: "http://kaigents-temporal-adapter.kaigents.svc.cluster.local:8080"
+
 runnerEnv:
   []
 
@@ -34,6 +37,9 @@ runnerServiceAccount:
   name: kaigents-runner
 
 rbac:
+  create: true
+
+userRoles:
   create: true
 
 leaderElection:

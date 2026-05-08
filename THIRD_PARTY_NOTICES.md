@@ -50,3 +50,18 @@ The RethinkDB backend is optional and is enabled via a Cargo feature flag. It us
 - **unreql** — Unofficial RethinkDB driver for Rust
   - **License**: MIT
   - **Homepage**: https://crates.io/crates/unreql
+
+### Go modules (temporal-adapter)
+
+The `temporal-adapter` service depends on the following third-party Go modules. All are commercially safe and redistribution-safe per the project OSS posture.
+
+- **go.temporal.io/sdk** — Temporal Go SDK; used to implement the WorkRequest workflow and WorkItem activity
+  - **License**: MIT
+  - **Homepage**: https://github.com/temporalio/sdk-go
+  - **Apache-2.0 transitive deps**: `google.golang.org/grpc`, `google.golang.org/protobuf`, `google.golang.org/genproto` — Apache-2.0; no NOTICE propagation obligation for binary distribution in this use case (API/server use), but noted here for completeness
+- **go.uber.org/zap** — Structured logging
+  - **License**: MIT
+  - **Homepage**: https://github.com/uber-go/zap
+- **go.temporal.io/api** — Temporal API protobuf definitions (indirect via SDK)
+  - **License**: MIT
+  - **Homepage**: https://github.com/temporalio/api-go

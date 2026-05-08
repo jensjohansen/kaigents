@@ -1,0 +1,91 @@
+{{- if .Values.userRoles.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kaigents-viewer
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/part-of: kaigents
+    rbac.kaigents.io/role: viewer
+rules:
+  - apiGroups: ["core.kaigents.io"]
+    resources:
+      - agents
+      - teams
+      - runs
+      - tools
+      - mcpservers
+      - modelendpoints
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["core.kaigents.io"]
+    resources:
+      - agents/status
+      - teams/status
+      - runs/status
+      - tools/status
+      - mcpservers/status
+      - modelendpoints/status
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kaigents-operator
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/part-of: kaigents
+    rbac.kaigents.io/role: operator
+rules:
+  - apiGroups: ["core.kaigents.io"]
+    resources:
+      - agents
+      - teams
+      - tools
+      - mcpservers
+      - modelendpoints
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["core.kaigents.io"]
+    resources:
+      - agents/status
+      - teams/status
+      - tools/status
+      - mcpservers/status
+      - modelendpoints/status
+    verbs: ["get"]
+  - apiGroups: ["core.kaigents.io"]
+    resources:
+      - runs
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["core.kaigents.io"]
+    resources:
+      - runs/status
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kaigents-admin
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/part-of: kaigents
+    rbac.kaigents.io/role: admin
+rules:
+  - apiGroups: ["core.kaigents.io"]
+    resources:
+      - agents
+      - teams
+      - runs
+      - tools
+      - mcpservers
+      - modelendpoints
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["core.kaigents.io"]
+    resources:
+      - agents/status
+      - teams/status
+      - runs/status
+      - tools/status
+      - mcpservers/status
+      - modelendpoints/status
+    verbs: ["get", "update", "patch"]
+{{- end -}}
