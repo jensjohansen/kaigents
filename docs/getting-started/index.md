@@ -1,5 +1,18 @@
 # Getting Started with Kaigents
 
+## Executive Summary
+
+Kaigents is a **Kubernetes-native substrate** for operating production-grade AI agent teams. It bridge the gap between AI prototypes and enterprise-ready business operations by providing:
+
+- **Visibility**: A durable run timeline for full auditability of every agent action.
+- **Efficiency**: Low TCO through hybrid execution (CPU/GPU/NPU) routing.
+- **Reliability**: Durable execution that ensures agents resume work after failures.
+- **Governance**: Declarative control over tools, models, and policies.
+
+For a deeper dive into how Kaigents solves business problems at scale, see the [**Introduction to Kaigents**](../product/kaigents-introduction.md).
+
+---
+
 This guide walks you through installing Kaigents on a Kubernetes cluster and deploying your first AI agent team.
 
 ## Overview
