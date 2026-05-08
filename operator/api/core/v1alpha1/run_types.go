@@ -20,10 +20,11 @@ type RunTargetRef struct {
 
 // RunSpec defines the desired run request.
 type RunSpec struct {
-	Target           RunTargetRef `json:"target"`
-	Input            string       `json:"input,omitempty"`
-	ModelEndpointRef string       `json:"modelEndpointRef,omitempty"`
-	ModelName        string       `json:"modelName,omitempty"`
+	Target           RunTargetRef   `json:"target"`
+	Input            string         `json:"input,omitempty"`
+	ModelEndpointRef string         `json:"modelEndpointRef,omitempty"`
+	ModelName        string         `json:"modelName,omitempty"`
+	Routing          *RoutingPolicy `json:"routing,omitempty"`
 }
 
 // RunArtifactRef describes a produced artifact reference for a run.
@@ -74,6 +75,17 @@ func (in *Run) DeepCopyObject() runtime.Object {
 	}
 	if in.Status.Artifacts != nil {
 		out.Status.Artifacts = append([]RunArtifactRef(nil), in.Status.Artifacts...)
+	}
+	if in.Spec.Routing != nil {
+		out.Spec.Routing = &RoutingPolicy{
+			ComputeResource: in.Spec.Routing.ComputeResource,
+		}
+		if in.Spec.Routing.NodeSelector != nil {
+			out.Spec.Routing.NodeSelector = make(map[string]string)
+			for k, v := range in.Spec.Routing.NodeSelector {
+				out.Spec.Routing.NodeSelector[k] = v
+			}
+		}
 	}
 	return out
 }

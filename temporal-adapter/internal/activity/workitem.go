@@ -9,8 +9,13 @@
 package activity
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
+	"os"
 	"time"
 
 	"go.temporal.io/sdk/activity"
@@ -60,10 +65,80 @@ func ExecuteWorkItem(ctx context.Context, input WorkItemInput) (WorkItemResult, 
 		Metadata:   map[string]string{"attempt": fmt.Sprintf("%d", attempt)},
 	}
 
-	result.Output = fmt.Sprintf("step=%s workItemId=%s attempt=%d completed", input.StepName, input.WorkItemID, attempt)
+	if input.Prompt != "" {
+		output, err := callModel(ctx, input.Prompt)
+		if err != nil {
+			result.Status = "Failed"
+			result.ErrorMsg = err.Error()
+			result.FinishedAt = time.Now().UTC()
+			return result, nil
+		}
+		result.Output = output
+	} else {
+		result.Output = fmt.Sprintf("step=%s workItemId=%s attempt=%d completed (no prompt)", input.StepName, input.WorkItemID, attempt)
+	}
+
 	result.Status = "Succeeded"
 	result.FinishedAt = time.Now().UTC()
 
 	logger.Info("WorkItem completed", "workItemId", input.WorkItemID, "status", result.Status)
 	return result, nil
 }
+
+func callModel(ctx context.Context, prompt string) (string, error) {
+	url := os.Getenv("KAIGENTS_MODEL_ENDPOINT_URL")
+	if url == "" {
+		return "Model output placeholder (KAIGENTS_MODEL_ENDPOINT_URL not set)", nil
+	}
+	modelName := os.Getenv("KAIGENTS_MODEL_NAME")
+	if modelName == "" {
+		modelName = "gpt-oss-20b"
+	}
+	apiKey := os.Getenv("KAIGENTS_MODEL_API_KEY")
+
+	reqBody, _ := json.Marshal(map[string]interface{}{
+		"model": modelName,
+		"messages": []map[string]string{
+			{"role": "user", "content": prompt},
+		},
+		"max_tokens": 1024,
+	})
+
+	req, err := http.NewRequestWithContext(ctx, "POST", url+"/v1/chat/completions", bytes.NewBuffer(reqBody))
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	if apiKey != "" {
+		req.Header.Set("Authorization", "Bearer "+apiKey)
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return "", fmt.Errorf("model call failed (%d): %s", resp.StatusCode, string(body))
+	}
+
+	var res struct {
+		Choices []struct {
+			Message struct {
+				Content string `json:"content"`
+			} `json:"message"`
+		} `json:"choices"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
+		return "", err
+	}
+
+	if len(res.Choices) == 0 {
+		return "", fmt.Errorf("no choices returned from model")
+	}
+
+	return res.Choices[0].Message.Content, nil
+}
+

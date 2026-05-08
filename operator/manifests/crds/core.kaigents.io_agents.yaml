@@ -65,6 +65,15 @@ spec:
                   description: Explicit allowlist of tool names permitted at invocation time. If non-empty, any tool not in this list will block execution and set the Run to Failed.
                   items:
                     type: string
+                routing:
+                  type: object
+                  properties:
+                    computeResource:
+                      type: string
+                    nodeSelector:
+                      type: object
+                      additionalProperties:
+                        type: string
             status:
               type: object
               properties:

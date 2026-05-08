@@ -16,6 +16,8 @@ rules:
       - tools
       - mcpservers
       - modelendpoints
+      - tasks
+      - processes
     verbs: ["get", "list", "watch"]
   - apiGroups: ["core.kaigents.io"]
     resources:
@@ -25,6 +27,8 @@ rules:
       - tools/status
       - mcpservers/status
       - modelendpoints/status
+      - tasks/status
+      - processes/status
     verbs: ["get"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -43,6 +47,8 @@ rules:
       - tools
       - mcpservers
       - modelendpoints
+      - tasks
+      - processes
     verbs: ["get", "list", "watch"]
   - apiGroups: ["core.kaigents.io"]
     resources:
@@ -51,14 +57,20 @@ rules:
       - tools/status
       - mcpservers/status
       - modelendpoints/status
+      - tasks/status
+      - processes/status
     verbs: ["get"]
   - apiGroups: ["core.kaigents.io"]
     resources:
       - runs
+      - processes
+      - tasks
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
   - apiGroups: ["core.kaigents.io"]
     resources:
       - runs/status
+      - processes/status
+      - tasks/status
     verbs: ["get"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -78,6 +90,8 @@ rules:
       - tools
       - mcpservers
       - modelendpoints
+      - tasks
+      - processes
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
   - apiGroups: ["core.kaigents.io"]
     resources:
@@ -87,5 +101,7 @@ rules:
       - tools/status
       - mcpservers/status
       - modelendpoints/status
+      - tasks/status
+      - processes/status
     verbs: ["get", "update", "patch"]
 {{- end -}}

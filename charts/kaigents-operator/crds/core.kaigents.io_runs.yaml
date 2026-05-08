@@ -1,6 +1,6 @@
-# File: charts/kaigents-operator/crds/core.kaigents.io_runs.yaml
-# Purpose: Defines the Run custom resource schema packaged with the Kaigents operator Helm chart.
-# Product/business importance: Ensures operator installs the API used to request and track Kaigents run execution in Kubernetes.
+# File: operator/manifests/crds/core.kaigents.io_runs.yaml
+# Purpose: Defines the Run CRD manifest used by the operator install path outside the Helm chart.
+# Product/business importance: Provides the Kubernetes API schema required to request and track Kaigents run execution.
 #
 # Copyright (c) 2026 John K Johansen
 # License: MIT (see LICENSE)
@@ -65,6 +65,16 @@ spec:
                 modelName:
                   type: string
                   description: Optional OpenAI-compatible model id override for this run.
+                routing:
+                  type: object
+                  properties:
+                    computeResource:
+                      type: string
+                    nodeSelector:
+                      type: object
+                      additionalProperties:
+                        type: string
+              additionalProperties: false
             status:
               type: object
               properties:
@@ -95,4 +105,4 @@ spec:
                         format: int64
                       sha256:
                         type: string
-
+              additionalProperties: false

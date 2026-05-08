@@ -1,0 +1,23 @@
+{{ define "content" }}
+<h1 class="mb-4">Agents</h1>
+<div class="card p-3">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Model</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{ range .Agents }}
+            <tr>
+                <td>{{ .Name }}</td>
+                <td>{{ .Spec.ModelName }}</td>
+                <td><span class="badge {{ if eq .Status.Phase "Ready" }}bg-success{{ else }}bg-warning{{ end }}">{{ .Status.Phase }}</span></td>
+            </tr>
+            {{ end }}
+        </tbody>
+    </table>
+</div>
+{{ end }}

@@ -65,6 +65,15 @@ spec:
                 modelName:
                   type: string
                   description: Optional OpenAI-compatible model id override for this run.
+                routing:
+                  type: object
+                  properties:
+                    computeResource:
+                      type: string
+                    nodeSelector:
+                      type: object
+                      additionalProperties:
+                        type: string
               additionalProperties: false
             status:
               type: object

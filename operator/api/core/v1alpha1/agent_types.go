@@ -25,6 +25,15 @@ type AgentSpec struct {
 	ModelEndpointRef string         `json:"modelEndpointRef,omitempty"`
 	ModelName        string         `json:"modelName,omitempty"`
 	AllowedTools     []string       `json:"allowedTools,omitempty"`
+	Routing          *RoutingPolicy `json:"routing,omitempty"`
+}
+
+// RoutingPolicy defines compute resource preferences and constraints.
+type RoutingPolicy struct {
+	// ComputeResource indicates the preferred compute type (CPU, GPU, NPU).
+	ComputeResource string `json:"computeResource,omitempty"`
+	// NodeSelector defines labels that must be present on the node for execution.
+	NodeSelector map[string]string `json:"nodeSelector,omitempty"`
 }
 
 // ConditionType names for Kaigents resources.
@@ -93,6 +102,17 @@ func (in *Agent) DeepCopyObject() runtime.Object {
 	}
 	if in.Spec.AllowedTools != nil {
 		out.Spec.AllowedTools = append([]string(nil), in.Spec.AllowedTools...)
+	}
+	if in.Spec.Routing != nil {
+		out.Spec.Routing = &RoutingPolicy{
+			ComputeResource: in.Spec.Routing.ComputeResource,
+		}
+		if in.Spec.Routing.NodeSelector != nil {
+			out.Spec.Routing.NodeSelector = make(map[string]string)
+			for k, v := range in.Spec.Routing.NodeSelector {
+				out.Spec.Routing.NodeSelector[k] = v
+			}
+		}
 	}
 	return out
 }

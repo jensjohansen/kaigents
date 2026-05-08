@@ -44,6 +44,10 @@ func addKnownTypes(scheme *runtime.Scheme) error {
 		&MCPServerList{},
 		&ModelEndpoint{},
 		&ModelEndpointList{},
+		&Task{},
+		&TaskList{},
+		&Process{},
+		&ProcessList{},
 	)
 
 	metav1.AddToGroupVersion(scheme, GroupVersion)

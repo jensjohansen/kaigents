@@ -11,6 +11,7 @@ pub mod file_backed;
 pub mod model_serving;
 #[cfg(feature = "rethinkdb")]
 pub mod rethinkdb_store;
+pub mod resources;
 pub mod run_id;
 pub mod temporal_adapter;
 pub mod timeline;

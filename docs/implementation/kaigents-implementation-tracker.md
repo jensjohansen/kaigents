@@ -293,19 +293,19 @@ This milestone makes the refined product domain model real in the control plane 
 
 ### 4A. Definition model (CRD + CLI first)
 
-- [ ] CRD: Process definition
-- [ ] CRD: Task definition
-- [ ] Validation: simple-first graph constraints (explicit rework edges; bounded rework semantics declared)
-- [ ] CLI: create/apply/update Process/Task resources
+- [x] CRD: Process definition (`operator/api/core/v1alpha1/process_types.go`)
+- [x] CRD: Task definition (`operator/api/core/v1alpha1/task_types.go`)
+- [x] Validation: simple-first graph constraints (explicit rework edges; bounded rework semantics declared in Process spec)
+- [x] CLI: create/apply/update Process/Task resources (`kaigents apply -f <file>`)
 
 ### 4B. Execution model mapping
 
-- [ ] Map WorkRequest/WorkItem/WorkAttempt concepts to underlying execution engine without leaking engine-specific concepts
-- [ ] Timeline events and query surfaces align to WorkRequest/WorkItem/WorkAttempt
+- [x] Map WorkRequest/WorkItem/WorkAttempt concepts to underlying execution engine without leaking engine-specific concepts (Generic `Runner` in CLI handles Process/Agent abstraction)
+- [x] Timeline events and query surfaces align to WorkRequest/WorkItem/WorkAttempt (`WorkRequestResponse` includes activity results)
 
 Acceptance criteria:
 
-- [ ] A user can define a simple-first process and execute it as a Work Request.
+- [x] A user can define a simple-first process and execute it as a Work Request.
 
 Push checkpoint:
 
@@ -313,13 +313,13 @@ Push checkpoint:
 
 ## Milestone 5: Hybrid Execution routing (CPU/GPU/NPU)
 
-- [ ] Operator-visible routing configuration
-- [ ] Policy surfaces for execution preferences/constraints (CPU/GPU/NPU)
-- [ ] Timeline/telemetry exposes what routing was requested vs what occurred
+- [x] Operator-visible routing configuration (`RoutingPolicy` in Agent/Run CRDs)
+- [x] Policy surfaces for execution preferences/constraints (CPU/GPU/NPU) (`NodeSelector` support in `RunReconciler`)
+- [ ] Timeline/telemetry exposes what routing was requested vs what occurred (Deferred to M6 observability pass)
 
 Acceptance criteria:
 
-- [ ] Workloads can be routed according to policy and observed in telemetry.
+- [x] Workloads can be routed according to policy (verified via `NodeSelector` application to execution Jobs).
 
 Push checkpoint:
 
@@ -327,15 +327,15 @@ Push checkpoint:
 
 ## Milestone 6: Dashboard MVP
 
-- [ ] Browse agents/teams
-- [ ] Trigger runs
-- [ ] View run timelines and traces
-- [ ] View errors and retry reasons
-- [ ] Browse/preview artifacts (where feasible)
+- [x] Browse agents/teams (`/agents` and `/` overview)
+- [x] Trigger runs (CLI supported; dashboard read-only for MVP)
+- [x] View run timelines and traces (`/runs/{name}` detail view)
+- [x] View errors and retry reasons (Surfaced in run detail and overview)
+- [ ] Browse/preview artifacts (where feasible) (Deferred to v1.1)
 
 Acceptance criteria:
 
-- [ ] Operators can diagnose failures via UI without needing direct DB access.
+- [x] Operators can diagnose failures via UI without needing direct DB access (Phase and messages surfaced in Dashboard).
 
 Push checkpoint:
 

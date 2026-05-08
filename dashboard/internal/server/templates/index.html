@@ -1,0 +1,52 @@
+{{ define "content" }}
+<h1 class="mb-4">Platform Overview</h1>
+<div class="row">
+    <div class="col-md-3">
+        <div class="card p-3 mb-4">
+            <h5>Agents</h5>
+            <p class="display-6">{{ .AgentCount }}</p>
+            <a href="/agents" class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3 mb-4">
+            <h5>Processes</h5>
+            <p class="display-6">{{ .ProcessCount }}</p>
+            <a href="/processes" class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3 mb-4">
+            <h5>Active Runs</h5>
+            <p class="display-6">{{ .ActiveRunCount }}</p>
+            <a href="/runs" class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+    </div>
+</div>
+
+<div class="card p-3">
+    <h5>Recent Runs</h5>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Target</th>
+                <th>Phase</th>
+                <th>Message</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{ range .RecentRuns }}
+            <tr>
+                <td><a href="/runs/{{ .Name }}">{{ .Name }}</a></td>
+                <td>{{ .Spec.Target.Kind }}/{{ .Spec.Target.Name }}</td>
+                <td><span class="badge {{ if eq .Status.Phase "Succeeded" }}bg-success{{ else if eq .Status.Phase "Failed" }}bg-danger{{ else }}bg-info{{ end }}">{{ .Status.Phase }}</span></td>
+                <td>{{ .Status.Message }}</td>
+                <td>{{ .CreationTimestamp }}</td>
+            </tr>
+            {{ end }}
+        </tbody>
+    </table>
+</div>
+{{ end }}

@@ -1,0 +1,27 @@
+{{ define "content" }}
+<h1 class="mb-4">Runs</h1>
+<div class="card p-3">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Target</th>
+                <th>Phase</th>
+                <th>Message</th>
+                <th>Started</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{ range .Runs }}
+            <tr>
+                <td><a href="/runs/{{ .Name }}">{{ .Name }}</a></td>
+                <td>{{ .Spec.Target.Kind }}/{{ .Spec.Target.Name }}</td>
+                <td><span class="badge {{ if eq .Status.Phase "Succeeded" }}bg-success{{ else if eq .Status.Phase "Failed" }}bg-danger{{ else }}bg-info{{ end }}">{{ .Status.Phase }}</span></td>
+                <td>{{ .Status.Message }}</td>
+                <td>{{ .CreationTimestamp }}</td>
+            </tr>
+            {{ end }}
+        </tbody>
+    </table>
+</div>
+{{ end }}

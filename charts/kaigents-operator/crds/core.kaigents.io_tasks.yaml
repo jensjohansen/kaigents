@@ -1,0 +1,66 @@
+# File: operator/manifests/crds/core.kaigents.io_tasks.yaml
+# Purpose: Defines the Task CRD manifest for Kaigents.
+# Product/business importance: Provides the Kubernetes API schema for reusable agent tasks.
+#
+# Copyright (c) 2026 John K Johansen
+# License: MIT (see LICENSE)
+
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: tasks.core.kaigents.io
+spec:
+  group: core.kaigents.io
+  scope: Namespaced
+  names:
+    plural: tasks
+    singular: task
+    kind: Task
+    shortNames:
+      - kt
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      subresources:
+        status: {}
+      schema:
+        openAPIV3Schema:
+          type: object
+          required:
+            - spec
+          properties:
+            spec:
+              type: object
+              properties:
+                agentName:
+                  type: string
+                prompt:
+                  type: string
+                requiresGate:
+                  type: boolean
+                metadata:
+                  type: object
+                  additionalProperties:
+                    type: string
+            status:
+              type: object
+              properties:
+                observedGeneration:
+                  type: integer
+                  format: int64
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                      lastTransitionTime:
+                        type: string
+                      reason:
+                        type: string
+                      message:
+                        type: string

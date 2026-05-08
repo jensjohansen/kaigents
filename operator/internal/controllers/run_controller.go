@@ -91,6 +91,13 @@ func (r *RunReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 		resolvedMCPServerName := ""
 		resolvedSearchToolName := ""
 		resolvedReadToolName := ""
+		resolvedNodeSelector := make(map[string]string)
+
+		if run.Spec.Routing != nil {
+			for k, v := range run.Spec.Routing.NodeSelector {
+				resolvedNodeSelector[k] = v
+			}
+		}
 
 		modelEndpointRef := ""
 		runModelName := run.Spec.ModelName
@@ -104,6 +111,17 @@ func (r *RunReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 				modelEndpointRef = firstNonEmpty(modelEndpointRef, agent.Spec.ModelEndpointRef)
 				resolvedModelName = firstNonEmpty(runModelName, agent.Spec.ModelName)
 				resolvedSystemPrompt = agent.Spec.SystemPrompt
+
+				if agent.Spec.Routing != nil {
+					for k, v := range agent.Spec.Routing.NodeSelector {
+						if _, exists := resolvedNodeSelector[k]; !exists {
+							resolvedNodeSelector[k] = v
+						}
+					}
+					if run.Spec.Routing == nil || run.Spec.Routing.ComputeResource == "" {
+						// ... could set resources here
+					}
+				}
 
 				allowedSet := make(map[string]struct{}, len(agent.Spec.AllowedTools))
 				for _, t := range agent.Spec.AllowedTools {
@@ -215,6 +233,7 @@ func (r *RunReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 					Spec: corev1.PodSpec{
 						ServiceAccountName: firstNonEmpty(os.Getenv("KAIGENTS_RUNNER_SERVICEACCOUNT"), "default"),
 						RestartPolicy:      corev1.RestartPolicyNever,
+						NodeSelector:       resolvedNodeSelector,
 						Containers: []corev1.Container{
 							{
 								Name:    "runner",

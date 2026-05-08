@@ -1,0 +1,46 @@
+<!--
+File: dashboard/templates/layout.html
+Purpose: Base HTML layout for the Kaigents dashboard.
+Product/business importance: Provides a consistent, professional UI for operating the platform.
+
+Copyright (c) 2026 John K Johansen
+License: MIT (see LICENSE)
+-->
+{{ define "layout" }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaigents Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .sidebar { min-height: 100vh; background-color: #212529; color: white; padding: 1.5rem; }
+        .sidebar a { color: #adb5bd; text-decoration: none; display: block; padding: 0.5rem 0; }
+        .sidebar a:hover, .sidebar a.active { color: white; }
+        .card { border: none; box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 sidebar">
+                <h3>Kaigents</h3>
+                <hr>
+                <nav>
+                    <a href="/" class="{{ if eq .Page "home" }}active{{ end }}">Dashboard</a>
+                    <a href="/agents" class="{{ if eq .Page "agents" }}active{{ end }}">Agents</a>
+                    <a href="/processes" class="{{ if eq .Page "processes" }}active{{ end }}">Processes</a>
+                    <a href="/runs" class="{{ if eq .Page "runs" }}active{{ end }}">Runs</a>
+                </nav>
+            </div>
+            <div class="col-md-10 p-4">
+                {{ template "content" . }}
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+{{ end }}

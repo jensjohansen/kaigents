@@ -19,3 +19,5 @@ serde_json = "1"
 async-trait = "0.1"
 sha2 = "0.10"
 reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "stream"] }
+kube = { version = "0.96", features = ["runtime", "derive"] }
+k8s-openapi = { version = "0.23", features = ["latest"] }
