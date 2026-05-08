@@ -16,6 +16,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.temporal.io/sdk/client"
 	"go.uber.org/zap"
 
@@ -62,6 +63,7 @@ func New(temporalClient client.Client, logger *zap.Logger) *Adapter {
 	adapter := &Adapter{temporalClient: temporalClient, logger: logger, mux: http.NewServeMux()}
 	adapter.mux.HandleFunc("/v1/workrequests", adapter.handleWorkrequests)
 	adapter.mux.HandleFunc("/v1/workrequests/", adapter.handleWorkrequest)
+	adapter.mux.Handle("/metrics", promhttp.Handler())
 	adapter.mux.HandleFunc("/healthz", func(responseWriter http.ResponseWriter, r *http.Request) {
 		responseWriter.WriteHeader(http.StatusOK)
 		fmt.Fprint(responseWriter, "ok")

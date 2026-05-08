@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	corev1alpha1 "github.com/jensjohansen/kaigents/operator/api/core/v1alpha1"
 	"go.uber.org/zap"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -49,6 +50,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("/processes", s.handleProcesses)
 	mux.HandleFunc("/runs", s.handleRuns)
 	mux.HandleFunc("/runs/", s.handleRunDetail)
+	mux.Handle("/metrics", promhttp.Handler())
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("ok"))
