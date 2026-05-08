@@ -1,115 +1,112 @@
-# Example: Expense Report Approver Team
+# Example: Kairon Retail Lite Team
 
-In this example, we will deploy a multi-agent team that automates the processing of employee expense reports.
+In this example, we will deploy a multi-agent team that automates market research and competitor analysis for e-commerce retailers. This "lite" version demonstrates how Kaigents coordinates agents to perform complex web research and data synthesis.
 
 ## The Team Structure
 
-The team consists of three agents:
+The team consists of two agents:
 
-1.  **Receipt Classifier**: Extracts structured data (vendor, date, amount, category) from receipt images or text.
-2.  **Policy Compliance Auditor**: Compares extracted data against the `Corporate Expense Policy` and identifies violations.
-3.  **Approval Router**: Decides if the report can be auto-approved, auto-rejected, or requires human review based on amount and compliance status.
+1.  **Market Opportunity Scout**: Uses web research tools to identify high-growth product categories and trending consumer needs.
+2.  **Competitor Pricing Analyst**: Scrapes competitor store data to determine price points, shipping terms, and customer sentiment.
 
-## Step 1: Define the Agents
+## Step 1: Define the Tools
 
-Create `expense-team-agents.yaml`:
+Kaigents agents use the **Model Context Protocol (MCP)** to interact with the world. We'll register the `web-acquisition` toolset.
+
+```yaml
+apiVersion: core.kaigents.io/v1alpha1
+kind: MCPServer
+metadata:
+  name: web-acquisition
+  namespace: kaigents
+spec:
+  transport: http
+  url: "http://web-acquisition-mcp.kaigents.svc.cluster.local/mcp"
+---
+apiVersion: core.kaigents.io/v1alpha1
+kind: Tool
+metadata:
+  name: web-fetch
+  namespace: kaigents
+spec:
+  mcpServerRef: "web-acquisition"
+  toolName: "web.fetch_url"
+  description: "Fetch content from a URL"
+```
+
+## Step 2: Define the Agents
+
+Create `retail-lite-agents.yaml`:
 
 ```yaml
 apiVersion: core.kaigents.io/v1alpha1
 kind: Agent
 metadata:
-  name: receipt-classifier
+  name: opportunity-scout
   namespace: kaigents
 spec:
   systemPrompt: |
-    You are an expert financial clerk. Extract JSON data from receipts.
-    Include fields: vendor, date, amount, currency, category.
+    You are a strategic market researcher. Your goal is to find high-growth e-commerce niches.
+    Use web search tools to identify 3 trending product categories for 2026.
+  tools:
+    - name: web-fetch
 ---
 apiVersion: core.kaigents.io/v1alpha1
 kind: Agent
 metadata:
-  name: policy-auditor
+  name: pricing-analyst
   namespace: kaigents
 spec:
   systemPrompt: |
-    You are a corporate compliance officer. 
-    Audit expenses against the policy:
-    - Meals: < $50
-    - Travel: Must have business purpose
-    - Alcohol: Not reimbursable
----
-apiVersion: core.kaigents.io/v1alpha1
-kind: Agent
-metadata:
-  name: approval-router
-  namespace: kaigents
-spec:
-  systemPrompt: |
-    Route the expense report.
-    - If total < $100 and COMPLIANT -> AUTO_APPROVE
-    - If total >= $100 or NON_COMPLIANT -> HUMAN_REVIEW
+    You are a retail pricing expert. For a given product category, find the top 3 competitors
+    and summarize their pricing and shipping strategy.
+  tools:
+    - name: web-fetch
 ```
 
-Apply the agents:
+## Step 3: Define the Team
 
-```bash
-kubectl apply -f expense-team-agents.yaml
-```
-
-## Step 2: Define the Team
-
-Create `expense-team.yaml`:
+Create `retail-lite-team.yaml`:
 
 ```yaml
 apiVersion: core.kaigents.io/v1alpha1
 kind: Team
 metadata:
-  name: finance-automation
+  name: retail-strategy-team
   namespace: kaigents
 spec:
-  coordinationModel: sequential
-  members:
-    - agentRef: receipt-classifier
-    - agentRef: policy-auditor
-    - agentRef: approval-router
+  agents:
+    - name: scout
+      agentRef: opportunity-scout
+    - name: analyst
+      agentRef: pricing-analyst
 ```
 
-Apply the team:
+## Step 4: Run the Process
 
-```bash
-kubectl apply -f expense-team.yaml
-```
-
-## Step 3: Run the Process
-
-Submit a work request with a sample expense:
+Submit a work request to start the market research:
 
 ```yaml
 apiVersion: core.kaigents.io/v1alpha1
 kind: Run
 metadata:
-  name: expense-run-001
+  name: market-research-001
   namespace: kaigents
 spec:
   target:
     kind: Team
-    name: finance-automation
+    name: retail-strategy-team
   input: |
-    Receipt: Starbucks, 2026-05-10, $15.50, Coffee with client.
+    Perform a market research for the "Sustainable Kitchenware" niche. 
+    Find opportunities and analyze the top 3 competitors.
 ```
 
-Apply the run:
+## Step 5: Observe and Scale
+
+Track the run progress using the Kaigents Dashboard or `kubectl`:
 
 ```bash
-kubectl apply -f expense-run.yaml
+kubectl get run market-research-001 -n kaigents -w
 ```
 
-## Step 4: Observe
-
-Track the run progress:
-
-```bash
-kubectl get run expense-run-001 -n kaigents -o yaml
-```
-
-You can also view the **Run Timeline** in the Kaigents Dashboard to see the sequence of agent interactions and artifacts produced.
+This "Lite" example is a preview of our **managed Kairon Retail service**, which includes advanced supply chain sourcing, creative asset generation (Flux/ComfyUI), and automated store revitalization.

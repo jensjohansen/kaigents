@@ -24,6 +24,9 @@ Our managed teams absorb all of that. You get the outcome, not the maintenance.
 
 ## Available managed teams
 
+### Kairon Retail (E-commerce Revitalization)
+A specialized retail team designed to help online stores survive and thrive in the face of supply chain disruptions and tariff volatility. Handles market research, competitor intelligence, and automated creative asset generation (Flux/ComfyUI) to revitalize aging catalogs and operations. [Learn more](kairon-retail-managed-service.md).
+
 ### Security Operations
 Continuous security coverage across your environment: vulnerability scanning, alert triage, incident response coordination, compliance evidence gathering, and CISO-level reporting — all with human-in-the-loop gates for high-severity decisions. Designed for organizations that need a functioning security operations capability without a full in-house SOC team.
 

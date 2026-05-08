@@ -22,15 +22,15 @@ We will follow these steps:
 1.  **Prepare the Environment**: Ensure your Kubernetes cluster is ready and shared dependencies are available.
 2.  **Install Temporal**: Set up the durable execution engine (or connect to an existing one).
 3.  **Install Kaigents**: Deploy the Kaigents operator and runner.
-4.  **Deploy the Expense Report Approver Team**: Create a 3-agent team to automate corporate expense approvals.
-5.  **Run and Observe**: Execute a work request and monitor it via the dashboard and observability stack.
+4.  **Deploy the Kairon Retail Lite Team**: Create a 2-agent team to discover trending products and analyze market competition.
+5.  **Run and Observe**: Execute a work request and monitor it via the dashboard and observability stack. [Observability Guide](observability.md)
 6.  **Cleanup**: Remove the example resources and platform.
 
 ## Prerequisites
 
 Before starting, ensure you have:
 
--   **Kubernetes Cluster**: A running cluster (v1.26+) with `kubectl` access.
+-   **Kubernetes Cluster**: A running cluster (v1.26+) with `kubectl` access. Optimized for AMD Ryzen AI if running on-prem.
 -   **Helm**: v3.x installed.
 -   **Cert-Manager**: Installed for certificate management.
 -   **Ingress Controller**: (Optional but recommended) e.g., NGINX Ingress.
@@ -71,15 +71,14 @@ See the [Installation Guide](installation.md) for detailed configuration options
 
 ---
 
-## Phase 3: Your First Team (Expense Report Approver)
+## Phase 3: Your First Team (Kairon Retail Lite)
 
-We will build a team that classifies expense reports, checks them against company policy, and routes them for approval.
+We will build a team that discovers new product opportunities in the global market and analyzes competitor positioning.
 
--   **Classifier Agent**: Extracts data from receipts.
--   **Policy Checker Agent**: Validates against `policy.pdf`.
--   **Approval Router**: Determines if human intervention is needed.
+-   **Discovery Agent**: Uses web acquisition tools to find high-growth product categories.
+-   **Analyst Agent**: Scrapes competitor pricing and reviews to determine market entry viability.
 
-[Build the Expense Report Approver Team](example-team.md)
+[Build the Kairon Retail Lite Team](example-team.md)
 
 ---
 

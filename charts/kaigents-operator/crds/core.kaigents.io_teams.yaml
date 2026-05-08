@@ -17,7 +17,7 @@ spec:
     singular: team
     kind: Team
     shortNames:
-      - kt
+      - ktm
   versions:
     - name: v1alpha1
       served: true

@@ -1,0 +1,16 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: temporal-db
+  namespace: kaigents
+spec:
+  instances: 1
+  storage:
+    size: 10Gi
+  bootstrap:
+    initdb:
+      database: temporal
+      owner: temporal
+      postInitApplicationSQL:
+        - CREATE DATABASE temporal_visibility;
+        - GRANT ALL PRIVILEGES ON DATABASE temporal_visibility TO temporal;

@@ -1,96 +1,94 @@
-# Temporal Installation (Customer Guide)
+# Temporal Installation (Operations Guide)
 
-This guide shows how to install Temporal on Kubernetes for use with Kaigents.
+Temporal provides the durable execution substrate for Kaigents. This guide outlines how to deploy Temporal specifically for Kaigents or connect to an existing enterprise instance.
 
-Kaigents can run against:
-- A Temporal cluster you already operate, or
-- A Temporal cluster you install using the official Temporal Helm chart (shown below)
+## Deployment Strategies
 
-## Install Temporal via Helm (Kubernetes)
+Kaigents is unopinionated about how Temporal is deployed, as long as the **Temporal Frontend** gRPC service is reachable.
 
-### Prerequisites
+### Strategy 1: Isolated (Sidecar-style)
+Deploy a dedicated Temporal cluster in the same namespace as Kaigents (`kaigents`). This is recommended for evaluation and projects requiring strict isolation.
 
-- A Kubernetes cluster
-- `kubectl` configured for the cluster
-- `helm` installed
-- A namespace to install into (example: `kaigents`)
+### Strategy 2: Shared (Enterprise)
+Connect to an existing shared Temporal cluster managed by your platform or DevOps team. This is recommended for production environments to centralize durability management.
 
-Create the namespace (if needed):
+---
 
-```bash
-kubectl create namespace kaigents
-```
+## 1. Deploying Isolated Temporal (Helm)
 
-### Add the Temporal Helm repo
+We recommend using the official Temporal Helm chart.
 
+### 1.1 Add the Repository
 ```bash
 helm repo add temporal https://go.temporal.io/helm-charts
 helm repo update
 ```
 
-### Install Temporal (minimal)
+### 1.2 Minimal Configuration for Kaigents
+Create a `temporal-kaigents-values.yaml` for a minimal, single-replica deployment:
 
-This is the simplest starting point using the official chart defaults:
-
-```bash
-helm upgrade --install temporal temporal/temporal \
-  --namespace kaigents
+```yaml
+server:
+  replicaCount: 1
+cassandra:
+  enabled: false
+postgresql:
+  enabled: true # Uses a sidecar PostgreSQL for persistence
 ```
 
-### Verify
-
-```bash
-kubectl -n kaigents get pods
-kubectl -n kaigents get svc
-```
-
-### Access the Temporal UI
-
-Port-forward the UI service:
-
-```bash
-kubectl -n kaigents port-forward svc/temporal-web 8233:8080
-```
-
-Then open:
-
-- http://localhost:8233
-
-### Uninstall
-
-```bash
-helm -n kaigents uninstall temporal
-```
-
-## Customizing the installation
-
-If you need to tune Temporal for your operational requirements, use a values file.
-
-Export the chart defaults:
-
-```bash
-helm show values temporal/temporal > temporal.values.yaml
-```
-
-Edit `temporal.values.yaml`, then install/upgrade:
-
+### 1.3 Install
 ```bash
 helm upgrade --install temporal temporal/temporal \
   --namespace kaigents \
-  -f temporal.values.yaml
+  --create-namespace \
+  -f temporal-kaigents-values.yaml
 ```
 
-Common customizations:
-- Reduce replicas for smaller clusters
-- Set CPU/memory requests/limits
-- Configure persistence to use your existing PostgreSQL
-- Configure ingress / exposure for the UI
-- Tune PodDisruptionBudgets (PDBs) to match replica counts
+---
 
-## Configure Kaigents to use Temporal
+## 2. Connecting to External Temporal
 
-Configure Kaigents to point at your Temporal Frontend gRPC endpoint (example service name if installed into `kaigents`):
+If you already have Temporal running in another namespace (e.g., `temporal-system`), configure Kaigents to point to the external address.
 
-- `temporal-frontend.kaigents.svc.cluster.local:7233`
+### 2.1 Configuration
+Update your Kaigents `values-override.yaml`:
 
-Set the Temporal address wherever Kaigents runtime configuration is defined for your deployment method.
+```yaml
+# Point Kaigents to the external Temporal Frontend
+temporalAdapter:
+  env:
+    - name: TEMPORAL_ADDRESS
+      value: "temporal-frontend.temporal-system.svc.cluster.local:7233"
+    - name: TEMPORAL_NAMESPACE
+      value: "default"
+```
+
+---
+
+## 3. Verification
+
+### 3.1 Check Pod Status
+```bash
+kubectl get pods -n kaigents -l app.kubernetes.io/instance=temporal
+```
+
+### 3.2 Access the UI
+```bash
+kubectl port-forward -n kaigents svc/temporal-web 8233:8080
+```
+Open [http://localhost:8233](http://localhost:8233) to monitor agent workflows.
+
+---
+
+## 4. Maintenance and Uninstallation
+
+### 4.1 Upgrading
+```bash
+helm upgrade temporal temporal/temporal -n kaigents --reuse-values
+```
+
+### 4.2 Uninstallation
+```bash
+helm uninstall temporal -n kaigents
+# Note: Persistence (PVs) may remain and should be cleaned up manually if needed.
+```

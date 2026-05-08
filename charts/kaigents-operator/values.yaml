@@ -8,22 +8,26 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/kaigents/kaigents-operator
+  repository: harbor.ai-agents.private/kaigents/kaigents-operator
   pullPolicy: IfNotPresent
-  tag: ""
+  tag: "v1.0.0-retail"
 
 runnerImage:
-  repository: ghcr.io/kaigents/kaigents-runner
+  repository: harbor.ai-agents.private/kaigents/kaigents-runner
   pullPolicy: IfNotPresent
-  tag: ""
+  tag: "v1.0.0-retail"
 
 temporalAdapter:
   url: "http://kaigents-temporal-adapter.kaigents.svc.cluster.local:8080"
 
 runnerEnv:
-  []
+  - name: KAIGENTS_TEMPORAL_ADAPTER_URL
+    value: "http://kaigents-temporal-adapter.kaigents.svc.cluster.local:8080"
+  - name: KAIGENTS_STORE
+    value: "file"
 
-imagePullSecrets: []
+imagePullSecrets:
+  - name: harbor-registry-secret
 
 nameOverride: ""
 fullnameOverride: ""

@@ -1,0 +1,20 @@
+apiVersion: core.kaigents.io/v1alpha1
+kind: ModelEndpoint
+metadata:
+  name: gpt-oss
+  namespace: kaigents
+spec:
+  url: "http://10.7.0.7:13305/v1"
+  model: "gpt-oss-20b-mxfp4-GGUF"
+  provider: "lemonade"
+  capabilities:
+    chat: true
+---
+apiVersion: core.kaigents.io/v1alpha1
+kind: Agent
+metadata:
+  name: smoke-test-agent
+  namespace: kaigents
+spec:
+  systemPrompt: "You are a helpful assistant for smoke testing Kaigents."
+  modelEndpointRef: "gpt-oss"

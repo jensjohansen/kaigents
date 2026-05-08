@@ -1,20 +1,20 @@
 # Installation Guide
 
-Kaigents is designed to be flexible. You can install all dependencies alongside the platform or connect to existing enterprise infrastructure.
+Kaigents is designed for enterprise flexibility. You can install all dependencies alongside the platform or connect to existing shared infrastructure.
 
 ## 1. Temporal (Durable Execution)
 
-Kaigents requires Temporal to manage long-running agent workflows.
+Kaigents requires Temporal to manage long-running agent workflows. 
 
-### Option A: Install Temporal for Kaigents
+### Option A: Isolated Temporal (Recommended for Getting Started)
 
-If you don't have Temporal, you can install it into the `kaigents` namespace. We recommend using the official Temporal Helm chart.
+If you want an isolated instance specifically for Kaigents, we recommend using the official Temporal Helm chart.
 
 ```bash
 helm repo add temporal https://go.temporal.io/helm-charts
 helm repo update
 
-# Install a minimal Temporal cluster
+# Install a minimal Temporal cluster into the kaigents namespace
 helm upgrade --install temporal temporal/temporal \
   --namespace kaigents \
   --create-namespace \
@@ -23,64 +23,55 @@ helm upgrade --install temporal temporal/temporal \
   --set postgresql.enabled=true
 ```
 
-### Option B: Connecting to Existing Temporal
+### Option B: Shared Temporal (Enterprise)
 
-If you already have Temporal running (e.g., in a `temporal-system` namespace), configure Kaigents to use it:
-
-```yaml
-# values.yaml
-temporal:
-  address: temporal-frontend.temporal-system.svc.cluster.local:7233
-  namespace: default # Temporal namespace
-```
+If you already have a shared Temporal cluster, configure the Kaigents Temporal Adapter to connect to it by setting the `TEMPORAL_ADDRESS` environment variable in your `values-override.yaml`.
 
 ---
 
-## 2. Shared Infrastructure (S3 and Identity)
+## 2. Infrastructure (S3 and Identity)
 
-Kaigents integrates with your existing S3-compatible storage and OIDC providers.
+Kaigents integrates with industry-standard S3 and OIDC providers. 
 
 ### 2.1 Artifact Storage (S3)
 
 Kaigents uses S3 for durable artifact storage.
+- **Local/On-Prem**: Use MinIO or Ceph RGW.
+- **Cloud**: Connect to AWS S3, Azure Blob (S3-compat), or GCS.
 
-- **Option A: MinIO (Development)**: If you don't have S3, you can install MinIO into your cluster.
-- **Option B: Enterprise S3 (Production)**: Connect to AWS S3, Ceph RGW, or Google Cloud Storage.
+### 2.2 Model Endpoints
 
-### 2.2 Identity (OIDC)
-
-- **Option A: Development Mode**: Disable OIDC to use the platform without authentication (not recommended for production).
-- **Option B: Keycloak/Okta**: Connect Kaigents to your existing OIDC provider for RBAC and SSO.
+Kaigents is model-agnostic but requires OpenAI-compatible endpoints.
+- **On-Prem/Edge**: We recommend **Lemonade Server** running on **AMD Ryzen AI** hardware for optimal TCO.
+- **Cloud**: Connect to OpenAI, Anthropic (via proxy), or Azure OpenAI.
 
 ---
 
 ## 3. Kaigents Operator
 
-The operator manages the Kaigents lifecycle and CRDs.
-
 ### Configure Dependencies
 
-Create a `values-override.yaml` to point Kaigents to your storage and OIDC providers:
+Create a `values-override.yaml`. If you are following the Kairon Retail example on-prem, your configuration might look like this:
 
 ```yaml
 # values-override.yaml
+
+# Connection to the Temporal Adapter (which connects to Temporal)
 temporalAdapter:
   url: "http://kaigents-temporal-adapter.kaigents.svc.cluster.local:8080"
 
-# Storage Configuration
+# S3 Storage Configuration
 storage:
   s3:
     endpoint: "http://minio.storage.svc.cluster.local:9000"
     bucket: "kaigents-artifacts"
     region: "us-east-1"
-    accessKey: "..."
-    secretKey: "..."
+    accessKey: "YOUR_ACCESS_KEY"
+    secretKey: "YOUR_SECRET_KEY"
 
-# OIDC Configuration (Optional)
-oidc:
-  enabled: true
-  issuerUrl: "https://keycloak.example.com/realms/kaigents"
-  clientId: "kaigents-platform"
+# Global Model Endpoint Defaults
+modelEndpoints:
+  default: "http://10.7.0.7:13305/v1" # Point to your local Lemonade Server
 ```
 
 ### Deploy Kaigents
@@ -91,15 +82,36 @@ helm upgrade --install kaigents-operator ./charts/kaigents-operator \
   -f values-override.yaml
 ```
 
-## 3. Verification
+---
 
-Verify that the operator and runner pods are healthy:
+## 4. Verification and Health Check
+
+Verify that the operator and adapter are healthy:
 
 ```bash
 kubectl get pods -n kaigents
 ```
 
-You should see:
-- `kaigents-operator-*`
-- `kaigents-temporal-adapter-*` (if enabled)
-- `kaigents-runner-*`
+Check the operator logs to ensure it has successfully connected to Temporal:
+
+```bash
+kubectl logs -l app.kubernetes.io/name=kaigents-operator -n kaigents
+```
+
+---
+
+## 5. Uninstallation
+
+To remove Kaigents and the example team:
+
+```bash
+# Remove the example resources
+kubectl delete -f retail-lite-team.yaml -n kaigents
+kubectl delete -f retail-lite-agents.yaml -n kaigents
+
+# Remove the platform
+helm uninstall kaigents-operator -n kaigents
+
+# Optionally remove the namespace and internal Temporal
+kubectl delete namespace kaigents
+```

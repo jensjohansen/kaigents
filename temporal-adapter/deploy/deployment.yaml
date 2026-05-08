@@ -26,9 +26,11 @@ spec:
         app.kubernetes.io/part-of: kaigents
     spec:
       serviceAccountName: default
+      imagePullSecrets:
+        - name: harbor-registry-secret
       containers:
         - name: adapter
-          image: harbor.ai-agents.private/kaigents/kaigents-temporal-adapter:latest
+          image: harbor.ai-agents.private/kaigents/kaigents-temporal-adapter:v1.0.0-retail
           ports:
             - name: http
               containerPort: 8080
@@ -39,6 +41,10 @@ spec:
               value: "kaigents"
             - name: LISTEN_ADDR
               value: ":8080"
+            - name: KAIGENTS_MODEL_ENDPOINT_URL
+              value: "http://10.7.0.7:13305"
+            - name: KAIGENTS_MODEL_NAME
+              value: "gpt-oss-20b-mxfp4-GGUF"
           readinessProbe:
             httpGet:
               path: /healthz

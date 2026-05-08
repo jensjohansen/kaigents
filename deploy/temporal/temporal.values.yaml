@@ -1,0 +1,29 @@
+server:
+  replicaCount: 1
+  config:
+    persistence:
+      defaultStore: default
+      visibilityStore: visibility
+      datastores:
+        default:
+          sql:
+            createDatabase: false
+            pluginName: postgres12
+            driverName: postgres
+            databaseName: temporal
+            connectAddr: "temporal-db-rw.kaigents:5432"
+            connectProtocol: "tcp"
+            user: temporal
+            existingSecret: temporal-db-app
+            secretKey: password
+        visibility:
+          sql:
+            createDatabase: false
+            pluginName: postgres12
+            driverName: postgres
+            databaseName: temporal_visibility
+            connectAddr: "temporal-db-rw.kaigents:5432"
+            connectProtocol: "tcp"
+            user: temporal
+            existingSecret: temporal-db-app
+            secretKey: password

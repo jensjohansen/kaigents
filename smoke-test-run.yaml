@@ -1,0 +1,10 @@
+apiVersion: core.kaigents.io/v1alpha1
+kind: Run
+metadata:
+  name: smoke-test-run
+  namespace: kaigents
+spec:
+  target:
+    kind: Agent
+    name: smoke-test-agent
+  input: "Hello, please confirm you are working."

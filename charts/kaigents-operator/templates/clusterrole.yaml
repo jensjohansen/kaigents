@@ -5,11 +5,11 @@
 # Copyright (c) 2026 John K Johansen
 # License: MIT (see LICENSE)
 
-{{- if .Values.rbac.create -}}
+{{- if .Values.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "kaigents-operator.fullname" . }}
+  name: {{ include "kaigents-operator.fullname" . }}-manager
 rules:
   - apiGroups: ["core.kaigents.io"]
     resources: ["agents", "teams", "runs", "tools", "mcpservers", "modelendpoints"]

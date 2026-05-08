@@ -17,7 +17,7 @@ spec:
     singular: task
     kind: Task
     shortNames:
-      - kt
+      - kts
   versions:
     - name: v1alpha1
       served: true
