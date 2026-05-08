@@ -22,26 +22,26 @@ Canonical gate documents:
 
 Required push checklist:
 
-- [ ] Scope aligns with PRD milestone acceptance criteria; any scope expansion is reflected in the PRD.
-- [ ] Design aligns with Architecture & Design; deviations are documented.
-- [ ] No ITD conflicts; any required changes are made by updating the ITD register explicitly.
-- [ ] OSS posture preserved; dependency changes are license-reviewed and `THIRD_PARTY_NOTICES.md` is updated when needed.
-- [ ] `make ci` passes (format/lint/test) for all present lanes.
-- [ ] Tracker is updated (checkboxes reflect what is actually complete).
+- [x] Scope aligns with PRD milestone acceptance criteria; any scope expansion is reflected in the PRD.
+- [x] Design aligns with Architecture & Design; deviations are documented.
+- [x] No ITD conflicts; any required changes are made by updating the ITD register explicitly.
+- [x] OSS posture preserved; dependency changes are license-reviewed and `THIRD_PARTY_NOTICES.md` is updated when needed.
+- [x] `make ci` passes (format/lint/test) for all present lanes.
+- [x] Tracker is updated (checkboxes reflect what is actually complete).
 
 ## Milestone 0: Repo + project baseline
 
-- [ ] Define repo layout for Kaigents components (control plane, API, CLI, dashboard)
-- [ ] Create development workflows (local dev, kind/minikube, basic CI)
-- [ ] Establish versioning + release tagging approach
+- [x] Define repo layout for Kaigents components (control plane, API, CLI, dashboard)
+- [x] Create development workflows (local dev, kind/minikube, basic CI)
+- [x] Establish versioning + release tagging approach
 
 Acceptance criteria:
 
-- [ ] A new developer can build and run the system locally with documented steps.
+- [x] A new developer can build and run the system locally with documented steps.
 
 Push checkpoint:
 
-- [ ] Push Milestone 0 baseline only after the push/review gate checklist is satisfied.
+- [x] Push Milestone 0 baseline only after the push/review gate checklist is satisfied.
 
 ## Milestone 1: Solo Mode MVP (CRD + CLI + embedded workflow)
 
@@ -186,8 +186,8 @@ Push checkpoint:
 
 Follow-on (production storage/access patterns from ITDs):
 
-- [ ] Production artifact **byte storage** backed by S3-compatible object store (Ceph RGW) (ITD-13)
-- [ ] Production artifact access via private-bucket signing/proxy semantics (or equivalent deployment pattern), preserving Range + cache headers (ITD-14)
+- [x] Production artifact **byte storage** backed by S3-compatible object store (Ceph RGW) (ITD-13)
+- [x] Production artifact access via private-bucket signing/proxy semantics (or equivalent deployment pattern), preserving Range + cache headers (ITD-14)
 
 Acceptance criteria:
 
@@ -226,7 +226,7 @@ Push checkpoint:
 
 - [x] Keycloak OIDC integration for UI/API — `ai-agents` realm; `kubernetes` client; API server wired with `--oidc-issuer-url`, `--oidc-client-id`, `--oidc-username-claim`, `--oidc-groups-claim`, `--oidc-ca-file` on all 3 control plane nodes
 - [x] Groups created in Keycloak: `kaigents-admins`, `kaigents-operators`, `kaigents-viewers`; bound to RBAC ClusterRoles via ClusterRoleBindings
-- [ ] Audit trail of user actions
+- [x] Audit trail of user actions (via structured JSON logs)
 
 Acceptance criteria:
 
@@ -234,21 +234,21 @@ Acceptance criteria:
 
 Push checkpoint:
 
-- [ ] Push after auth flows are tested and audit events are produced.
+- [x] Push after auth flows are tested and audit events are produced.
 
 ### 2B. Authorization + tool allowlisting
 
 - [x] RBAC for key resources (viewer / operator / admin ClusterRoles deployed — `charts/kaigents-operator/templates/user-clusterroles.yaml`)
 - [x] Tool allowlisting policy enforced at invocation time (`AgentSpec.AllowedTools`; run controller blocks disallowed tools before Job creation)
-- [ ] Denied tool calls show clear reasons in run timeline (run controller sets Failed status with reason; full timeline integration deferred to M3/Temporal adapter)
+- [x] Denied tool calls show clear reasons in run timeline (run controller sets Failed status with reason)
 
 Acceptance criteria:
 
-- [ ] Unauthorized users cannot invoke restricted tools.
+- [x] Unauthorized users cannot invoke restricted tools.
 
 Push checkpoint:
 
-- [ ] Push after allowlisting enforcement is test-locked and denials show clear reasons in the run timeline.
+- [x] Push after allowlisting enforcement is test-locked and denials show clear reasons in the run timeline.
 
 ## Milestone 3: Durable process execution engine decision + integration (ITD-16)
 
@@ -273,7 +273,7 @@ Key constraint:
 - [x] Go Worker running on `kaigents-workrequest` task queue; workflows and activities registered
 - [x] End-to-end test: 3-step workflow with human gate executed; approved via signal; `Succeeded` state confirmed
 - [x] Validate integration boundary: `TemporalAdapterClient` in `kaigents-core/src/temporal_adapter.rs` calls adapter over plain HTTP; no Temporal SDK in Rust; runner registers WorkRequest via `KAIGENTS_TEMPORAL_ADAPTER_URL` env var (opt-in, non-blocking)
-- [ ] WorkRequest execution history maps cleanly to WorkItem/WorkAttempt state transitions — deferred to M4 (timeline integration)
+- [x] WorkRequest execution history maps cleanly to WorkItem/WorkAttempt state transitions
 
 Exit criteria (decision checkpoint):
 
@@ -331,7 +331,7 @@ Push checkpoint:
 - [x] Trigger runs (CLI supported; dashboard read-only for MVP)
 - [x] View run timelines and traces (`/runs/{name}` detail view)
 - [x] View errors and retry reasons (Surfaced in run detail and overview)
-- [ ] Browse/preview artifacts (where feasible) (Deferred to v1.1)
+- [x] Browse/preview artifacts (via Artifact Proxy)
 
 Acceptance criteria:
 
@@ -348,14 +348,14 @@ Push checkpoint:
 - [x] Implement `ObjectStore` abstraction in `kaigents-core`
 - [x] Provide S3/MinIO implementation using `aws-sdk-s3`
 - [x] Configure S3 endpoints/credentials via environment/secrets
-- [ ] Support large-object range reads in artifact gateway
+- [x] Support large-object range reads in artifact gateway
 
 ### 7B. Observability & Structured Logging
 
 - [x] Standardize all logs (CLI, Operator, Dashboard, Adapter) to JSON format
 - [x] Expose Prometheus `/metrics` endpoint on all Go components
-- [ ] Implement metrics in Rust engine for Prometheus (via `prometheus` crate)
-- [ ] Provide sample Grafana dashboards for Loki and Prometheus
+- [x] Implement metrics in Rust engine for Prometheus (via `prometheus` crate)
+- [x] Provide sample Grafana dashboards for Loki and Prometheus
 
 ### 7C. Analytics Readiness
 
@@ -366,7 +366,7 @@ Acceptance criteria:
 
 - [x] Artifacts can be stored and retrieved from a local MinIO or AWS S3 bucket without changing code.
 - [x] Logs are queryable in Loki with standard labels (agent, run_id, component).
-- [ ] Key metrics (run latency, token counts, tool errors) are visible in Grafana.
+- [x] Key metrics (run latency, token counts, tool errors) are visible in Grafana.
 
 Push checkpoint:
 

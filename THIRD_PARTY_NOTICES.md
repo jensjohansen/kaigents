@@ -54,6 +54,12 @@ The Rust execution engine crates depend on the following third-party components.
 - **k8s-openapi** — Kubernetes API types
   - **License**: Apache-2.0
   - **Homepage**: https://github.com/Arnavion/k8s-openapi
+- **prometheus** — Prometheus instrumentation library
+  - **License**: Apache-2.0
+  - **Homepage**: https://github.com/prometheus/client_rust
+- **tiny_http** — ultra-lightweight HTTP server
+  - **License**: Apache-2.0 OR MIT
+  - **Homepage**: https://github.com/tiny-http/tiny-http
 
 ### Rust crates (optional RethinkDB backend)
 

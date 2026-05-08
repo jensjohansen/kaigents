@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/jensjohansen/kaigents/dashboard/internal/artifacts"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	corev1alpha1 "github.com/jensjohansen/kaigents/operator/api/core/v1alpha1"
 	"go.uber.org/zap"
@@ -28,9 +29,10 @@ type Server struct {
 	logger             *zap.Logger
 	tmpl               *template.Template
 	temporalAdapterURL string
+	artifactProxy      *artifacts.Proxy
 }
 
-func New(client client.Client, logger *zap.Logger, temporalAdapterURL string) (*Server, error) {
+func New(client client.Client, logger *zap.Logger, temporalAdapterURL string, proxy *artifacts.Proxy) (*Server, error) {
 	tmpl, err := template.ParseFS(templatesFS, "templates/*.html")
 	if err != nil {
 		return nil, err
@@ -40,6 +42,7 @@ func New(client client.Client, logger *zap.Logger, temporalAdapterURL string) (*
 		logger:             logger,
 		tmpl:               tmpl,
 		temporalAdapterURL: temporalAdapterURL,
+		artifactProxy:      proxy,
 	}, nil
 }
 
@@ -50,6 +53,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("/processes", s.handleProcesses)
 	mux.HandleFunc("/runs", s.handleRuns)
 	mux.HandleFunc("/runs/", s.handleRunDetail)
+	mux.HandleFunc("/artifacts/", s.handleArtifactProxy)
 	mux.Handle("/metrics", promhttp.Handler())
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -110,6 +114,15 @@ func (s *Server) handleRunDetail(w http.ResponseWriter, r *http.Request) {
 		"Page": "runs",
 		"Run":  run,
 	})
+}
+
+func (s *Server) handleArtifactProxy(w http.ResponseWriter, r *http.Request) {
+	key := strings.TrimPrefix(r.URL.Path, "/artifacts/")
+	if key == "" {
+		http.NotFound(w, r)
+		return
+	}
+	s.artifactProxy.ServeHTTP(w, r, key)
 }
 
 func (s *Server) render(w http.ResponseWriter, name string, data interface{}) {

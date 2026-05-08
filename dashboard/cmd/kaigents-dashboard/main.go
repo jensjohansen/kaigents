@@ -16,6 +16,7 @@ import (
 
 	corev1alpha1 "github.com/jensjohansen/kaigents/operator/api/core/v1alpha1"
 	"github.com/jensjohansen/kaigents/dashboard/internal/server"
+	"github.com/jensjohansen/kaigents/dashboard/internal/artifacts"
 	"go.uber.org/zap"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
@@ -46,7 +47,27 @@ func main() {
 		temporalAdapterURL = "http://kaigents-temporal-adapter.kaigents.svc.cluster.local:8080"
 	}
 
-	dashboard, err := server.New(k8sClient, logger, temporalAdapterURL)
+	s3Cfg := artifacts.Config{
+		Endpoint:        os.Getenv("KAIGENTS_S3_ENDPOINT"),
+		Region:          os.Getenv("KAIGENTS_S3_REGION"),
+		Bucket:          os.Getenv("KAIGENTS_S3_BUCKET"),
+		AccessKey:       os.Getenv("KAIGENTS_S3_ACCESS_KEY"),
+		SecretKey:       os.Getenv("KAIGENTS_S3_SECRET_KEY"),
+		ForcePathStyle: os.Getenv("KAIGENTS_S3_FORCE_PATH_STYLE") == "true",
+	}
+	if s3Cfg.Bucket == "" {
+		s3Cfg.Bucket = "kaigents-artifacts"
+	}
+	if s3Cfg.Region == "" {
+		s3Cfg.Region = "us-east-1"
+	}
+
+	artifactProxy, err := artifacts.NewProxy(s3Cfg, logger)
+	if err != nil {
+		logger.Fatal("failed to initialize artifact proxy", zap.Error(err))
+	}
+
+	dashboard, err := server.New(k8sClient, logger, temporalAdapterURL, artifactProxy)
 	if err != nil {
 		logger.Fatal("failed to initialize dashboard server", zap.Error(err))
 	}

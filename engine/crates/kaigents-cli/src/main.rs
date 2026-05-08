@@ -7,7 +7,8 @@
 
 use clap::{Parser, Subcommand};
 use kaigents_core::{
-    init_logging, artifacts_root_dir, default_state_dir, parse_uuid, timeline_events_path, ArtifactId,
+    init_logging, init_metrics, RUNS_TOTAL, RUN_DURATION_SECONDS, TOOL_INVOCATIONS_TOTAL, MODEL_TOKENS_TOTAL, gather_metrics,
+    artifacts_root_dir, default_state_dir, parse_uuid, timeline_events_path, ArtifactId,
     ArtifactKind, ChatCompletionRequest, ChatMessage, EventType,
     FileArtifactStore, FileTimelineStore, FileToolContractStore, HttpMcpClient,
     HttpOpenAIModelClient, RunId, StartWorkRequestRequest,
@@ -94,6 +95,7 @@ enum Commands {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     init_logging();
+    init_metrics();
     let cli = Cli::parse();
 
     let state_dir = default_state_dir();
@@ -246,11 +248,22 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
 
         Commands::Runner => {
+            let metrics_port = std::env::var("KAIGENTS_METRICS_PORT").unwrap_or_else(|_| "9090".to_string());
+            let server = tiny_http::Server::http(format!("0.0.0.0:{}", metrics_port)).unwrap();
+            std::thread::spawn(move || {
+                for request in server.incoming_requests() {
+                    let response = tiny_http::Response::from_string(gather_metrics());
+                    let _ = request.respond(response);
+                }
+            });
+
+            let run_timer = RUN_DURATION_SECONDS.start_timer();
             let run_id_raw = std::env::var("KAIGENTS_RUN_ID")
                 .map_err(|_| "KAIGENTS_RUN_ID is required for runner mode")?;
             let run_id = RunId::from_uuid(parse_uuid(&run_id_raw)?);
 
             let target_kind = std::env::var("KAIGENTS_RUN_TARGET_KIND").unwrap_or_else(|_| "Agent".to_string());
+            RUNS_TOTAL.with_label_values(&[&target_kind, "started"]).inc();
             let target_name = std::env::var("KAIGENTS_RUN_TARGET_NAME").map_err(|_| "KAIGENTS_RUN_TARGET_NAME is required")?;
             let run_input = std::env::var("KAIGENTS_RUN_INPUT").unwrap_or_default();
 
@@ -332,10 +345,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             if state.phase == "Succeeded" {
                                 timeline_store.append(TimelineEvent::new(run_id.clone(), EventType::RunFinished))?;
                                 info!("Run completed successfully.");
+                                RUNS_TOTAL.with_label_values(&[&target_kind, "succeeded"]).inc();
+                                run_timer.observe_duration();
                                 break;
                             }
                             if state.phase == "Failed" {
                                 let error = state.message.unwrap_or_else(|| "unknown error".to_string());
+                                RUNS_TOTAL.with_label_values(&[&target_kind, "failed"]).inc();
+                                run_timer.observe_duration();
                                 timeline_store.append(TimelineEvent::new(run_id.clone(), EventType::RunFinished)
                                     .with_payload("status".to_string(), "failed".to_string())
                                     .with_payload("error".to_string(), error.clone()))?;
@@ -386,6 +403,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         Duration::from_secs(30),
                     )
                     .await?;
+                TOOL_INVOCATIONS_TOTAL.with_label_values(&[&search_tool_name, "succeeded"]).inc();
 
                 let mut urls: Vec<String> = Vec::new();
                 if let Some(results) = search_results.get("results").and_then(|v| v.as_array()) {
@@ -406,6 +424,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             Duration::from_secs(30),
                         )
                         .await?;
+                    TOOL_INVOCATIONS_TOTAL.with_label_values(&[&read_tool_name, "succeeded"]).inc();
                     let text = read_output
                         .get("text")
                         .and_then(|v| v.as_str())
@@ -449,7 +468,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .chat_completion(
                         &endpoint_name,
                         ChatCompletionRequest {
-                            model: model_name,
+                            model: model_name.clone(),
                             messages: vec![ChatMessage {
                                 role: "user".to_string(),
                                 content: prompt,
@@ -476,6 +495,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             usage.completion_tokens.to_string(),
                         )
                         .with_payload("total_tokens".to_string(), usage.total_tokens.to_string());
+                    
+                    MODEL_TOKENS_TOTAL.with_label_values(&[&model_name, "prompt"]).inc_by(usage.prompt_tokens as u64);
+                    MODEL_TOKENS_TOTAL.with_label_values(&[&model_name, "completion"]).inc_by(usage.completion_tokens as u64);
                 }
                 timeline_store.append(finished)?;
 
@@ -510,6 +532,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 timeline_store.append(TimelineEvent::new(run_id, EventType::RunFinished))?;
                 
                 info!("Solo Mode execution completed.");
+                RUNS_TOTAL.with_label_values(&[&target_kind, "succeeded"]).inc();
+                run_timer.observe_duration();
                 return Ok(());
             }
 

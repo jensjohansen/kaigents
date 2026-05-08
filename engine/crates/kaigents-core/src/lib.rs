@@ -9,6 +9,7 @@ pub mod artifacts;
 pub mod dag;
 pub mod file_backed;
 pub mod logging;
+pub mod metrics;
 pub mod model_serving;
 #[cfg(feature = "rethinkdb")]
 pub mod rethinkdb_store;
@@ -31,6 +32,10 @@ pub use file_backed::{
     FileTimelineStore, FileToolContractStore,
 };
 pub use logging::init_logging;
+pub use metrics::{
+    gather_metrics, init_metrics, MODEL_TOKENS_TOTAL, RUNS_TOTAL, RUN_DURATION_SECONDS,
+    TOOL_INVOCATIONS_TOTAL,
+};
 pub use model_serving::{
     ChatChoice, ChatCompletionRequest, ChatCompletionResponse, ChatMessage, Embedding,
     EmbeddingsRequest, EmbeddingsResponse, HttpOpenAIModelClient, InMemoryModelClient,
