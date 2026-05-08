@@ -52,6 +52,10 @@ Kaigents 1.0.0 is built for stability and enterprise operations:
 
 A comprehensive **Getting Started** guide is under development. For now, see the [Operations](docs/ops/temporal-installation.md) documentation and the [Architecture](docs/architecture/kaigents-architecture-and-design.md) for core concepts.
 
+## Managed AI Teams
+
+You can build any agent team on Kaigents yourself. You can also skip the build — we operate a growing catalog of production-ready AI agent teams as fully managed services. See [docs/product/managed-services.md](docs/product/managed-services.md) for an overview of available teams and how to get access.
+
 ## Development
 
 This repo uses a minimal Makefile to run formatting, linting, and tests when relevant toolchains are present.
