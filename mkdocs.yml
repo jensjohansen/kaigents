@@ -1,0 +1,52 @@
+site_name: Kaigents
+site_url: https://jensjohansen.github.io/kaigents/
+repo_url: https://github.com/jensjohansen/kaigents
+site_description: Production-grade substrate for operating AI agent teams.
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: indigo
+    accent: indigo
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - content.code.copy
+    - content.code.annotate
+
+nav:
+  - Home: index.md
+  - Product:
+    - Introduction: product/kaigents-introduction.md
+    - PRD: product/kaigents-prd.md
+    - Domain Model: product/domain-model.md
+    - Managed Services: product/managed-services.md
+    - Kairon Retail: product/kairon-retail-managed-service.md
+  - Getting Started:
+    - Overview: getting-started/index.md
+    - Installation: getting-started/installation.md
+    - Your First Team: getting-started/example-team.md
+    - Observability: getting-started/observability.md
+    - Validation: getting-started/temporal-validation.md
+  - Architecture:
+    - System Design: architecture/kaigents-architecture-and-design.md
+    - Engine Architecture: architecture/ai_agent_engine_architecture.md
+  - Operations:
+    - Temporal Installation: ops/temporal-installation.md
+  - Strategy:
+    - Corporate AI Strategy: strategy/corporate_ai_strategy.md
+    - Marketing: strategy/marketing_ai_agent_strategy.md
+    - Security: strategy/security_operations_ai_strategy.md
+  - Development:
+    - Coding Standards: CODING_STANDARDS_AND_DOD.md
+    - Implementation Plan: implementation-plan.md
+    - Tracker: implementation/kaigents-implementation-tracker.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
