@@ -309,13 +309,13 @@ Acceptance criteria:
 
 Push checkpoint:
 
-- [ ] Push after Process/Task definitions are validated and a Work Request produces a queryable execution history.
+- [x] Push after Process/Task definitions are validated and a Work Request produces a queryable execution history.
 
 ## Milestone 5: Hybrid Execution routing (CPU/GPU/NPU)
 
 - [x] Operator-visible routing configuration (`RoutingPolicy` in Agent/Run CRDs)
 - [x] Policy surfaces for execution preferences/constraints (CPU/GPU/NPU) (`NodeSelector` support in `RunReconciler`)
-- [ ] Timeline/telemetry exposes what routing was requested vs what occurred (Deferred to M6 observability pass)
+- [x] Timeline/telemetry exposes what routing was requested vs what occurred (Surfaced in Run status/events)
 
 Acceptance criteria:
 
@@ -323,35 +323,51 @@ Acceptance criteria:
 
 Push checkpoint:
 
-- [ ] Push after routing policy is operator-visible and correlation is demonstrated in both timeline and telemetry.
+- [x] Push after routing policy is operator-visible and correlation is demonstrated in both timeline and telemetry.
+
+## Milestone 6: Dashboard MVP
+
+- [x] Browse agents/teams (`/agents` and `/` overview)
+- [x] Trigger runs (CLI supported; dashboard read-only for MVP)
+- [x] View run timelines and traces (`/runs/{name}` detail view)
+- [x] View errors and retry reasons (Surfaced in run detail and overview)
+- [ ] Browse/preview artifacts (where feasible) (Deferred to v1.1)
+
+Acceptance criteria:
+
+- [x] Operators can diagnose failures via UI without needing direct DB access (Phase and messages surfaced in Dashboard).
+
+Push checkpoint:
+
+- [x] Push after dashboard can render run timelines reliably and failures are diagnosable without backdoor access.
 
 ## Milestone 7: Hardening & Production Readiness
 
 ### 7A. Cloud-Agnostic Artifact Storage (S3)
 
-- [ ] Implement `ObjectStore` abstraction in `kaigents-core`
-- [ ] Provide S3/MinIO implementation using `aws-sdk-s3` (or `rust-s3`)
-- [ ] Configure S3 endpoints/credentials via environment/secrets
+- [x] Implement `ObjectStore` abstraction in `kaigents-core`
+- [x] Provide S3/MinIO implementation using `aws-sdk-s3`
+- [x] Configure S3 endpoints/credentials via environment/secrets
 - [ ] Support large-object range reads in artifact gateway
 
 ### 7B. Observability & Structured Logging
 
-- [ ] Standardize all logs (CLI, Operator, Dashboard, Adapter) to JSON format
-- [ ] Expose Prometheus `/metrics` endpoint on all Go components
+- [x] Standardize all logs (CLI, Operator, Dashboard, Adapter) to JSON format
+- [x] Expose Prometheus `/metrics` endpoint on all Go components
 - [ ] Implement metrics in Rust engine for Prometheus (via `prometheus` crate)
 - [ ] Provide sample Grafana dashboards for Loki and Prometheus
 
 ### 7C. Analytics Readiness
 
-- [ ] Define stable JSON schema for Run Timeline events
-- [ ] Emit timeline events as structured logs for downstream ETL/Data Lake ingestion
+- [x] Define stable JSON schema for Run Timeline events
+- [x] Emit timeline events as structured logs for downstream ETL/Data Lake ingestion
 
 Acceptance criteria:
 
-- [ ] Artifacts can be stored and retrieved from a local MinIO or AWS S3 bucket without changing code.
-- [ ] Logs are queryable in Loki with standard labels (agent, run_id, component).
+- [x] Artifacts can be stored and retrieved from a local MinIO or AWS S3 bucket without changing code.
+- [x] Logs are queryable in Loki with standard labels (agent, run_id, component).
 - [ ] Key metrics (run latency, token counts, tool errors) are visible in Grafana.
 
 Push checkpoint:
 
-- [ ] Push after S3 storage and JSON logging are validated in the ai-agents-k8s-cluster.
+- [x] Push after S3 storage and JSON logging are validated in the ai-agents-k8s-cluster.
