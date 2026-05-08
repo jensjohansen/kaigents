@@ -50,7 +50,7 @@ Kaigents 1.0.0 is built for stability and enterprise operations:
 
 ## Getting Started
 
-A comprehensive **Getting Started** guide is under development. For now, see the [Operations](docs/ops/temporal-installation.md) documentation and the [Architecture](docs/architecture/kaigents-architecture-and-design.md) for core concepts.
+Follow the [Getting Started Guide](docs/getting-started/index.md) to install Kaigents and deploy your first AI agent team.
 
 ## Managed AI Teams
 

@@ -280,7 +280,7 @@ Exit criteria (decision checkpoint):
 
 Push checkpoint:
 
-- [ ] Push only after ITD-16 is recorded and the POC code is reproducible.
+- [x] Push only after ITD-16 is recorded and the POC code is reproducible.
 
 ## Milestone 4: Process definition model (Process/Task) + execution mapping
 

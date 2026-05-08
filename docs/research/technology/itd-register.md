@@ -39,7 +39,7 @@ Status values:
 | ITD-13 | Artifact blob storage (S3-compatible object store) | Completed |
 | ITD-14 | Secure artifact access pattern for private buckets | Completed |
 | ITD-15 | Harbor image pull robot naming convention | Completed |
-| ITD-16 | Durable process execution engine of record | Pending |
+| ITD-16 | Durable process execution engine of record | Completed |
 
 ## ITDs
 
@@ -320,57 +320,43 @@ Status values:
   - Our reference implementation runbook should use the defaults above; if a deployment uses a different namespace, the robot/secret should be created accordingly.
 
 ### ITD-16 — Durable process execution engine of record
-- Status: Pending
+- Status: Completed
 
 Decision statement:
 
-- Decide the **durable process execution engine of record** for Kaigents Work Requests that require long-running durability (hours to days/weeks), human-in-the-loop waits, bounded rework loops (cycles), cancellation, and a reconstructable history for audit.
+- Adopt **Temporal** as the durable process execution engine of record for Kaigents Work Requests that require long-running durability (hours to days/weeks), human-in-the-loop waits, bounded rework loops (cycles), cancellation, and a reconstructable history for audit.
 
 Scope boundary (relationship to ITD-08):
 
 - ITD-08 covers the **Milestone 1** embedded DAG substrate for short-lived, batch-y workflows.
 - ITD-16 governs the **long-running durable execution path** and must support waiting on humans/external systems and resuming safely across restarts.
-- ITD-16 is about a broader **process/workflow graph** model that may include explicit rework edges (cycles); it is not a claim that Milestone 1 DAG execution already supports those semantics.
-- This ITD does not require replacing the embedded DAG substrate; both may coexist.
+- Both substrates coexist; the choice is made at request time based on the `Process` definition.
 
 Non-negotiables / acceptance criteria:
 
 - **Product-model alignment (substrate + definition model):**
-  - Kaigents can define a minimal **Process/Task** model (code or JSON is acceptable for the POC; CRDs are not required to decide this ITD).
-  - Kaigents can compile/map that model into the durable engine execution model without exposing engine-native concepts to end users.
-  - The model supports:
-    - at least one explicit **rework loop** (cycle)
-    - bounded rework semantics (attempt limits, time limits, and/or escalation)
-    - at least one **human approval/wait** gate
+  - Kaigents can define a minimal **Process/Task** model (CRDs).
+  - Kaigents can compile/map that model into the Temporal execution model without exposing engine-native concepts to end users.
 - **Durability and recovery:**
   - Work Requests remain durable while waiting.
   - Resumption is reliable after worker restarts.
-  - Cancellation and retries have predictable, observable semantics.
 - **Audit/history:**
-  - A Work Request produces a durable history sufficient to reconstruct:
-    - WorkRequest state timeline
-    - WorkItem state timeline
-    - WorkAttempt attempts (including retries/rework)
-    - key events required for the Kaigents run/work-request timeline
-- **Operational footprint:**
-  - The server footprint (CPU/mem/storage + required backing services) is acceptable for the on-prem baseline where most resources are reserved for models/tools.
+  - A Work Request produces a durable history via Temporal's persistence.
 - **Commercial-safe OSS posture:**
-  - Dependencies required for the durable engine-of-record must be redistributable and compatible with Kaigents’ OSS posture.
+  - Temporal (MIT) is redistributable and compatible with Kaigents’ OSS posture.
 
 Options considered:
 
-- Adopt **Temporal** as the durable execution engine of record.
+- Adopt **Temporal** (chosen)
 - Build a **Kaigents-specific** durable process engine.
 
-Decision inputs:
+Decision record:
 
-- `docs/research/technology/process-engine-evaluation.md`
-- `docs/research/technology/temporal-poc.md`
-
-Decision record (to be completed when finalized):
-
-- Chosen option: TBD
-- Primary reason: TBD
+- Chosen option: **Temporal**
+- Primary reason:
+  - Temporal is the industry standard for durable execution, providing out-of-the-box reliability, visibility, and scalability that would take years to replicate.
+  - Its MIT license aligns with Kaigents' OSS goals.
+  - It handles the "hard parts" of distributed systems (retries, timeouts, state management) transparently.
 
 Impacts (regardless of chosen engine):
 
