@@ -96,26 +96,21 @@ Milestone 1 scope note:
 
 ### 1C.1 Temporal stop/go spike (execution substrate)
 
-Deferred note:
-
-- This exploratory spike does not gate Milestone 1 close-out.
-- Durable execution-engine-of-record work remains part of the later ITD-16 / Milestone 3 decision path.
-
-- [ ] Timebox: <= 4 hours (stop when exit criteria is met)
-- [ ] Deploy minimal self-hosted Temporal Service in a dev namespace and record baseline footprint (CPU/mem/storage + required backing services)
-- [ ] Implement a thin Temporal adapter service (Go) that exposes Kaigents-native operations:
-- [ ] Start execution (WorkRequest)
-- [ ] Signal execution (human-in-loop / rework)
-- [ ] Query execution state
-- [ ] Implement a minimal Go Worker that can:
-- [ ] Run a trivial Workflow that blocks on a Signal and then completes
-- [ ] Execute one Activity that represents a Kaigents WorkAttempt
-- [ ] Validate Rust backend calls adapter (no Temporal SDK usage from Rust) and that no Temporal concepts leak into core domain types
-- [ ] Exit criteria (decision checkpoint):
-- [ ] Ops footprint is acceptable for baseline on-prem cluster assumptions
-- [ ] Integration boundary is acceptable (Rust <-> adapter stable, minimal surface)
-- [ ] Developer experience is acceptable (workflow determinism constraints are manageable)
-- [ ] Record outcome as an ITD: Adopt Temporal backend vs Build custom thin engine
+- [x] Timebox: <= 4 hours (stop when exit criteria is met)
+- [x] Deploy minimal self-hosted Temporal Service in a dev namespace and record baseline footprint (CPU/mem/storage + required backing services)
+- [x] Implement a thin Temporal adapter service (Go) that exposes Kaigents-native operations:
+- [x] Start execution (WorkRequest)
+- [x] Signal execution (human-in-loop / rework)
+- [x] Query execution state
+- [x] Implement a minimal Go Worker that can:
+- [x] Run a trivial Workflow that blocks on a Signal and then completes
+- [x] Execute one Activity that represents a Kaigents WorkAttempt
+- [x] Validate Rust backend calls adapter (no Temporal SDK usage from Rust) and that no Temporal concepts leak into core domain types
+- [x] Exit criteria (decision checkpoint):
+- [x] Ops footprint is acceptable for baseline on-prem cluster assumptions
+- [x] Integration boundary is acceptable (Rust <-> adapter stable, minimal surface)
+- [x] Developer experience is acceptable (workflow determinism constraints are manageable)
+- [x] Record outcome as an ITD: Adopt Temporal backend vs Build custom thin engine
 
 Acceptance criteria:
 
