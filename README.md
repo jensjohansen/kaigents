@@ -2,9 +2,11 @@
   <img src="assets/kaigents.png" alt="Kaigents" width="720" />
 </p>
 
-# Kaigents Platform
+# Kaigents Platform (GA Release)
 
-Kaigents is a Kubernetes-native platform for building, running, and operating AI agents in production environments, optimized for low total cost of ownership (TCO) with a strong focus on AMD Ryzen AI hardware.
+Kaigents is a **production-ready**, Kubernetes-native platform for building, running, and operating AI agents in enterprise environments. It is optimized for low total cost of ownership (TCO) with a strong focus on AMD Ryzen AI hardware.
+
+**Current Version**: 1.0.0 (General Availability)
 
 This repository is the Kaigents **platform** (distinct from any future marketing/community site).
 
@@ -23,6 +25,14 @@ This repository is the Kaigents **platform** (distinct from any future marketing
 - [`docs/research/technology/oss-components-commercially-permissible.md`](docs/research/technology/oss-components-commercially-permissible.md)
   - OSS due diligence list and licensing posture (redistribute vs integrate-only vs exclude).
 
+## Production Hardened
+
+Kaigents 1.0.0 is built for stability and enterprise operations:
+- **Durable Execution**: Long-running workflows survive component restarts.
+- **Observability**: Full Prometheus metrics and JSON structured logs (Loki) across all components.
+- **Enterprise Storage**: Cloud-agnostic S3 support with large-object streaming.
+- **Identity**: Built-in OIDC (Keycloak) and Kubernetes RBAC integration.
+
 ## Features
 
 - **Kubernetes-native**: Built on CRDs, standard RBAC, and GitOps-friendly workflows.
@@ -37,6 +47,10 @@ This repository is the Kaigents **platform** (distinct from any future marketing
 - Kaigents is MIT-licensed.
 - Core dependencies must remain commercial-safe (redistribution-safe).
 - Integrate-only components (user-supplied) are allowed only when clearly separated and documented.
+
+## Getting Started
+
+A comprehensive **Getting Started** guide is under development. For now, see the [Operations](docs/ops/temporal-installation.md) documentation and the [Architecture](docs/architecture/kaigents-architecture-and-design.md) for core concepts.
 
 ## Development
 
