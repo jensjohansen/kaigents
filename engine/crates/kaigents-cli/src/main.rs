@@ -17,7 +17,7 @@ use std::collections::HashMap;
 use std::io;
 use std::sync::Arc;
 use std::time::Duration;
-use tracing::{info, error, warn, debug};
+use tracing::{info, error};
 
 use kaigents_core::ModelClient;
 
