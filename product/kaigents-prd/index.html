@@ -1,0 +1,3000 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Production-grade substrate for operating AI agent teams.">
+      
+      
+      
+        <link rel="canonical" href="https://jensjohansen.github.io/kaigents/product/kaigents-prd/">
+      
+      
+        <link rel="prev" href="../kaigents-introduction/">
+      
+      
+        <link rel="next" href="../domain-model/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>PRD - Kaigents</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#kaigents-product-requirements-document-prd" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Kaigents" class="md-header__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kaigents
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              PRD
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../kaigents-introduction/" class="md-tabs__link">
+          
+  
+  
+  Product
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/kaigents-architecture-and-design/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../ops/temporal-installation/" class="md-tabs__link">
+          
+  
+  
+  Operations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../strategy/corporate_ai_strategy/" class="md-tabs__link">
+          
+  
+  
+  Strategy
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../CODING_STANDARDS_AND_DOD/" class="md-tabs__link">
+          
+  
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Kaigents" class="md-nav__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kaigents
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Product
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kaigents-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-at-a-glance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 At a glance
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-problem-statement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Problem Statement
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-goals-and-non-goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Goals and Non-Goals
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Goals and Non-Goals">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Goals
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-non-goals-initial-releases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Non-Goals (initial releases)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-target-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Target Users
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-user-experience-ux-and-primary-workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. User Experience (UX) and Primary Workflows
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. User Experience (UX) and Primary Workflows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-install-and-bootstrap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Install and bootstrap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-define-and-manage-agents-declarative-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Define and manage agents (declarative-first)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-execute-and-observe-runs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Execute and observe runs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-hybrid-execution-policies-cost-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Hybrid Execution policies (cost + performance)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-governance-and-guardrails" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 Governance and guardrails
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-functional-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Functional Requirements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Functional Requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-resource-model-and-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Resource model and lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-tool-plane" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Tool plane
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-execution-and-orchestration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Execution and orchestration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-artifacts-and-asset-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 Artifacts and asset access
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#65-model-serving-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 Model serving integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#66-ux-surfaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.6 UX surfaces
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#66-identity-and-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.6 Identity and access
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-quality-attributes-non-functional-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Quality Attributes (Non-Functional Requirements)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#71-assumptions-and-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Assumptions and Constraints
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#72-licensing-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Licensing Policy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7.2 Licensing Policy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#core-platform-mit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core platform (MIT)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#managed-service-layer-commercial-license-required" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Managed service layer (commercial license required)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#license-evolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        License evolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-conceptual-architecture-product-level-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Conceptual Architecture (Product-level capabilities)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-buy-vs-build-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Buy vs Build Evaluation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-release-plan-milestones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Release Plan (Milestones)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Release Plan (Milestones)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#milestone-0-prd-platform-baseline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 0: PRD + platform baseline
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#milestone-1-solo-mode-mvp-crd-cli-embedded-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 1: Solo Mode MVP (CRD + CLI + embedded workflow)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#milestone-2-platform-mode-essentials-identity-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 2: Platform Mode essentials (identity + policy)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#milestone-3-hybrid-execution-routing-cpugpunpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 3: Hybrid Execution routing (CPU/GPU/NPU)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#milestone-4-dashboard-mvp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 4: Dashboard MVP
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-success-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Success Metrics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-risks-and-mitigations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Risks and Mitigations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-deferred-decisions-post-mvp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Deferred decisions (post-MVP)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-sample-teams-test-cases-validation-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. Sample teams / test cases (validation scenarios)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14. Sample teams / test cases (validation scenarios)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#141-test-case-codeknowl-milestone-11-guardrailed-agentic-workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.1 Test case: CodeKnowl Milestone 11 (guardrailed agentic workflows)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#142-test-case-asset-gateway-artifact-access-for-runs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.2 Test case: Asset Gateway (artifact access for runs)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#143-test-case-builder-agentteam-design-and-deployment-ux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.3 Test case: Builder (agent/team design and deployment UX)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../domain-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../managed-services/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Managed Services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kairon-retail-managed-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kairon Retail
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/example-team/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your First Team
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/temporal-validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/kaigents-architecture-and-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/ai_agent_engine_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ops/temporal-installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Temporal Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Strategy
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Strategy
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/corporate_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Corporate AI Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/marketing_ai_agent_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marketing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/security_operations_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CODING_STANDARDS_AND_DOD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation-plan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation/kaigents-implementation-tracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-at-a-glance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 At a glance
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-problem-statement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Problem Statement
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-goals-and-non-goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Goals and Non-Goals
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Goals and Non-Goals">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Goals
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-non-goals-initial-releases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Non-Goals (initial releases)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-target-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Target Users
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-user-experience-ux-and-primary-workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. User Experience (UX) and Primary Workflows
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. User Experience (UX) and Primary Workflows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-install-and-bootstrap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Install and bootstrap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-define-and-manage-agents-declarative-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Define and manage agents (declarative-first)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-execute-and-observe-runs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Execute and observe runs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-hybrid-execution-policies-cost-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Hybrid Execution policies (cost + performance)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-governance-and-guardrails" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 Governance and guardrails
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-functional-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Functional Requirements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Functional Requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-resource-model-and-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Resource model and lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-tool-plane" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Tool plane
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-execution-and-orchestration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Execution and orchestration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-artifacts-and-asset-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 Artifacts and asset access
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#65-model-serving-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 Model serving integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#66-ux-surfaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.6 UX surfaces
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#66-identity-and-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.6 Identity and access
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-quality-attributes-non-functional-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Quality Attributes (Non-Functional Requirements)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#71-assumptions-and-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Assumptions and Constraints
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#72-licensing-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Licensing Policy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7.2 Licensing Policy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#core-platform-mit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core platform (MIT)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#managed-service-layer-commercial-license-required" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Managed service layer (commercial license required)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#license-evolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        License evolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-conceptual-architecture-product-level-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Conceptual Architecture (Product-level capabilities)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-buy-vs-build-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Buy vs Build Evaluation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-release-plan-milestones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Release Plan (Milestones)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Release Plan (Milestones)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#milestone-0-prd-platform-baseline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 0: PRD + platform baseline
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#milestone-1-solo-mode-mvp-crd-cli-embedded-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 1: Solo Mode MVP (CRD + CLI + embedded workflow)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#milestone-2-platform-mode-essentials-identity-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 2: Platform Mode essentials (identity + policy)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#milestone-3-hybrid-execution-routing-cpugpunpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 3: Hybrid Execution routing (CPU/GPU/NPU)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#milestone-4-dashboard-mvp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 4: Dashboard MVP
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-success-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Success Metrics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-risks-and-mitigations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Risks and Mitigations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-deferred-decisions-post-mvp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Deferred decisions (post-MVP)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-sample-teams-test-cases-validation-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. Sample teams / test cases (validation scenarios)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14. Sample teams / test cases (validation scenarios)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#141-test-case-codeknowl-milestone-11-guardrailed-agentic-workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.1 Test case: CodeKnowl Milestone 11 (guardrailed agentic workflows)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#142-test-case-asset-gateway-artifact-access-for-runs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.2 Test case: Asset Gateway (artifact access for runs)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#143-test-case-builder-agentteam-design-and-deployment-ux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.3 Test case: Builder (agent/team design and deployment UX)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<p align="center">
+  <img src="../../assets/kaigents.png" alt="Kaigents" width="720" />
+</p>
+
+<h1 id="kaigents-product-requirements-document-prd">Kaigents: Product Requirements Document (PRD)</h1>
+<h2 id="1-overview">1. Overview</h2>
+<p>Kaigents is a Kubernetes-native platform for building, running, and operating AI agents in production environments, optimized for low total cost of ownership (TCO) with a strong focus on <strong>AMD Ryzen AI</strong> hardware.</p>
+<p>Kaigents is designed for organizations that want:</p>
+<ul>
+<li>A <strong>Kubernetes-first</strong> operating model for AI agent workloads (GitOps-friendly, observable, policy-controlled).</li>
+<li><strong>Commercial-safe open-source</strong> foundations (permissive licensing; avoid “fair-code” and restrictive redistribution terms for core dependencies).</li>
+<li>A clear path to <strong>Hybrid Execution</strong> across CPU + GPU + NPU to maximize hardware utilization and reduce cost.</li>
+<li>A platform that scales from <strong>single-operator / small cluster</strong> deployments to <strong>Platform Mode</strong> with enterprise identity integration.</li>
+</ul>
+<p>This PRD describes Kaigents from a business/product perspective. It intentionally avoids dictating implementation details except where required by product positioning (e.g., Kubernetes-native-first, AMD Ryzen AI optimization, commercial-safe OSS).</p>
+<h3 id="11-at-a-glance">1.1 At a glance</h3>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primary value proposition</td>
+<td>Production AI agents with Kubernetes-native operations and low-TCO Hybrid Execution (CPU/GPU/NPU)</td>
+</tr>
+<tr>
+<td>Primary users</td>
+<td>Platform engineers, AI application developers, SRE/ops, security/governance</td>
+</tr>
+<tr>
+<td>Operating posture</td>
+<td>Kubernetes-first; GitOps-friendly; on-prem / self-host friendly</td>
+</tr>
+<tr>
+<td>Hardware bet</td>
+<td>AMD Ryzen AI focus for efficiency and cost</td>
+</tr>
+<tr>
+<td>OSS posture</td>
+<td>Commercial-safe OSS core; optional integrate-only components allowed but clearly separated</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-problem-statement">2. Problem Statement</h2>
+<p>Teams are building AI agents to automate workflows, answer questions, and operate systems. Moving from prototypes to production introduces recurring failures:</p>
+<ul>
+<li><strong>Operational mismatch</strong>: agent frameworks often assume a single process or developer laptop rather than multi-tenant, observable, policy-controlled production environments.</li>
+<li><strong>Unbounded cost</strong>: GPU-only serving and lack of routing/caching/scheduling can produce high and unpredictable costs.</li>
+<li><strong>Fragile integrations</strong>: tool invocation and connector management becomes a security and governance risk without standardization.</li>
+<li><strong>Poor traceability</strong>: it is difficult to audit “what the agent did” (tool calls, prompts, context, model used) and correlate it to outcomes.</li>
+</ul>
+<p>Kaigents aims to be a “production substrate” where agents are:</p>
+<ul>
+<li>Declaratively defined</li>
+<li>Governed</li>
+<li>Observable</li>
+<li>Cost-aware</li>
+<li>Portable across environments</li>
+</ul>
+<h2 id="3-goals-and-non-goals">3. Goals and Non-Goals</h2>
+<h3 id="31-goals">3.1 Goals</h3>
+<ul>
+<li>Provide a Kubernetes-native way to define and operate:</li>
+<li>agents and teams</li>
+<li>tool integrations</li>
+<li>executions (“runs”) and results</li>
+<li>Make agent executions traceable end-to-end:</li>
+<li>run timeline</li>
+<li>tool calls</li>
+<li>model calls</li>
+<li>artifacts/results</li>
+<li>Enable a credible low-TCO compute story:</li>
+<li>hybrid CPU/GPU/NPU usage where available</li>
+<li>routing policies so workloads can be placed appropriately</li>
+<li>Support multiple UX modalities:</li>
+<li>CRD/GitOps</li>
+<li>CLI</li>
+<li>dashboard</li>
+<li>Be viable as a commercial-safe open-source product:</li>
+<li>core dependencies permissive</li>
+<li>"integrate-only" optional components allowed but separated and clearly labeled</li>
+<li>Support a dual-layer licensing model:</li>
+<li><strong>core platform</strong>: MIT licensed and freely redistributable</li>
+<li><strong>managed service layer</strong> (hosted deployments, AI team configurations, the Link-Labs.AI cluster product, and the at-risk worker platform): commercial license required; not included in the OSS distribution</li>
+</ul>
+<h3 id="32-non-goals-initial-releases">3.2 Non-Goals (initial releases)</h3>
+<ul>
+<li>Building a fully managed SaaS offering under the MIT license.</li>
+<li>Competing with full low-code workflow automation platforms with large connector catalogs as a primary goal.</li>
+<li>Guaranteeing perfect agent correctness; the focus is on guardrails, traceability, and iterative improvement.</li>
+<li>Building a single agent framework to rule them all; Kaigents aims to support multiple runtimes via a stable execution contract.</li>
+</ul>
+<h2 id="4-target-users">4. Target Users</h2>
+<ul>
+<li><strong>Platform engineers</strong></li>
+<li>Provide a safe, standardized way for teams to deploy and operate AI agents.</li>
+<li><strong>AI application developers / agent builders</strong></li>
+<li>Build agents that can reliably call tools, run workflows, and be promoted across environments.</li>
+<li><strong>SRE / operations</strong></li>
+<li>Maintain availability, performance, and cost controls; respond to incidents.</li>
+<li><strong>Security / governance / compliance</strong></li>
+<li>Enforce policy around data access, tool invocation, and auditability.</li>
+<li><strong>Code-savvy serial entrepreneurs</strong></li>
+<li>Rapidly design, deploy, and iterate on teams of agents as a product capability, without taking on bespoke platform engineering.</li>
+</ul>
+<h2 id="5-user-experience-ux-and-primary-workflows">5. User Experience (UX) and Primary Workflows</h2>
+<p>Kaigents supports two modes:</p>
+<ul>
+<li><strong>Solo Mode</strong>: a single team/operator runs Kaigents for internal workloads with minimal overhead.</li>
+<li><strong>Platform Mode</strong>: centralized shared platform with identity integration, policy, and multi-team tenancy.</li>
+</ul>
+<p>A third mode is anticipated (not required for MVP or v1):</p>
+<ul>
+<li><strong>Builder Mode</strong>: users design and deploy new AI agent teams as reusable “products” (templates, catalogs, and shareable team definitions).</li>
+</ul>
+<h3 id="51-install-and-bootstrap">5.1 Install and bootstrap</h3>
+<ul>
+<li>Operator installs Kaigents into a Kubernetes cluster.</li>
+<li>Operator verifies:</li>
+<li>platform health</li>
+<li>model serving connectivity</li>
+<li>tool-plane readiness</li>
+<li>Operator configures identity integration (Platform Mode) or local auth (Solo Mode).</li>
+</ul>
+<h3 id="52-define-and-manage-agents-declarative-first">5.2 Define and manage agents (declarative-first)</h3>
+<ul>
+<li>A developer defines an agent (or team) using:</li>
+<li>CRDs (GitOps)</li>
+<li>CLI scaffolding</li>
+<li>UI forms (optional)</li>
+<li>A developer binds tools to the agent via a standardized tool-plane abstraction.</li>
+<li>A developer can test an agent interactively and then promote changes via GitOps.</li>
+</ul>
+<h3 id="53-execute-and-observe-runs">5.3 Execute and observe runs</h3>
+<ul>
+<li>A user triggers a run via:</li>
+<li>CLI</li>
+<li>UI</li>
+<li>API</li>
+<li>another agent (agent-to-agent)</li>
+<li>Kaigents records a run timeline including:</li>
+<li>inputs</li>
+<li>tool invocations (what/when/args/result)</li>
+<li>model requests</li>
+<li>intermediate artifacts</li>
+<li>final outputs</li>
+<li>Operators view:</li>
+<li>current run state</li>
+<li>historical run summaries</li>
+<li>failure reasons and retries</li>
+</ul>
+<p>Terminology note (product vs MVP naming):</p>
+<ul>
+<li>In the refined Kaigents product domain model, an execution instance is a <strong>Work Request</strong>.</li>
+<li>In Milestone 1 MVP (and current CRDs/CLI), this is represented as a <strong>Run</strong>.</li>
+<li>This PRD uses <strong>Work Request</strong> when describing the product domain, and uses <strong>Run</strong> when describing Milestone 1 acceptance criteria and existing UX surfaces.</li>
+</ul>
+<h3 id="54-hybrid-execution-policies-cost-performance">5.4 Hybrid Execution policies (cost + performance)</h3>
+<ul>
+<li>Users/teams can declare preferences or constraints for execution:</li>
+<li>CPU-only for low-cost tasks</li>
+<li>GPU for throughput-intensive tasks</li>
+<li>NPU for local/edge efficiency where supported</li>
+<li>Operators can define guardrails:</li>
+<li>per-tenant quotas</li>
+<li>concurrency limits</li>
+<li>routing rules</li>
+</ul>
+<p>Positioning note:</p>
+<ul>
+<li>Kaigents’ Hybrid Execution goal is to <strong>maximize hardware utilization</strong> on AMD Ryzen AI systems.</li>
+<li>The NPU can be the highest-throughput compute device for certain AI/ML workloads, but is currently the least supported across general LLM ecosystems.</li>
+<li>For complex models (including large code models and MoE-style models), Kaigents should support execution strategies that spread load across <strong>NPU + GPU + CPU</strong> to improve <strong>time-to-first-token (TTFT)</strong> and <strong>tokens-per-second (TPS)</strong> where feasible.</li>
+</ul>
+<h3 id="55-governance-and-guardrails">5.5 Governance and guardrails</h3>
+<ul>
+<li>Platform administrators define policies for:</li>
+<li>which tools are allowed</li>
+<li>which namespaces/tenants can access which tools</li>
+<li>audit retention</li>
+<li>secrets handling</li>
+<li>Guardrails for high-risk actions (approval gates, policy-as-code, etc.) are required as a concept, but specific mechanisms are deferred to technical design.</li>
+</ul>
+<h2 id="6-functional-requirements">6. Functional Requirements</h2>
+<h3 id="61-resource-model-and-lifecycle">6.1 Resource model and lifecycle</h3>
+<ul>
+<li>Support declarative resources for:</li>
+<li>agent definitions and configurations</li>
+<li>tool integrations (including MCP servers)</li>
+<li>executions/runs and results</li>
+<li>Support explicit lifecycle operations:</li>
+<li>create/update</li>
+<li>disable/enable</li>
+<li>deprecate and migrate</li>
+</ul>
+<p>MVP resource model (minimum):</p>
+<ul>
+<li>Agent (or Team) definition</li>
+<li>Tool integration reference</li>
+<li>MCP server reference (or an integration with kmcp-managed server resources)</li>
+<li>Run (execution request + status)</li>
+<li>Artifact references associated with a run</li>
+<li>Model endpoint reference (configuration/discovery target)</li>
+</ul>
+<p>Product domain model (authoritative terminology):</p>
+<ul>
+<li><strong>Process</strong>: reusable definition of a business procedure.</li>
+<li><strong>Task</strong>: step/activity definition inside a process.</li>
+<li><strong>Work Request</strong>: execution instance of a process (maps to <strong>Run</strong> in Milestone 1).</li>
+<li><strong>Work Item</strong>: instance of a task created within a work request.</li>
+<li><strong>Work Attempt</strong>: one attempt to perform a work item.</li>
+</ul>
+<p>MVP scope note:</p>
+<ul>
+<li>Milestone 1 may represent Process/Task definitions using an embedded workflow/DAG representation associated with a Run.</li>
+<li>The first-class Process/Task definition model and its lifecycle (create/update/versioning) is expected to mature in later milestones.</li>
+</ul>
+<h3 id="62-tool-plane">6.2 Tool plane</h3>
+<ul>
+<li>Support a standardized mechanism for tool integration, discovery, and invocation.</li>
+<li>Support policy and allowlisting for tools.</li>
+<li>Tool invocations must be observable and auditable.</li>
+</ul>
+<p>Minimum bar (connector UX):</p>
+<ul>
+<li>Kaigents must support a minimal, consistent “connector” experience so teams can add tools without bespoke platform engineering.</li>
+<li>Each tool/connector must have a clear contract:</li>
+<li>JSON input schema (at minimum: required fields and examples)</li>
+<li>JSON output schema (at minimum: response shape and error shape)</li>
+<li>For MVP, Kaigents treats the MCP server as the source of truth for the contract and stores a versioned snapshot of the contract for auditability and UI/CLI rendering.</li>
+<li>Users must be able to:</li>
+<li>register a connector/tool and its configuration</li>
+<li>test a connector with sample inputs in a controlled way (dry-run style)</li>
+<li>view connector health and recent invocation outcomes</li>
+<li>Tool invocation must support safe defaults appropriate for production:</li>
+<li>explicit timeouts</li>
+<li>bounded output sizes (where applicable)</li>
+<li>clear error reporting that surfaces upstream HTTP/API failures</li>
+</ul>
+<h3 id="63-execution-and-orchestration">6.3 Execution and orchestration</h3>
+<ul>
+<li>Support execution of multi-step workflows.</li>
+<li>Workflows must support:</li>
+<li>DAG dependencies</li>
+<li>concurrency</li>
+<li>retries with clear semantics</li>
+<li>cancellation</li>
+<li>The platform must support an “offload” mechanism for steps that require stronger isolation.</li>
+</ul>
+<p>Process semantics requirements (from the product domain model):</p>
+<ul>
+<li>The product-level process graph must support <strong>explicit rework loops</strong> (cycles), not just DAGs.</li>
+<li>Rework must be <strong>bounded</strong> (attempt limits, time limits, or escalation policies).</li>
+<li>Human-in-the-loop steps (approval/review/assignment) must be representable as first-class waiting states.</li>
+<li>The execution engine must provide durable semantics for:</li>
+<li>waiting (timers, signals)</li>
+<li>resumption after component restarts</li>
+<li>reconstructable execution history suitable for audit</li>
+</ul>
+<h3 id="64-artifacts-and-asset-access">6.4 Artifacts and asset access</h3>
+<ul>
+<li>Kaigents must provide a first-class artifact concept for runs (inputs, intermediate artifacts, outputs).</li>
+<li>Artifacts must be accessible via stable, environment-scoped URLs suitable for:</li>
+<li>CLI download</li>
+<li>UI preview</li>
+<li>downstream automation</li>
+<li><strong>Artifact storage must support cloud-agnostic S3-compatible backends</strong> (AWS S3, MinIO, Ceph RGW) via standard S3 credentials/endpoints.</li>
+<li><strong>The platform must preserve key HTTP response semantics</strong> (Range reads) for large artifacts.</li>
+<li><strong>Observability must be first-class</strong> via JSON structured logging for Loki and Prometheus metrics endpoints.</li>
+<li><strong>Analytics readiness</strong>: The platform must emit schema-stable event logs suitable for downstream real-time analytics (Data Lake integration).</li>
+</ul>
+<h3 id="65-model-serving-integration">6.5 Model serving integration</h3>
+<ul>
+<li>Kaigents must support local/self-hosted model serving.</li>
+<li>Kaigents must support hybrid CPU/GPU/NPU execution routes (when available), and make model routing and policy an operator-visible concept.</li>
+<li>Kaigents must provide stable contracts for:</li>
+<li>chat / text generation</li>
+<li>embeddings</li>
+<li>
+<p>(optional) reranking</p>
+</li>
+<li>
+<p>Kaigents should support endpoint discovery for model backends across common deployment patterns:</p>
+</li>
+<li>in-cluster service DNS</li>
+<li>operator-managed ingress</li>
+<li>developer-local endpoints (for local testing)</li>
+</ul>
+<p>MVP note:</p>
+<ul>
+<li>Kaigents MVP can depend on the models already deployed in the target Kubernetes cluster. The specific model set and access URLs are treated as deployment configuration and are referenced in existing CodeKnowl documentation.</li>
+</ul>
+<h3 id="66-ux-surfaces">6.6 UX surfaces</h3>
+<ul>
+<li>CRD/GitOps workflow must be first-class.</li>
+<li>CLI must support:</li>
+<li>installation/bootstrap</li>
+<li>resource lifecycle management</li>
+<li>interactive invocation and inspection</li>
+<li>Dashboard must support:</li>
+<li>browsing agents/teams</li>
+<li>triggering runs</li>
+<li>viewing run timelines and tool-call traces</li>
+<li>
+<p>viewing errors and retry reasons</p>
+</li>
+<li>
+<p>The dashboard should support browsing and previewing run artifacts where feasible.</p>
+</li>
+</ul>
+<p>Run timeline UX requirements:</p>
+<ul>
+<li>Kaigents must present a consistent “run timeline” view in both CLI and dashboard.</li>
+<li>A run timeline must allow users to answer, quickly and unambiguously:</li>
+<li>what happened</li>
+<li>in what order</li>
+<li>what the agent/tool/model returned</li>
+<li>what failed (and why)</li>
+<li>what was retried/cancelled</li>
+<li>Minimum timeline events to render:</li>
+<li>run created/started/completed timestamps and final status</li>
+<li>workflow node/step start/stop status changes (including retries)</li>
+<li>tool invocation events (tool name, request parameters, outcome summary)</li>
+<li>model invocation events (model identifier, input/output token counts if available, latency summary)</li>
+<li>artifact events (produced/updated artifact references)</li>
+<li>human interaction events when applicable (approval requested/approved/denied)</li>
+<li>The run timeline must support:</li>
+<li>filtering by event type (tool/model/artifact/workflow)</li>
+<li>jumping to artifacts referenced by events</li>
+<li>stable correlation identifiers that can be used to locate related telemetry in external observability tools</li>
+</ul>
+<h3 id="66-identity-and-access">6.6 Identity and access</h3>
+<ul>
+<li>Platform Mode must support:</li>
+<li>SSO-compatible authentication</li>
+<li>role-based access control</li>
+<li>audit trails for user actions</li>
+<li>Solo Mode may support simpler auth, but must not block migration to Platform Mode.</li>
+</ul>
+<h2 id="7-quality-attributes-non-functional-requirements">7. Quality Attributes (Non-Functional Requirements)</h2>
+<ul>
+<li><strong>Kubernetes-native-first</strong>: Kaigents must feel natural to operate with Kubernetes, GitOps, namespaces, and cluster policies.</li>
+<li><strong>Performance and responsiveness</strong>: the system must support high concurrency and “many small steps” without excessive orchestration overhead.</li>
+<li><strong>Reliability</strong>: runs should survive component restarts with clear resumption/retry semantics.</li>
+<li><strong>Traceability</strong>: every run must be explainable via stored events and correlated telemetry.</li>
+<li><strong>Security</strong>:</li>
+<li>secure secrets handling</li>
+<li>least privilege</li>
+<li>tool allowlisting and auditing</li>
+<li><strong>Commercial-safe OSS posture</strong>: core must remain viable for commercial adoption and redistribution.</li>
+<li><strong>Dual-layer licensing</strong>: the OSS core (MIT) and the commercial managed service layer are distinct boundaries; see licensing policy below.</li>
+</ul>
+<h2 id="71-assumptions-and-constraints">7.1 Assumptions and Constraints</h2>
+<ul>
+<li>Kaigents' core differentiation includes:</li>
+<li>Kubernetes-native operations</li>
+<li>AMD Ryzen AI optimization for lower TCO</li>
+<li>The platform must support on-prem and self-hosted deployments.</li>
+<li>The product must maintain a clear boundary between:</li>
+<li>redistributable permissive OSS core (MIT)</li>
+<li>integrate-only optional components that may have additional terms</li>
+<li>commercial managed service layer (not OSS; separate license required)</li>
+</ul>
+<h2 id="72-licensing-policy">7.2 Licensing Policy</h2>
+<h3 id="core-platform-mit">Core platform (MIT)</h3>
+<p>The Kaigents control plane, execution engine, CLI, and CRDs are MIT licensed. Anyone may use, modify, and distribute the core platform, including for commercial purposes.</p>
+<h3 id="managed-service-layer-commercial-license-required">Managed service layer (commercial license required)</h3>
+<p>The following are <strong>not</strong> part of the MIT distribution and require a separate commercial license:
+- Hosted or managed deployments of Kaigents sold as a service
+- Pre-built AI team configurations (software engineering team, sales team, tech support team, secops team, etc.)
+- The Link-Labs.AI cluster product (consolidated multi-team AI infrastructure)
+- The at-risk worker platform (workforce + AI hybrid delivery system)
+- Any tooling, automation, or integration built specifically to deliver Kaigents as a managed service to third parties</p>
+<h3 id="license-evolution">License evolution</h3>
+<p>The MIT license applies to the core platform. If and when Kaigents achieves significant traction, the license may be revisited (e.g., Apache-2.0 for stronger patent protection, or AGPL to protect the managed service layer from commoditization by large cloud providers). Any license change will apply to future releases only; existing MIT releases remain MIT.</p>
+<p>MVP tenancy assumption:</p>
+<ul>
+<li>For MVP, the default multi-team isolation model is <strong>namespace per team</strong>.</li>
+</ul>
+<h2 id="8-conceptual-architecture-product-level-capabilities">8. Conceptual Architecture (Product-level capabilities)</h2>
+<p>Kaigents is composed of:</p>
+<ul>
+<li><strong>Control plane</strong>: defines and manages agents, tools, and runs.</li>
+<li><strong>Execution engine</strong>: performs agent runtime execution and workflow orchestration.</li>
+<li><strong>Tool plane</strong>: manages tool servers and invocation.</li>
+<li><strong>Model serving plane</strong>: integrates with model servers and enforces routing/policy.</li>
+<li><strong>Data plane</strong>: stores run state, artifacts, and metadata.</li>
+<li><strong>UX surfaces</strong>: CLI and dashboard.</li>
+</ul>
+<p>Execution engine requirement (clarification):</p>
+<ul>
+<li>Kaigents requires a <strong>durable execution substrate</strong> capable of long-running Work Requests that may block on humans and external systems.</li>
+<li>The execution engine must preserve the separation between <strong>definitions</strong> (Process/Task) and <strong>executions</strong> (Work Request / Work Item / Work Attempt) so definitions can evolve without mutating execution history.</li>
+<li>The specific engine implementation is an architectural decision tracked in the ITD register.</li>
+</ul>
+<p>(Technical implementation details belong in Architecture &amp; Design; this section is intended to help stakeholders understand the product’s major capability areas.)</p>
+<h2 id="9-buy-vs-build-evaluation">9. Buy vs Build Evaluation</h2>
+<p>Kaigents should include a continuing buy-vs-build evaluation for non-core capability areas (e.g., dashboards, optional eval platforms, connector ecosystems).</p>
+<p>Evaluation criteria:</p>
+<ul>
+<li>licensing and redistribution safety</li>
+<li>Kubernetes operational fit</li>
+<li>integration complexity and ongoing maintenance</li>
+<li>performance and reliability</li>
+<li>security/governance compatibility</li>
+</ul>
+<p>Deliverable:</p>
+<ul>
+<li>a short comparison doc and a recommendation for each major area (adopt vs integrate vs inspire vs avoid)</li>
+</ul>
+<h2 id="10-release-plan-milestones">10. Release Plan (Milestones)</h2>
+<h3 id="milestone-0-prd-platform-baseline">Milestone 0: PRD + platform baseline</h3>
+<ul>
+<li>PRD approved</li>
+<li>initial core resource model documented at a product level</li>
+<li>initial “definition of done” for MVP documented</li>
+</ul>
+<p>Acceptance criteria:</p>
+<ul>
+<li>PRD is approved by stakeholders.</li>
+<li>MVP scope is clearly bounded and understood.</li>
+</ul>
+<h3 id="milestone-1-solo-mode-mvp-crd-cli-embedded-workflow">Milestone 1: Solo Mode MVP (CRD + CLI + embedded workflow)</h3>
+<ul>
+<li>install Kaigents</li>
+<li>define an agent and tools declaratively</li>
+</ul>
+<p>Acceptance criteria agent:</p>
+<ul>
+<li><code>docs/implementation/milestone-1-acceptance-student-research-assistant.md</code></li>
+<li>run an agent and view a run timeline</li>
+<li>embedded DAG orchestration for multi-step tasks, <strong>noting that this milestone does not include cyclic rework or process-graph semantics</strong></li>
+</ul>
+<p>Acceptance criteria:</p>
+<ul>
+<li>A user can install Kaigents in a cluster and run a basic multi-step agent workload.</li>
+<li>A run produces a durable, queryable run timeline.</li>
+<li>The run timeline includes, at minimum, tool invocation events, model invocation events, workflow step events, and artifact events.</li>
+</ul>
+<p>MVP definition of done (testable):</p>
+<ul>
+<li>CRDs exist for the MVP resource model and can be managed via GitOps.</li>
+<li>CLI can:</li>
+<li>apply/create resources</li>
+<li>trigger a run</li>
+<li>render the run timeline</li>
+<li>fetch artifacts referenced by the run timeline</li>
+<li>A run timeline includes, at minimum, tool invocation events, model invocation events, workflow step events, and artifact events.</li>
+<li>Artifacts are accessible via stable, environment-scoped URLs without requiring object-store credentials.</li>
+<li>Model endpoint discovery works for in-cluster service DNS and developer-local endpoints.</li>
+<li>Runs and timeline events have stable correlation identifiers that can be used to locate related telemetry.</li>
+</ul>
+<h3 id="milestone-2-platform-mode-essentials-identity-policy">Milestone 2: Platform Mode essentials (identity + policy)</h3>
+<ul>
+<li>integrate with enterprise identity</li>
+<li>RBAC and audit trails</li>
+<li>tool allowlisting</li>
+</ul>
+<p>Acceptance criteria:</p>
+<ul>
+<li>Users authenticate via SSO-compatible mechanism.</li>
+<li>Unauthorized users cannot invoke restricted tools.</li>
+</ul>
+<h3 id="milestone-3-hybrid-execution-routing-cpugpunpu">Milestone 3: Hybrid Execution routing (CPU/GPU/NPU)</h3>
+<ul>
+<li>add operator-visible routing/policy</li>
+<li>demonstrate hybrid execution patterns</li>
+</ul>
+<p>Acceptance criteria:</p>
+<ul>
+<li>Workloads can be routed according to policy and observed in telemetry.</li>
+</ul>
+<h3 id="milestone-4-dashboard-mvp">Milestone 4: Dashboard MVP</h3>
+<ul>
+<li>browse agents</li>
+<li>trigger runs</li>
+<li>view run timelines and traces</li>
+</ul>
+<p>Acceptance criteria:</p>
+<ul>
+<li>Operators can diagnose failures via UI without needing direct DB access.</li>
+</ul>
+<h2 id="11-success-metrics">11. Success Metrics</h2>
+<ul>
+<li><strong>Time to first successful run</strong> after installation.</li>
+<li><strong>Run success rate</strong> over time and by agent/tool.</li>
+<li><strong>Mean time to diagnose (MTTD)</strong> for run failures.</li>
+<li><strong>Cost efficiency</strong>: work completed per unit compute cost (with emphasis on AMD efficiency story).</li>
+<li><strong>Adoption</strong>: number of active users/teams and number of active agents.</li>
+</ul>
+<h2 id="12-risks-and-mitigations">12. Risks and Mitigations</h2>
+<ul>
+<li><strong>Complexity creep</strong></li>
+<li>
+<p>Mitigation: prioritize a small number of first-class primitives; push non-core features into integrations.</p>
+</li>
+<li>
+<p><strong>Hybrid Execution support fragmentation</strong></p>
+</li>
+<li>
+<p>Mitigation: define stable contracts and policy surfaces independent of any one runtime backend.</p>
+</li>
+<li>
+<p><strong>Governance gaps (tools and data access)</strong></p>
+</li>
+<li>
+<p>Mitigation: enforce allowlisting, audit trails, and identity integration early in Platform Mode.</p>
+</li>
+<li>
+<p><strong>Telemetry overload / missing correlations</strong></p>
+</li>
+<li>Mitigation: standardize run events and OTel trace context propagation from day one.</li>
+</ul>
+<h2 id="13-deferred-decisions-post-mvp">13. Deferred decisions (post-MVP)</h2>
+<p>The following topics are intentionally deferred until they are required by concrete MVP implementation needs:</p>
+<ul>
+<li>Tenancy model deeper than <strong>namespace per team</strong> (e.g., true multi-tenant controls beyond namespace boundaries).</li>
+<li>Minimum guardrails for high-risk tool calls (approval gates, policy-as-code, etc.).</li>
+<li>MVP model set (LLM/embeddings/rerank) and minimum acceptable latency/cost profile on Ryzen AI hardware.</li>
+</ul>
+<h2 id="14-sample-teams-test-cases-validation-scenarios">14. Sample teams / test cases (validation scenarios)</h2>
+<p>Kaigents is not primarily persona-driven; instead, it should be validated against concrete agent-team scenarios that exercise the platform’s design/build/deploy/operate loop.</p>
+<h3 id="141-test-case-codeknowl-milestone-11-guardrailed-agentic-workflows">14.1 Test case: CodeKnowl Milestone 11 (guardrailed agentic workflows)</h3>
+<p>Kaigents’ first end-to-end test case should be the “optional agentic workflows (guardrailed)” scenario from CodeKnowl Milestone 11.</p>
+<p>Business validation outcomes:</p>
+<ul>
+<li>Kaigents can run a multi-step agent workflow that proposes changes and requires explicit approval before writing.</li>
+<li>Kaigents can run commands (tests/linters/build steps) only with explicit approval.</li>
+<li>The system provides an operator-visible run timeline with enough detail to audit what happened.</li>
+</ul>
+<h3 id="142-test-case-asset-gateway-artifact-access-for-runs">14.2 Test case: Asset Gateway (artifact access for runs)</h3>
+<p>The existing Asset Gateway implementation is a useful “simple but real” scenario for Kaigents to validate artifact handling.</p>
+<p>Business validation outcomes:</p>
+<ul>
+<li>Runs can publish and retrieve artifacts (e.g., generated reports, images, logs) through a stable, environment-scoped access path.</li>
+<li>Operators can manage artifact retention and visibility without making buckets public.</li>
+</ul>
+<h3 id="143-test-case-builder-agentteam-design-and-deployment-ux">14.3 Test case: Builder (agent/team design and deployment UX)</h3>
+<p>The earlier “AI Agent Builder” effort is a useful precursor for validating Kaigents’ build/deploy loop and UI expectations.</p>
+<p>Business validation outcomes:</p>
+<ul>
+<li>Users can create/configure agents and tool integrations, and deploy them to the cluster.</li>
+<li>The product can support both “Solo Mode” and “Platform Mode” workflows without forcing a UI-first approach.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

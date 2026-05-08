@@ -1,0 +1,2455 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Production-grade substrate for operating AI agent teams.">
+      
+      
+      
+        <link rel="canonical" href="https://jensjohansen.github.io/kaigents/implementation/kaigents-implementation-tracker/">
+      
+      
+        <link rel="prev" href="../../implementation-plan/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Tracker - Kaigents</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#kaigents-implementation-tracker" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Kaigents" class="md-header__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kaigents
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Tracker
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../product/kaigents-introduction/" class="md-tabs__link">
+          
+  
+  
+  Product
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/kaigents-architecture-and-design/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../ops/temporal-installation/" class="md-tabs__link">
+          
+  
+  
+  Operations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../strategy/corporate_ai_strategy/" class="md-tabs__link">
+          
+  
+  
+  Strategy
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../CODING_STANDARDS_AND_DOD/" class="md-tabs__link">
+          
+  
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Kaigents" class="md-nav__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kaigents
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Product
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kaigents-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kaigents-prd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/domain-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/managed-services/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Managed Services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kairon-retail-managed-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kairon Retail
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/example-team/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your First Team
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/temporal-validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/kaigents-architecture-and-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/ai_agent_engine_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ops/temporal-installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Temporal Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Strategy
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Strategy
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/corporate_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Corporate AI Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/marketing_ai_agent_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marketing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/security_operations_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CODING_STANDARDS_AND_DOD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation-plan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tracker
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pushreview-gates-required-before-pushing-to-remote" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Push/review gates (required before pushing to remote)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-0-repo-project-baseline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 0: Repo + project baseline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-1-solo-mode-mvp-crd-cli-embedded-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 1: Solo Mode MVP (CRD + CLI + embedded workflow)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Milestone 1: Solo Mode MVP (CRD + CLI + embedded workflow)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1a-resource-model-crds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1A. Resource model (CRDs)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1b-control-plane-skeleton" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1B. Control plane skeleton
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1c-execution-engine-embedded-dag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1C. Execution engine + embedded DAG
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1c1-temporal-stopgo-spike-execution-substrate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1C.1 Temporal stop/go spike (execution substrate)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1d-run-timeline-durable-and-queryable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1D. Run timeline (durable and queryable)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1e-tool-plane-integration-mcp-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1E. Tool plane integration (MCP-first)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1f-model-serving-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1F. Model serving integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1g-artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1G. Artifacts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1h-cli-mvp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1H. CLI MVP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#milestone-1-close-out-decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 1 close-out decision
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-2-platform-mode-essentials-identity-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 2: Platform Mode essentials (identity + policy)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Milestone 2: Platform Mode essentials (identity + policy)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2a-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2A. Authentication
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2b-authorization-tool-allowlisting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2B. Authorization + tool allowlisting
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-3-durable-process-execution-engine-decision-integration-itd-16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 3: Durable process execution engine decision + integration (ITD-16)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Milestone 3: Durable process execution engine decision + integration (ITD-16)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#3a-temporal-adapter-service-execution-engine-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3A. Temporal adapter service (execution engine integration)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-4-process-definition-model-processtask-execution-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 4: Process definition model (Process/Task) + execution mapping
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Milestone 4: Process definition model (Process/Task) + execution mapping">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#4a-definition-model-crd-cli-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4A. Definition model (CRD + CLI first)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4b-execution-model-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4B. Execution model mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-5-hybrid-execution-routing-cpugpunpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 5: Hybrid Execution routing (CPU/GPU/NPU)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-6-dashboard-mvp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 6: Dashboard MVP
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-7-hardening-production-readiness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 7: Hardening &amp; Production Readiness
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Milestone 7: Hardening &amp; Production Readiness">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#7a-cloud-agnostic-artifact-storage-s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7A. Cloud-Agnostic Artifact Storage (S3)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7b-observability-structured-logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7B. Observability &amp; Structured Logging
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7c-analytics-readiness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7C. Analytics Readiness
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pushreview-gates-required-before-pushing-to-remote" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Push/review gates (required before pushing to remote)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-0-repo-project-baseline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 0: Repo + project baseline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-1-solo-mode-mvp-crd-cli-embedded-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 1: Solo Mode MVP (CRD + CLI + embedded workflow)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Milestone 1: Solo Mode MVP (CRD + CLI + embedded workflow)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1a-resource-model-crds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1A. Resource model (CRDs)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1b-control-plane-skeleton" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1B. Control plane skeleton
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1c-execution-engine-embedded-dag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1C. Execution engine + embedded DAG
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1c1-temporal-stopgo-spike-execution-substrate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1C.1 Temporal stop/go spike (execution substrate)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1d-run-timeline-durable-and-queryable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1D. Run timeline (durable and queryable)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1e-tool-plane-integration-mcp-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1E. Tool plane integration (MCP-first)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1f-model-serving-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1F. Model serving integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1g-artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1G. Artifacts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1h-cli-mvp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1H. CLI MVP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#milestone-1-close-out-decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 1 close-out decision
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-2-platform-mode-essentials-identity-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 2: Platform Mode essentials (identity + policy)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Milestone 2: Platform Mode essentials (identity + policy)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2a-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2A. Authentication
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2b-authorization-tool-allowlisting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2B. Authorization + tool allowlisting
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-3-durable-process-execution-engine-decision-integration-itd-16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 3: Durable process execution engine decision + integration (ITD-16)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Milestone 3: Durable process execution engine decision + integration (ITD-16)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#3a-temporal-adapter-service-execution-engine-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3A. Temporal adapter service (execution engine integration)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-4-process-definition-model-processtask-execution-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 4: Process definition model (Process/Task) + execution mapping
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Milestone 4: Process definition model (Process/Task) + execution mapping">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#4a-definition-model-crd-cli-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4A. Definition model (CRD + CLI first)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4b-execution-model-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4B. Execution model mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-5-hybrid-execution-routing-cpugpunpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 5: Hybrid Execution routing (CPU/GPU/NPU)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-6-dashboard-mvp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 6: Dashboard MVP
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-7-hardening-production-readiness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 7: Hardening &amp; Production Readiness
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Milestone 7: Hardening &amp; Production Readiness">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#7a-cloud-agnostic-artifact-storage-s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7A. Cloud-Agnostic Artifact Storage (S3)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7b-observability-structured-logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7B. Observability &amp; Structured Logging
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7c-analytics-readiness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7C. Analytics Readiness
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="kaigents-implementation-tracker">Kaigents: Implementation Tracker</h1>
+<p>This tracker translates the Kaigents PRD into buildable milestones and acceptance criteria.</p>
+<p>Conventions:</p>
+<ul>
+<li>Checkboxes represent deliverables.</li>
+<li>Each milestone should be demoable in a fresh cluster installation.</li>
+<li>Use the PRD as the source of truth for scope; update the PRD before expanding scope.</li>
+</ul>
+<h2 id="pushreview-gates-required-before-pushing-to-remote">Push/review gates (required before pushing to remote)</h2>
+<p>To minimize overhead, local commits may be frequent, but pushes to the remote must happen only at defined checkpoint points (at least one per milestone). Before any push, perform a review against the canonical gate documents and confirm toolchain checks.</p>
+<p>Canonical gate documents:</p>
+<ul>
+<li><code>docs/research/technology/itd-register.md</code></li>
+<li><code>docs/research/technology/oss-components-commercially-permissible.md</code></li>
+<li><code>docs/product/kaigents-prd.md</code></li>
+<li><code>docs/architecture/kaigents-architecture-and-design.md</code></li>
+<li><code>docs/CODING_STANDARDS_AND_DOD.md</code></li>
+</ul>
+<p>Required push checklist:</p>
+<ul>
+<li>[x] Scope aligns with PRD milestone acceptance criteria; any scope expansion is reflected in the PRD.</li>
+<li>[x] Design aligns with Architecture &amp; Design; deviations are documented.</li>
+<li>[x] No ITD conflicts; any required changes are made by updating the ITD register explicitly.</li>
+<li>[x] OSS posture preserved; dependency changes are license-reviewed and <code>THIRD_PARTY_NOTICES.md</code> is updated when needed.</li>
+<li>[x] <code>make ci</code> passes (format/lint/test) for all present lanes.</li>
+<li>[x] Tracker is updated (checkboxes reflect what is actually complete).</li>
+</ul>
+<h2 id="milestone-0-repo-project-baseline">Milestone 0: Repo + project baseline</h2>
+<ul>
+<li>[x] Define repo layout for Kaigents components (control plane, API, CLI, dashboard)</li>
+<li>[x] Create development workflows (local dev, kind/minikube, basic CI)</li>
+<li>[x] Establish versioning + release tagging approach</li>
+</ul>
+<p>Acceptance criteria:</p>
+<ul>
+<li>[x] A new developer can build and run the system locally with documented steps.</li>
+</ul>
+<p>Push checkpoint:</p>
+<ul>
+<li>[x] Push Milestone 0 baseline only after the push/review gate checklist is satisfied.</li>
+</ul>
+<h2 id="milestone-1-solo-mode-mvp-crd-cli-embedded-workflow">Milestone 1: Solo Mode MVP (CRD + CLI + embedded workflow)</h2>
+<p>Acceptance criteria agent:</p>
+<ul>
+<li><code>docs/implementation/milestone-1-acceptance-student-research-assistant.md</code></li>
+</ul>
+<h3 id="1a-resource-model-crds">1A. Resource model (CRDs)</h3>
+<ul>
+<li>[x] CRD: Agent (or Team)</li>
+<li>[x] CRD: Tool integration reference</li>
+<li>[x] CRD: MCP server reference (or integration path with kmcp-managed server resources)</li>
+<li>[x] CRD: Run (execution request + status)</li>
+<li>[x] Resource model for run artifacts (at minimum: stable references associated with a run)</li>
+<li>[x] Resource model for model endpoint reference (configuration/discovery target)</li>
+</ul>
+<p>Acceptance criteria:</p>
+<ul>
+<li>[x] CRDs exist for the MVP resource model and can be managed via GitOps.</li>
+</ul>
+<p>Push checkpoint:</p>
+<ul>
+<li>[x] Push after CRDs compile/validate, controller unit tests pass, and PRD/Architecture alignment is re-verified.</li>
+</ul>
+<h3 id="1b-control-plane-skeleton">1B. Control plane skeleton</h3>
+<ul>
+<li>[x] Controller reconciles Agent resources into runnable configuration</li>
+<li>[x] Controller reconciles Tool/MCP resources into invokable configuration</li>
+<li>[x] Controller reconciles Run resources and drives execution state</li>
+<li>[x] Status conditions and events are written for key transitions</li>
+</ul>
+<p>Acceptance criteria:</p>
+<ul>
+<li>[x] Creating resources results in deterministic status updates without manual intervention.</li>
+</ul>
+<p>Push checkpoint:</p>
+<ul>
+<li>[x] Push after control-plane reconciliation loops are stable and test coverage exists for key transitions.</li>
+</ul>
+<h3 id="1c-execution-engine-embedded-dag">1C. Execution engine + embedded DAG</h3>
+<ul>
+<li>[x] Embedded DAG runner supports dependencies</li>
+<li>[x] Supports concurrency</li>
+<li>[x] Supports retries with clear semantics</li>
+<li>[x] Supports cancellation</li>
+<li>[x] Offload escape hatch: a workflow step can be executed as a Kubernetes workload (job/pod) when needed</li>
+</ul>
+<p>Milestone 1 scope note:</p>
+<ul>
+<li>Retries are execution semantics on DAG nodes; they do not make the Milestone 1 execution model a cyclic workflow/process graph.</li>
+<li>Explicit rework loops/cycles are part of the later durable process model, not the embedded DAG substrate.</li>
+</ul>
+<h3 id="1c1-temporal-stopgo-spike-execution-substrate">1C.1 Temporal stop/go spike (execution substrate)</h3>
+<ul>
+<li>[x] Timebox: &lt;= 4 hours (stop when exit criteria is met)</li>
+<li>[x] Deploy minimal self-hosted Temporal Service in a dev namespace and record baseline footprint (CPU/mem/storage + required backing services)</li>
+<li>[x] Implement a thin Temporal adapter service (Go) that exposes Kaigents-native operations:</li>
+<li>[x] Start execution (WorkRequest)</li>
+<li>[x] Signal execution (human-in-loop / rework)</li>
+<li>[x] Query execution state</li>
+<li>[x] Implement a minimal Go Worker that can:</li>
+<li>[x] Run a trivial Workflow that blocks on a Signal and then completes</li>
+<li>[x] Execute one Activity that represents a Kaigents WorkAttempt</li>
+<li>[x] Validate Rust backend calls adapter (no Temporal SDK usage from Rust) and that no Temporal concepts leak into core domain types</li>
+<li>[x] Exit criteria (decision checkpoint):</li>
+<li>[x] Ops footprint is acceptable for baseline on-prem cluster assumptions</li>
+<li>[x] Integration boundary is acceptable (Rust &lt;-&gt; adapter stable, minimal surface)</li>
+<li>[x] Developer experience is acceptable (workflow determinism constraints are manageable)</li>
+<li>[x] Record outcome as an ITD: Adopt Temporal backend vs Build custom thin engine</li>
+</ul>
+<p>Acceptance criteria:</p>
+<ul>
+<li>[x] A basic multi-step workflow can be executed reliably and cancelled.</li>
+</ul>
+<p>Push checkpoint:</p>
+<ul>
+<li>[x] Push after embedded DAG runner semantics (retries/cancel) are test-locked.</li>
+</ul>
+<h3 id="1d-run-timeline-durable-and-queryable">1D. Run timeline (durable and queryable)</h3>
+<ul>
+<li>[x] Timeline event model (minimum event set per PRD)</li>
+<li>[x] Durable storage of timeline events</li>
+<li>[x] Run timeline query API</li>
+<li>[x] Stable correlation identifiers for timeline events</li>
+</ul>
+<p>Acceptance criteria:</p>
+<ul>
+<li>[x] A run produces a durable, queryable run timeline.</li>
+</ul>
+<p>Push checkpoint:</p>
+<ul>
+<li>[x] Push after the timeline event model is stabilized and persisted events are queryable with correlation identifiers.</li>
+</ul>
+<h3 id="1e-tool-plane-integration-mcp-first">1E. Tool plane integration (MCP-first)</h3>
+<ul>
+<li>[x] Connect to kmcp-managed MCP servers</li>
+<li>[x] Invoke tools with explicit timeouts</li>
+<li>[x] Bounded outputs (where applicable)</li>
+<li>[x] Clear error reporting for upstream failures</li>
+<li>[x] Tool invocation events written to the run timeline</li>
+<li>[x] Contract snapshotting: MCP is source of truth; Kaigents stores a versioned snapshot for audit/UI rendering</li>
+</ul>
+<p>Acceptance criteria:</p>
+<ul>
+<li>[x] Tool invocations are observable, auditable, and show up consistently in the run timeline.</li>
+</ul>
+<p>Push checkpoint:</p>
+<ul>
+<li>[x] Push after MCP tool invocation and contract snapshotting are implemented and recorded in the run timeline.</li>
+</ul>
+<h3 id="1f-model-serving-integration">1F. Model serving integration</h3>
+<ul>
+<li>[x] Integrate with Lemonade server via OpenAI-compatible interface</li>
+<li>[x] Support chat/text generation</li>
+<li>[x] Support embeddings</li>
+<li>[x] Endpoint discovery for:</li>
+<li>[x] in-cluster service DNS</li>
+<li>[x] developer-local endpoints</li>
+<li>[x] Model invocation events written to the run timeline (latency + token counts when available)</li>
+</ul>
+<p>Acceptance criteria:</p>
+<ul>
+<li>[x] Model endpoint discovery works for in-cluster and developer-local endpoints.</li>
+</ul>
+<p>Push checkpoint:</p>
+<ul>
+<li>[x] Push after model call events are recorded and endpoint discovery is validated in at least one dev environment.</li>
+</ul>
+<h3 id="1g-artifacts">1G. Artifacts</h3>
+<ul>
+<li>[x] First-class artifact concept for runs (inputs, intermediates, outputs)</li>
+<li>[x] Artifact storage integration</li>
+<li>[x] Artifact access via stable, environment-scoped URLs</li>
+<li>[x] Signing/proxy pattern so clients do not need object-store credentials</li>
+<li>[x] Preserve large-object semantics where applicable (e.g., range reads)</li>
+<li>[x] Artifact events written to the run timeline</li>
+</ul>
+<p>Follow-on (production storage/access patterns from ITDs):</p>
+<ul>
+<li>[x] Production artifact <strong>byte storage</strong> backed by S3-compatible object store (Ceph RGW) (ITD-13)</li>
+<li>[x] Production artifact access via private-bucket signing/proxy semantics (or equivalent deployment pattern), preserving Range + cache headers (ITD-14)</li>
+</ul>
+<p>Acceptance criteria:</p>
+<ul>
+<li>[x] Artifacts are accessible without object-store credentials and are navigable from the run timeline.</li>
+</ul>
+<p>Push checkpoint:</p>
+<ul>
+<li>[x] Push after artifact URLs and proxy/signing behavior are validated and timeline links are stable.</li>
+</ul>
+<h3 id="1h-cli-mvp">1H. CLI MVP</h3>
+<ul>
+<li>[x] Install/bootstrap commands</li>
+<li>[x] Resource lifecycle management (apply/create/update)</li>
+<li>[x] Trigger a run</li>
+<li>[x] Render run timeline</li>
+<li>[x] Fetch artifacts referenced by the run timeline</li>
+</ul>
+<p>Acceptance criteria:</p>
+<ul>
+<li>[x] CLI can apply resources, trigger runs, render run timeline, and fetch artifacts.</li>
+</ul>
+<p>Push checkpoint:</p>
+<ul>
+<li>[x] Push after CLI workflows are end-to-end demoable and aligned with the PRD run timeline UX requirements.</li>
+</ul>
+<h3 id="milestone-1-close-out-decision">Milestone 1 close-out decision</h3>
+<ul>
+<li>[x] Milestone 1 is closed as the Solo Mode MVP execution baseline.</li>
+<li>[x] A real in-cluster acceptance run completed through the CRD-driven operator and runner path.</li>
+<li>[x] Run timeline, tool/model integration, and artifact plumbing are considered sufficient for Milestone 1 closure.</li>
+<li>[x] Result visibility and authoritative output surfacing on control-plane resources are explicitly deferred to early Milestone 2 hardening.</li>
+</ul>
+<h2 id="milestone-2-platform-mode-essentials-identity-policy">Milestone 2: Platform Mode essentials (identity + policy)</h2>
+<h3 id="2a-authentication">2A. Authentication</h3>
+<ul>
+<li>[x] Keycloak OIDC integration for UI/API — <code>ai-agents</code> realm; <code>kubernetes</code> client; API server wired with <code>--oidc-issuer-url</code>, <code>--oidc-client-id</code>, <code>--oidc-username-claim</code>, <code>--oidc-groups-claim</code>, <code>--oidc-ca-file</code> on all 3 control plane nodes</li>
+<li>[x] Groups created in Keycloak: <code>kaigents-admins</code>, <code>kaigents-operators</code>, <code>kaigents-viewers</code>; bound to RBAC ClusterRoles via ClusterRoleBindings</li>
+<li>[x] Audit trail of user actions (via structured JSON logs)</li>
+</ul>
+<p>Acceptance criteria:</p>
+<ul>
+<li>[x] Users authenticate via SSO-compatible mechanism (OIDC via Keycloak <code>ai-agents</code> realm; impersonation test confirms group→ClusterRole→CRD access works end-to-end)</li>
+</ul>
+<p>Push checkpoint:</p>
+<ul>
+<li>[x] Push after auth flows are tested and audit events are produced.</li>
+</ul>
+<h3 id="2b-authorization-tool-allowlisting">2B. Authorization + tool allowlisting</h3>
+<ul>
+<li>[x] RBAC for key resources (viewer / operator / admin ClusterRoles deployed — <code>charts/kaigents-operator/templates/user-clusterroles.yaml</code>)</li>
+<li>[x] Tool allowlisting policy enforced at invocation time (<code>AgentSpec.AllowedTools</code>; run controller blocks disallowed tools before Job creation)</li>
+<li>[x] Denied tool calls show clear reasons in run timeline (run controller sets Failed status with reason)</li>
+</ul>
+<p>Acceptance criteria:</p>
+<ul>
+<li>[x] Unauthorized users cannot invoke restricted tools.</li>
+</ul>
+<p>Push checkpoint:</p>
+<ul>
+<li>[x] Push after allowlisting enforcement is test-locked and denials show clear reasons in the run timeline.</li>
+</ul>
+<h2 id="milestone-3-durable-process-execution-engine-decision-integration-itd-16">Milestone 3: Durable process execution engine decision + integration (ITD-16)</h2>
+<p>This milestone establishes the durable execution engine of record for long-running Work Requests.</p>
+<p>Key constraint:</p>
+<ul>
+<li>Temporal (or any engine) concepts must remain hidden behind Kaigents product/domain terms.</li>
+</ul>
+<h3 id="3a-temporal-adapter-service-execution-engine-integration">3A. Temporal adapter service (execution engine integration)</h3>
+<ul>
+<li>[x] Validate self-hosted Temporal operational footprint — 54-day production deployment on ai-agents-k8s-cluster (decided as ITD-16 2026-05-08)</li>
+<li>[x] Define Kaigents Process/Task representation — <code>WorkRequestInput</code> + <code>WorkItemDef</code> in <code>temporal-adapter/internal/workflow/workrequest.go</code>; pure domain types, no Temporal SDK leakage</li>
+<li>[x] Implement mapping from Kaigents process graph to Temporal execution model:</li>
+<li>[x] Explicit rework edges (cycles) — <code>SignalRework</code> signal restarts from step 0</li>
+<li>[x] Bounded rework limits/escalation — <code>MaxReworkAttempts=3</code>; exceeding triggers <code>Failed</code> with clear message</li>
+<li>[x] Human approval/wait gate — <code>SignalApprove</code> / <code>SignalRework</code> signals; workflow blocks at <code>requiresGate</code> steps</li>
+<li>[x] Temporal adapter service (Go) deployed at <code>kaigents-temporal-adapter.kaigents.svc.cluster.local:8080</code>:</li>
+<li>[x] <code>POST /v1/workrequests</code> — start WorkRequest (maps to Temporal Workflow)</li>
+<li>[x] <code>POST /v1/workrequests/{id}/signal</code> — approve or rework signal</li>
+<li>[x] <code>GET /v1/workrequests/{id}</code> — query WorkRequest state (Kaigents domain only)</li>
+<li>[x] Go Worker running on <code>kaigents-workrequest</code> task queue; workflows and activities registered</li>
+<li>[x] End-to-end test: 3-step workflow with human gate executed; approved via signal; <code>Succeeded</code> state confirmed</li>
+<li>[x] Validate integration boundary: <code>TemporalAdapterClient</code> in <code>kaigents-core/src/temporal_adapter.rs</code> calls adapter over plain HTTP; no Temporal SDK in Rust; runner registers WorkRequest via <code>KAIGENTS_TEMPORAL_ADAPTER_URL</code> env var (opt-in, non-blocking)</li>
+<li>[x] WorkRequest execution history maps cleanly to WorkItem/WorkAttempt state transitions</li>
+</ul>
+<p>Exit criteria (decision checkpoint):</p>
+<ul>
+<li>[x] Ops footprint acceptable — Temporal 54-day production deployment confirmed</li>
+<li>[x] Integration boundary acceptable — HTTP adapter isolates Temporal from Rust engine</li>
+<li>[x] Developer experience acceptable — simple workflow code; determinism constraints manageable</li>
+<li>[x] Process/Task definition model remains simple-first — <code>WorkItemDef</code> is a plain struct; no Temporal concepts exposed</li>
+<li>[x] ITD-16 recorded as ADOPTED (see <code>docs/research/technology/process-engine-evaluation.md</code>)</li>
+</ul>
+<p>Push checkpoint:</p>
+<ul>
+<li>[x] Push only after ITD-16 is recorded and the POC code is reproducible.</li>
+</ul>
+<h2 id="milestone-4-process-definition-model-processtask-execution-mapping">Milestone 4: Process definition model (Process/Task) + execution mapping</h2>
+<p>This milestone makes the refined product domain model real in the control plane and runtime surfaces.</p>
+<h3 id="4a-definition-model-crd-cli-first">4A. Definition model (CRD + CLI first)</h3>
+<ul>
+<li>[x] CRD: Process definition (<code>operator/api/core/v1alpha1/process_types.go</code>)</li>
+<li>[x] CRD: Task definition (<code>operator/api/core/v1alpha1/task_types.go</code>)</li>
+<li>[x] Validation: simple-first graph constraints (explicit rework edges; bounded rework semantics declared in Process spec)</li>
+<li>[x] CLI: create/apply/update Process/Task resources (<code>kaigents apply -f &lt;file&gt;</code>)</li>
+</ul>
+<h3 id="4b-execution-model-mapping">4B. Execution model mapping</h3>
+<ul>
+<li>[x] Map WorkRequest/WorkItem/WorkAttempt concepts to underlying execution engine without leaking engine-specific concepts (Generic <code>Runner</code> in CLI handles Process/Agent abstraction)</li>
+<li>[x] Timeline events and query surfaces align to WorkRequest/WorkItem/WorkAttempt (<code>WorkRequestResponse</code> includes activity results)</li>
+</ul>
+<p>Acceptance criteria:</p>
+<ul>
+<li>[x] A user can define a simple-first process and execute it as a Work Request.</li>
+</ul>
+<p>Push checkpoint:</p>
+<ul>
+<li>[x] Push after Process/Task definitions are validated and a Work Request produces a queryable execution history.</li>
+</ul>
+<h2 id="milestone-5-hybrid-execution-routing-cpugpunpu">Milestone 5: Hybrid Execution routing (CPU/GPU/NPU)</h2>
+<ul>
+<li>[x] Operator-visible routing configuration (<code>RoutingPolicy</code> in Agent/Run CRDs)</li>
+<li>[x] Policy surfaces for execution preferences/constraints (CPU/GPU/NPU) (<code>NodeSelector</code> support in <code>RunReconciler</code>)</li>
+<li>[x] Timeline/telemetry exposes what routing was requested vs what occurred (Surfaced in Run status/events)</li>
+</ul>
+<p>Acceptance criteria:</p>
+<ul>
+<li>[x] Workloads can be routed according to policy (verified via <code>NodeSelector</code> application to execution Jobs).</li>
+</ul>
+<p>Push checkpoint:</p>
+<ul>
+<li>[x] Push after routing policy is operator-visible and correlation is demonstrated in both timeline and telemetry.</li>
+</ul>
+<h2 id="milestone-6-dashboard-mvp">Milestone 6: Dashboard MVP</h2>
+<ul>
+<li>[x] Browse agents/teams (<code>/agents</code> and <code>/</code> overview)</li>
+<li>[x] Trigger runs (CLI supported; dashboard read-only for MVP)</li>
+<li>[x] View run timelines and traces (<code>/runs/{name}</code> detail view)</li>
+<li>[x] View errors and retry reasons (Surfaced in run detail and overview)</li>
+<li>[x] Browse/preview artifacts (via Artifact Proxy)</li>
+</ul>
+<p>Acceptance criteria:</p>
+<ul>
+<li>[x] Operators can diagnose failures via UI without needing direct DB access (Phase and messages surfaced in Dashboard).</li>
+</ul>
+<p>Push checkpoint:</p>
+<ul>
+<li>[x] Push after dashboard can render run timelines reliably and failures are diagnosable without backdoor access.</li>
+</ul>
+<h2 id="milestone-7-hardening-production-readiness">Milestone 7: Hardening &amp; Production Readiness</h2>
+<h3 id="7a-cloud-agnostic-artifact-storage-s3">7A. Cloud-Agnostic Artifact Storage (S3)</h3>
+<ul>
+<li>[x] Implement <code>ObjectStore</code> abstraction in <code>kaigents-core</code></li>
+<li>[x] Provide S3/MinIO implementation using <code>aws-sdk-s3</code></li>
+<li>[x] Configure S3 endpoints/credentials via environment/secrets</li>
+<li>[x] Support large-object range reads in artifact gateway</li>
+</ul>
+<h3 id="7b-observability-structured-logging">7B. Observability &amp; Structured Logging</h3>
+<ul>
+<li>[x] Standardize all logs (CLI, Operator, Dashboard, Adapter) to JSON format</li>
+<li>[x] Expose Prometheus <code>/metrics</code> endpoint on all Go components</li>
+<li>[x] Implement metrics in Rust engine for Prometheus (via <code>prometheus</code> crate)</li>
+<li>[x] Provide sample Grafana dashboards for Loki and Prometheus</li>
+</ul>
+<h3 id="7c-analytics-readiness">7C. Analytics Readiness</h3>
+<ul>
+<li>[x] Define stable JSON schema for Run Timeline events</li>
+<li>[x] Emit timeline events as structured logs for downstream ETL/Data Lake ingestion</li>
+</ul>
+<p>Acceptance criteria:</p>
+<ul>
+<li>[x] Artifacts can be stored and retrieved from a local MinIO or AWS S3 bucket without changing code.</li>
+<li>[x] Logs are queryable in Loki with standard labels (agent, run_id, component).</li>
+<li>[x] Key metrics (run latency, token counts, tool errors) are visible in Grafana.</li>
+</ul>
+<p>Push checkpoint:</p>
+<ul>
+<li>[x] Push after S3 storage and JSON logging are validated in the ai-agents-k8s-cluster.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

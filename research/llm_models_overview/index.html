@@ -1,0 +1,2186 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Production-grade substrate for operating AI agent teams.">
+      
+      
+      
+        <link rel="canonical" href="https://jensjohansen.github.io/kaigents/research/llm_models_overview/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Large Language Models: A Comprehensive Survey for AI Customer Agents - Kaigents</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#large-language-models-a-comprehensive-survey-for-ai-customer-agents" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Kaigents" class="md-header__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kaigents
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Large Language Models: A Comprehensive Survey for AI Customer Agents
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../product/kaigents-introduction/" class="md-tabs__link">
+          
+  
+  
+  Product
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/kaigents-architecture-and-design/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../ops/temporal-installation/" class="md-tabs__link">
+          
+  
+  
+  Operations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../strategy/corporate_ai_strategy/" class="md-tabs__link">
+          
+  
+  
+  Strategy
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../CODING_STANDARDS_AND_DOD/" class="md-tabs__link">
+          
+  
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Kaigents" class="md-nav__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kaigents
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Product
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kaigents-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kaigents-prd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/domain-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/managed-services/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Managed Services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kairon-retail-managed-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kairon Retail
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/example-team/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your First Team
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/temporal-validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/kaigents-architecture-and-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/ai_agent_engine_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ops/temporal-installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Temporal Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Strategy
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Strategy
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/corporate_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Corporate AI Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/marketing_ai_agent_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marketing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/security_operations_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CODING_STANDARDS_AND_DOD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation-plan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation/kaigents-implementation-tracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introduction
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#current-landscape-of-large-language-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current Landscape of Large Language Models
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Current Landscape of Large Language Models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#proprietary-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proprietary Models
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Proprietary Models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#openai-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OpenAI Models
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#anthropic-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Anthropic Models
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#google-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Google Models
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#open-source-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open-Source Models
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Open-Source Models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mistral-ai-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mistral AI Models
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#meta-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Meta Models
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deepseek-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DeepSeek Models
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#other-notable-open-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Other Notable Open Models
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deep-dive-self-hostable-models-for-customer-agents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deep Dive: Self-Hostable Models for Customer Agents
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deep Dive: Self-Hostable Models for Customer Agents">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#recommended-models-for-self-hosting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommended Models for Self-Hosting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Recommended Models for Self-Hosting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-mistral-7b-instruct" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Mistral 7B Instruct
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-mixtral-8x7b-instruct" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Mixtral 8x7B Instruct
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-llama-3-8b-instruct" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Llama 3 8B Instruct
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-deepseek-v2-7b" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. DeepSeek-V2 7B
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-phi-3-mini" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Phi-3 Mini
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deployment-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deployment Considerations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deployment Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#inference-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inference Optimization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fine-tuning-for-customer-service-applications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fine-Tuning for Customer Service Applications
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fine-Tuning for Customer Service Applications">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#recommended-fine-tuning-approaches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommended Fine-Tuning Approaches
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fine-tuning-datasets-for-customer-agents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fine-Tuning Datasets for Customer Agents
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rag-integration-for-enhanced-knowledge-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RAG Integration for Enhanced Knowledge Access
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RAG Integration for Enhanced Knowledge Access">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rag-architecture-for-customer-agents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RAG Architecture for Customer Agents
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommended-vector-databases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommended Vector Databases
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#document-processing-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Document Processing Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion-and-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conclusion and Recommendations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Conclusion and Recommendations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#for-sales-inquiries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Sales Inquiries
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-technical-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Technical Support
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Steps
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="large-language-models-a-comprehensive-survey-for-ai-customer-agents">Large Language Models: A Comprehensive Survey for AI Customer Agents</h1>
+<p><em>Research Date: May 3, 2025</em></p>
+<h2 id="introduction">Introduction</h2>
+<p>Large Language Models (LLMs) have revolutionized natural language processing and AI-powered customer interactions. This research paper provides a comprehensive survey of important LLM models available as of May 2025, with a particular focus on open-source models suitable for self-hosting in customer service and sales inquiry applications. We examine their capabilities, resource requirements, licensing considerations, and suitability for integration with agent frameworks like CrewAI.</p>
+<h2 id="current-landscape-of-large-language-models">Current Landscape of Large Language Models</h2>
+<h3 id="proprietary-models">Proprietary Models</h3>
+<h4 id="openai-models">OpenAI Models</h4>
+<ul>
+<li><strong>GPT-4o</strong>: The latest multimodal model with advanced reasoning, vision capabilities, and significantly reduced latency compared to previous generations.</li>
+<li><em>Strengths</em>: State-of-the-art reasoning, instruction following, multimodal capabilities</li>
+<li><em>Limitations</em>: Proprietary, API-only access, usage-based pricing</li>
+<li>
+<p><em>Best for</em>: High-complexity tasks requiring sophisticated reasoning</p>
+</li>
+<li>
+<p><strong>GPT-4 Turbo</strong>: Optimized for production deployments with improved throughput and reduced cost compared to GPT-4.</p>
+</li>
+<li><em>Strengths</em>: Strong reasoning, good balance of performance and cost</li>
+<li><em>Limitations</em>: Proprietary, API-only access</li>
+<li>
+<p><em>Best for</em>: Production systems with moderate complexity requirements</p>
+</li>
+<li>
+<p><strong>GPT-3.5 Turbo</strong>: Optimized for high-throughput, cost-effective deployments.</p>
+</li>
+<li><em>Strengths</em>: Fast, cost-effective, good for straightforward tasks</li>
+<li><em>Limitations</em>: Less sophisticated reasoning than GPT-4 models</li>
+<li><em>Best for</em>: High-volume, routine customer inquiries</li>
+</ul>
+<h4 id="anthropic-models">Anthropic Models</h4>
+<ul>
+<li><strong>Claude 3 Opus</strong>: Anthropic's most capable model with sophisticated reasoning and understanding.</li>
+<li><em>Strengths</em>: Exceptional reasoning, nuanced understanding, strong safety features</li>
+<li><em>Limitations</em>: Higher latency, higher cost, proprietary</li>
+<li>
+<p><em>Best for</em>: Complex customer issues requiring careful reasoning</p>
+</li>
+<li>
+<p><strong>Claude 3 Sonnet</strong>: Balanced performance model with good reasoning capabilities.</p>
+</li>
+<li><em>Strengths</em>: Good balance of performance and speed, strong safety features</li>
+<li><em>Limitations</em>: Proprietary, API-only access</li>
+<li>
+<p><em>Best for</em>: General customer support with moderate complexity</p>
+</li>
+<li>
+<p><strong>Claude 3 Haiku</strong>: Optimized for low-latency applications.</p>
+</li>
+<li><em>Strengths</em>: Very fast response times, cost-effective</li>
+<li><em>Limitations</em>: Less sophisticated than larger models</li>
+<li><em>Best for</em>: Real-time customer interactions requiring quick responses</li>
+</ul>
+<h4 id="google-models">Google Models</h4>
+<ul>
+<li><strong>Gemini 1.5 Pro</strong>: Google's advanced multimodal model with long context window.</li>
+<li><em>Strengths</em>: 1 million token context window, strong multimodal capabilities</li>
+<li><em>Limitations</em>: Proprietary, API-only access</li>
+<li>
+<p><em>Best for</em>: Complex customer interactions involving multiple documents or long histories</p>
+</li>
+<li>
+<p><strong>Gemini 1.5 Flash</strong>: Optimized for efficiency and speed.</p>
+</li>
+<li><em>Strengths</em>: Fast inference, good performance-to-cost ratio</li>
+<li><em>Limitations</em>: Less capable than Pro version</li>
+<li><em>Best for</em>: High-volume customer interactions</li>
+</ul>
+<h3 id="open-source-models">Open-Source Models</h3>
+<h4 id="mistral-ai-models">Mistral AI Models</h4>
+<ul>
+<li><strong>Mistral Large</strong>: Commercial-grade open weights model with strong reasoning capabilities.</li>
+<li><em>Strengths</em>: Strong performance, commercially usable</li>
+<li><em>Limitations</em>: Requires significant resources to run</li>
+<li>
+<p><em>Best for</em>: Enterprise deployments requiring control over infrastructure</p>
+</li>
+<li>
+<p><strong>Mistral 7B</strong>: Compact yet powerful model with efficient architecture.</p>
+</li>
+<li><em>Strengths</em>: Excellent performance for its size, Apache 2.0 license</li>
+<li><em>Limitations</em>: Limited context window compared to larger models</li>
+<li>
+<p><em>Best for</em>: Self-hosted deployments with moderate hardware</p>
+</li>
+<li>
+<p><strong>Mixtral 8x7B</strong>: Mixture-of-experts model with strong performance.</p>
+</li>
+<li><em>Strengths</em>: Near GPT-3.5 level performance, Apache 2.0 license</li>
+<li><em>Limitations</em>: Requires more resources than standard 7B models</li>
+<li><em>Best for</em>: Complex customer support scenarios requiring strong reasoning</li>
+</ul>
+<h4 id="meta-models">Meta Models</h4>
+<ul>
+<li><strong>Llama 3 70B</strong>: Meta's largest open model with strong reasoning capabilities.</li>
+<li><em>Strengths</em>: Strong performance across benchmarks, commercially usable</li>
+<li><em>Limitations</em>: Requires significant hardware resources</li>
+<li>
+<p><em>Best for</em>: Enterprise deployments requiring sophisticated reasoning</p>
+</li>
+<li>
+<p><strong>Llama 3 8B</strong>: Compact model with good performance-to-size ratio.</p>
+</li>
+<li><em>Strengths</em>: Good performance for size, commercially usable</li>
+<li><em>Limitations</em>: Less capable than larger models</li>
+<li><em>Best for</em>: Deployment on limited hardware resources</li>
+</ul>
+<h4 id="deepseek-models">DeepSeek Models</h4>
+<ul>
+<li><strong>DeepSeek-V2 67B</strong>: A large-scale model with strong performance across reasoning and knowledge tasks.</li>
+<li><em>Strengths</em>: Excellent reasoning capabilities, strong performance on coding and math tasks, bilingual (English/Chinese)</li>
+<li><em>Limitations</em>: Requires significant hardware resources</li>
+<li><em>Licensing</em>: DeepSeek License (allows commercial use with ethical restrictions)</li>
+<li>
+<p><em>Best for</em>: Complex customer support requiring strong reasoning</p>
+</li>
+<li>
+<p><strong>DeepSeek-V2 7B</strong>: A more compact version with good performance-to-size ratio.</p>
+</li>
+<li><em>Strengths</em>: Strong performance for its size, good for deployment on moderate hardware</li>
+<li><em>Limitations</em>: Less capable than larger variants</li>
+<li><em>Licensing</em>: DeepSeek License</li>
+<li>
+<p><em>Best for</em>: Balanced customer support applications with moderate hardware</p>
+</li>
+<li>
+<p><strong>DeepSeek-Coder</strong>: Specialized for coding tasks with strong technical documentation understanding.</p>
+</li>
+<li><em>Strengths</em>: Excellent for technical support involving code or APIs, strong documentation comprehension</li>
+<li><em>Limitations</em>: More specialized than general-purpose models</li>
+<li><em>Licensing</em>: DeepSeek License</li>
+<li><em>Best for</em>: Technical support for developer products or APIs</li>
+</ul>
+<h4 id="other-notable-open-models">Other Notable Open Models</h4>
+<ul>
+<li><strong>Yi 34B</strong>: Bilingual Chinese-English model with strong capabilities.</li>
+<li><em>Strengths</em>: Strong performance, excellent for multilingual applications</li>
+<li><em>Limitations</em>: Requires significant resources</li>
+<li>
+<p><em>Best for</em>: Customer support requiring Chinese language capabilities</p>
+</li>
+<li>
+<p><strong>Phi-3 Mini</strong>: Microsoft's compact yet capable model.</p>
+</li>
+<li><em>Strengths</em>: Excellent performance for its size, MIT license</li>
+<li><em>Limitations</em>: Limited context window</li>
+<li><em>Best for</em>: Edge deployments or limited hardware scenarios</li>
+</ul>
+<h2 id="deep-dive-self-hostable-models-for-customer-agents">Deep Dive: Self-Hostable Models for Customer Agents</h2>
+<p>For AI customer agents handling sales inquiries and support, several factors are critical when selecting self-hostable models:</p>
+<ol>
+<li>Performance on conversational tasks</li>
+<li>Resource requirements</li>
+<li>Licensing for commercial use</li>
+<li>Fine-tuning capabilities</li>
+<li>Integration with agent frameworks</li>
+</ol>
+<h3 id="recommended-models-for-self-hosting">Recommended Models for Self-Hosting</h3>
+<h4 id="1-mistral-7b-instruct">1. Mistral 7B Instruct</h4>
+<ul>
+<li><strong>Overview</strong>: A 7B parameter model with excellent instruction following capabilities.</li>
+<li><strong>Hardware Requirements</strong>: </li>
+<li>Minimum: 16GB VRAM (GPU) or 32GB RAM (CPU)</li>
+<li>Recommended: NVIDIA A10 or better</li>
+<li><strong>Quantization Options</strong>: </li>
+<li>4-bit: ~8GB VRAM</li>
+<li>8-bit: ~14GB VRAM</li>
+<li><strong>Licensing</strong>: Apache 2.0 (fully commercial use)</li>
+<li><strong>Strengths for Customer Agents</strong>:</li>
+<li>Strong instruction following</li>
+<li>Good conversational capabilities</li>
+<li>Efficient token usage</li>
+<li>Excellent performance-to-resource ratio</li>
+<li><strong>Integration</strong>: Well-supported by frameworks like LangChain, CrewAI</li>
+</ul>
+<h4 id="2-mixtral-8x7b-instruct">2. Mixtral 8x7B Instruct</h4>
+<ul>
+<li><strong>Overview</strong>: A mixture-of-experts model with performance approaching GPT-3.5.</li>
+<li><strong>Hardware Requirements</strong>:</li>
+<li>Minimum: 24GB VRAM</li>
+<li>Recommended: NVIDIA A100 or better</li>
+<li><strong>Quantization Options</strong>:</li>
+<li>4-bit: ~16GB VRAM</li>
+<li>8-bit: ~28GB VRAM</li>
+<li><strong>Licensing</strong>: Apache 2.0 (fully commercial use)</li>
+<li><strong>Strengths for Customer Agents</strong>:</li>
+<li>Strong reasoning capabilities</li>
+<li>Excellent at complex instructions</li>
+<li>Good at maintaining context</li>
+<li>Strong multilingual performance</li>
+<li><strong>Integration</strong>: Well-supported by major frameworks</li>
+</ul>
+<h4 id="3-llama-3-8b-instruct">3. Llama 3 8B Instruct</h4>
+<ul>
+<li><strong>Overview</strong>: Meta's latest compact model with improved instruction following.</li>
+<li><strong>Hardware Requirements</strong>:</li>
+<li>Minimum: 16GB VRAM</li>
+<li>Recommended: NVIDIA RTX 4090 or better</li>
+<li><strong>Quantization Options</strong>:</li>
+<li>4-bit: ~8GB VRAM</li>
+<li>8-bit: ~14GB VRAM</li>
+<li><strong>Licensing</strong>: Llama 3 Community License (allows commercial use with limitations)</li>
+<li><strong>Strengths for Customer Agents</strong>:</li>
+<li>Strong conversational abilities</li>
+<li>Good at following complex instructions</li>
+<li>Improved factuality over previous generations</li>
+<li>Better safety guardrails than most open models</li>
+<li><strong>Integration</strong>: Well-supported by major frameworks</li>
+</ul>
+<h4 id="4-deepseek-v2-7b">4. DeepSeek-V2 7B</h4>
+<ul>
+<li><strong>Overview</strong>: A compact yet powerful model with strong bilingual capabilities.</li>
+<li><strong>Hardware Requirements</strong>:</li>
+<li>Minimum: 16GB VRAM</li>
+<li>Recommended: NVIDIA RTX 4070 or better</li>
+<li><strong>Quantization Options</strong>:</li>
+<li>4-bit: ~8GB VRAM</li>
+<li>8-bit: ~14GB VRAM</li>
+<li><strong>Licensing</strong>: DeepSeek License (allows commercial use with ethical restrictions)</li>
+<li><strong>Strengths for Customer Agents</strong>:</li>
+<li>Strong bilingual support (English/Chinese)</li>
+<li>Good performance on technical and general queries</li>
+<li>Efficient token usage</li>
+<li>Balanced performance-to-resource ratio</li>
+<li><strong>Integration</strong>: Compatible with major frameworks like LangChain, CrewAI</li>
+</ul>
+<h4 id="5-phi-3-mini">5. Phi-3 Mini</h4>
+<ul>
+<li><strong>Overview</strong>: Microsoft's compact yet powerful model with excellent reasoning.</li>
+<li><strong>Hardware Requirements</strong>:</li>
+<li>Minimum: 8GB VRAM</li>
+<li>Recommended: NVIDIA RTX 3080 or better</li>
+<li><strong>Quantization Options</strong>:</li>
+<li>4-bit: ~4GB VRAM</li>
+<li>8-bit: ~7GB VRAM</li>
+<li><strong>Licensing</strong>: MIT License (fully commercial use)</li>
+<li><strong>Strengths for Customer Agents</strong>:</li>
+<li>Excellent performance for size</li>
+<li>Strong reasoning capabilities</li>
+<li>Very efficient token usage</li>
+<li>Can run on modest hardware</li>
+<li><strong>Integration</strong>: Growing support in major frameworks</li>
+</ul>
+<h3 id="deployment-considerations">Deployment Considerations</h3>
+<h4 id="inference-optimization">Inference Optimization</h4>
+<p>For production deployment of self-hosted models, several optimization techniques can improve performance:</p>
+<ol>
+<li><strong>Quantization</strong>: Reducing precision from FP16/FP32 to INT8 or INT4</li>
+<li>Tools: GGML, GPTQ, AWQ, EXL2</li>
+<li>
+<p>Trade-off: Slight quality degradation for significant resource reduction</p>
+</li>
+<li>
+<p><strong>Inference Servers</strong>:</p>
+</li>
+<li><strong>vLLM</strong>: High-throughput inference with PagedAttention</li>
+<li><strong>Text Generation Inference (TGI)</strong>: Optimized for Hugging Face models</li>
+<li><strong>llama.cpp</strong>: Efficient C++ implementation for CPU and GPU</li>
+<li>
+<p><strong>CTransformers</strong>: Python bindings for high-performance C++ implementations</p>
+</li>
+<li>
+<p><strong>Hardware Considerations</strong>:</p>
+</li>
+<li>GPU: NVIDIA consumer GPUs (RTX series) for smaller models</li>
+<li>Enterprise: A10, A100, H100 for larger models or high throughput</li>
+<li>CPU: AMD EPYC or Intel Xeon with high core count for CPU-only deployment</li>
+</ol>
+<h2 id="fine-tuning-for-customer-service-applications">Fine-Tuning for Customer Service Applications</h2>
+<p>Fine-tuning can significantly improve model performance for specific customer service scenarios:</p>
+<h3 id="recommended-fine-tuning-approaches">Recommended Fine-Tuning Approaches</h3>
+<ol>
+<li><strong>LoRA (Low-Rank Adaptation)</strong>:</li>
+<li>Resource-efficient fine-tuning that modifies only a small subset of model parameters</li>
+<li>Requires less compute and memory than full fine-tuning</li>
+<li>
+<p>Well-suited for domain adaptation in customer service</p>
+</li>
+<li>
+<p><strong>QLoRA</strong>:</p>
+</li>
+<li>Quantized version of LoRA that enables fine-tuning on consumer hardware</li>
+<li>Can fine-tune even large models on single GPUs</li>
+<li>
+<p>Good option for specialized customer service domains</p>
+</li>
+<li>
+<p><strong>Supervised Fine-Tuning (SFT)</strong>:</p>
+</li>
+<li>Traditional approach using labeled examples</li>
+<li>Best for teaching specific response patterns and company voice</li>
+<li>Requires high-quality training data</li>
+</ol>
+<h3 id="fine-tuning-datasets-for-customer-agents">Fine-Tuning Datasets for Customer Agents</h3>
+<p>For effective fine-tuning, consider creating datasets that include:</p>
+<ol>
+<li><strong>Company-Specific Knowledge</strong>:</li>
+<li>Product information and specifications</li>
+<li>Pricing and availability details</li>
+<li>
+<p>Company policies and procedures</p>
+</li>
+<li>
+<p><strong>Customer Interaction Patterns</strong>:</p>
+</li>
+<li>Common customer questions and ideal responses</li>
+<li>Escalation scenarios and appropriate handling</li>
+<li>
+<p>Multi-turn conversations showing proper flow</p>
+</li>
+<li>
+<p><strong>Tone and Voice Examples</strong>:</p>
+</li>
+<li>Demonstrations of company-approved communication style</li>
+<li>Examples of handling difficult situations professionally</li>
+<li>Proper use of technical terminology and explanations</li>
+</ol>
+<h2 id="rag-integration-for-enhanced-knowledge-access">RAG Integration for Enhanced Knowledge Access</h2>
+<p>Retrieval-Augmented Generation (RAG) is essential for customer service applications to provide accurate, up-to-date information:</p>
+<h3 id="rag-architecture-for-customer-agents">RAG Architecture for Customer Agents</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>flowchart TD
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    A[Customer Query] --&gt; B[LLM Agent]
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    B --&gt; C{Need Additional Information?}
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    C --&gt;|Yes| D[Vector Database]
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    D --&gt; E[Relevant Documents]
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    E --&gt; F[Context-Enhanced Response]
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    C --&gt;|No| F
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    F --&gt; G[Customer]
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    classDef query fill:#f9d5e5,stroke:#d64161,stroke-width:2px,color:#000000
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    classDef model fill:#c2e0c2,stroke:#2d6630,stroke-width:2px,color:#000000
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    classDef data fill:#ffe680,stroke:#b38600,stroke-width:2px,color:#000000
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    classDef response fill:#b3e0f2,stroke:#0366a3,stroke-width:2px,color:#000000
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    class A,G query
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    class B,C model
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    class D,E data
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    class F response
+</code></pre></div>
+<h3 id="recommended-vector-databases">Recommended Vector Databases</h3>
+<ol>
+<li><strong>Chroma</strong>: Lightweight, easy to deploy</li>
+<li><strong>Qdrant</strong>: High-performance, production-ready</li>
+<li><strong>Weaviate</strong>: Hybrid search capabilities</li>
+<li><strong>Pinecone</strong>: Managed service with high scalability</li>
+</ol>
+<h3 id="document-processing-pipeline">Document Processing Pipeline</h3>
+<p>For effective RAG implementation:</p>
+<ol>
+<li><strong>Document Chunking</strong>: Split documents into semantic units (not just arbitrary chunks)</li>
+<li><strong>Embedding Generation</strong>: Use specialized embedding models like E5, BGE, or INSTRUCTOR</li>
+<li><strong>Metadata Enrichment</strong>: Add metadata for filtering and relevance scoring</li>
+<li><strong>Hybrid Retrieval</strong>: Combine vector search with keyword search for better results</li>
+</ol>
+<h2 id="conclusion-and-recommendations">Conclusion and Recommendations</h2>
+<p>Based on our comprehensive survey, we recommend the following approach for implementing AI customer agents:</p>
+<h3 id="for-sales-inquiries">For Sales Inquiries</h3>
+<ul>
+<li><strong>Model</strong>: Mixtral 8x7B or Llama 3 8B with LoRA fine-tuning</li>
+<li><strong>Deployment</strong>: vLLM on GPU infrastructure</li>
+<li><strong>RAG</strong>: Qdrant or Weaviate with hybrid search</li>
+<li><strong>Agent Framework</strong>: CrewAI with specialized sales agent roles</li>
+</ul>
+<h3 id="for-technical-support">For Technical Support</h3>
+<ul>
+<li><strong>Model Options</strong>:</li>
+<li><strong>General Support</strong>: Mistral 7B for simpler issues, Mixtral 8x7B for complex support</li>
+<li><strong>Code/API Support</strong>: DeepSeek-Coder for technical documentation and code-related issues</li>
+<li><strong>Multilingual Support</strong>: DeepSeek-V2 7B for English/Chinese bilingual support</li>
+<li><strong>Deployment</strong>: Text Generation Inference with quantization</li>
+<li><strong>RAG</strong>: Comprehensive knowledge base with semantic chunking</li>
+<li><strong>Agent Framework</strong>: CrewAI with hierarchical process for escalation</li>
+</ul>
+<h3 id="next-steps">Next Steps</h3>
+<ol>
+<li>Evaluate hardware requirements and deployment options</li>
+<li>Benchmark candidate models on domain-specific tasks</li>
+<li>Develop fine-tuning datasets from existing customer interactions</li>
+<li>Build RAG pipeline with company documentation</li>
+<li>Implement and test agent roles and processes</li>
+</ol>
+<p>This research provides a foundation for implementing effective, self-hosted AI customer agents using state-of-the-art open-source models and techniques.</p>
+<h2 id="references">References</h2>
+<ol>
+<li>Mistral AI Documentation: <a href="https://docs.mistral.ai/">https://docs.mistral.ai/</a></li>
+<li>Meta Llama 3 Technical Report: <a href="https://ai.meta.com/llama/">https://ai.meta.com/llama/</a></li>
+<li>Microsoft Phi-3 Technical Report: <a href="https://www.microsoft.com/en-us/research/project/phi-3/">https://www.microsoft.com/en-us/research/project/phi-3/</a></li>
+<li>DeepSeek Models: <a href="https://github.com/deepseek-ai/DeepSeek-V2">https://github.com/deepseek-ai/DeepSeek-V2</a></li>
+<li>DeepSeek License: <a href="https://github.com/deepseek-ai/DeepSeek-V3/blob/main/LICENSE-MODEL">https://github.com/deepseek-ai/DeepSeek-V3/blob/main/LICENSE-MODEL</a></li>
+<li>vLLM Documentation: <a href="https://vllm.ai/">https://vllm.ai/</a></li>
+<li>CrewAI Documentation: <a href="https://docs.crewai.com/">https://docs.crewai.com/</a></li>
+<li>Hugging Face Transformers: <a href="https://huggingface.co/docs/transformers/">https://huggingface.co/docs/transformers/</a></li>
+<li>LangChain Documentation: <a href="https://python.langchain.com/docs/">https://python.langchain.com/docs/</a></li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

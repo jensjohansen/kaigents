@@ -1,0 +1,3004 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Production-grade substrate for operating AI agent teams.">
+      
+      
+      
+        <link rel="canonical" href="https://jensjohansen.github.io/kaigents/research/platform_research_log/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Platform Research Log (Draft) - Kaigents</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#platform-research-log-draft" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Kaigents" class="md-header__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kaigents
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Platform Research Log (Draft)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../product/kaigents-introduction/" class="md-tabs__link">
+          
+  
+  
+  Product
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/kaigents-architecture-and-design/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../ops/temporal-installation/" class="md-tabs__link">
+          
+  
+  
+  Operations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../strategy/corporate_ai_strategy/" class="md-tabs__link">
+          
+  
+  
+  Strategy
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../CODING_STANDARDS_AND_DOD/" class="md-tabs__link">
+          
+  
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Kaigents" class="md-nav__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kaigents
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Product
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kaigents-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kaigents-prd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/domain-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/managed-services/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Managed Services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kairon-retail-managed-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kairon Retail
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/example-team/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your First Team
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/temporal-validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/kaigents-architecture-and-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/ai_agent_engine_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ops/temporal-installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Temporal Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Strategy
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Strategy
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/corporate_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Corporate AI Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/marketing_ai_agent_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marketing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/security_operations_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CODING_STANDARDS_AND_DOD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation-plan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation/kaigents-implementation-tracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2026-03-07" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2026-03-07
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#market-research-plan-scoped" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Market research plan (scoped)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Market research plan (scoped)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-point-kagent-kagent-devkagent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Kagent (kagent-dev/kagent)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-kmcp-kagent-devkmcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: kMCP (kagent-dev/kmcp)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-current-workspace-implementation-survey-ai-customer-agents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Current workspace implementation survey (ai-customer-agents)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-langfuse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Langfuse
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-arize-phoenix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Arize Phoenix
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-wb-weave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: W&amp;B Weave
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-zep-memory-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Zep (memory server)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-letta-memory-first-agent-platform" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Letta (memory-first agent platform)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-backstage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Backstage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-open-webui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Open WebUI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-n8n" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: n8n
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-google-adk-googleadk-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Google ADK (google/adk-python)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-a2a-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: A2A protocol
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-crewai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: CrewAI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-kserve" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: KServe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-knative-serving" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Knative Serving
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-lemonade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Lemonade
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-openclaw-kubernetes-operator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: OpenClaw Kubernetes Operator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-dify" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Dify
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-flowise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Flowise
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-langflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Langflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-ux-modality-baseline-kagent-cli-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: UX modality baseline — Kagent CLI + Dashboard
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-argo-workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Argo Workflows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-temporal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Temporal
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-argo-workflows_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Argo Workflows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-tekton-pipelines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Tekton Pipelines
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-dagger" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Dagger
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-lyra-go-dag-task-orchestration-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: lyra (Go DAG task orchestration library)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-oxigdal-workflow-rust-dag-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: oxigdal-workflow (Rust DAG library)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-dagx-rust-embedded-async-dag-executor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: dagx (Rust embedded async DAG executor)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-async_dag-rust-embedded-async-dag-scheduler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: async_dag (Rust embedded async DAG scheduler)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-kuberay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: KubeRay
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-crossplane" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Crossplane
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-agentfield" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: AgentField
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-kubernetes-sig-agent-sandbox" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Kubernetes SIG agent-sandbox
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-k8sgpt-operator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: K8sGPT Operator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-agentic-layer-agent-runtime-operator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Agentic Layer Agent Runtime Operator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-toolhive-stacklok" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: ToolHive (Stacklok)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-ark-agents-at-scale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: ARK (Agents at Scale)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-ux-modality-baseline-ark-cli-dashboard-dev-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: UX modality baseline — ARK CLI + Dashboard + dev mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-ux-modality-baseline-langflow-visual-editor-playground-sharemcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: UX modality baseline — Langflow visual editor + Playground + Share/MCP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-ux-modality-baseline-flowise-visual-editor-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: UX modality baseline — Flowise visual editor capabilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-kubernetes-sig-kube-agentic-networking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: Kubernetes SIG kube-agentic-networking
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-spiffworkflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: SpiffWorkflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-spiffarena" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: SpiffArena
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-point-dagrs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data point: dagrs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decision-memo-draft-ark-vs-kagent-vs-agentic-layer-for-kaigents-control-plane" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decision memo (draft): ARK vs Kagent vs Agentic Layer for Kaigents control plane
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decision memo (draft): ARK vs Kagent vs Agentic Layer for Kaigents control plane">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#observed-modeling-differences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Observed modeling differences
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#provisional-guidance-adopt-vs-emulate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Provisional guidance (adopt vs emulate)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#minimum-kaigents-crd-set-composable-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minimum Kaigents CRD set (composable approach)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decision-memo-draft-workflow-substrate-for-kaigents-simple-lightweight-fast" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decision memo (draft): workflow substrate for Kaigents (simple / lightweight / fast)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decision memo (draft): workflow substrate for Kaigents (simple / lightweight / fast)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-lightweight-likely-means-for-kaigents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What “lightweight” likely means for Kaigents
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#candidate-buckets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Candidate buckets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#provisional-recommendation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Provisional recommendation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#choice-matrix-draft" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choice matrix (draft)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommended-path-for-simple-lightweight-fast" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommended path for “simple, lightweight, fast”
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proposal-draft-minimal-kaigents-execution-crds-runquery-artifact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposal (draft): minimal Kaigents execution CRDs (Run/Query + Artifact)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Proposal (draft): minimal Kaigents execution CRDs (Run/Query + Artifact)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#crd-1-query-or-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CRD 1: Query (or Run)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CRD 1: Query (or Run)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#suggested-spec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suggested spec
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#suggested-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suggested status
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#yaml-skeleton" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        YAML skeleton
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crd-2-optional-but-recommended-artifact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CRD 2 (optional but recommended): Artifact
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CRD 2 (optional but recommended): Artifact">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#suggested-spec_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suggested spec
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decision-memo-draft-ux-modalities-for-kaigents-crd-cli-dashboard-designer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decision memo (draft): UX modalities for Kaigents (CRD + CLI + Dashboard + Designer)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decision memo (draft): UX modalities for Kaigents (CRD + CLI + Dashboard + Designer)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#findings-primary-source-inspired" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Findings (primary-source inspired)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#provisional-sequencing-recommendation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Provisional sequencing recommendation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ux-patterns-to-emulate-concrete" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UX patterns to emulate (concrete)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="UX patterns to emulate (concrete)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#suggested-status_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suggested status
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#yaml-skeleton_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        YAML skeleton
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#retention-gc-conventions-minimal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retention / GC conventions (minimal)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#status-conventions-for-uicli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Status conventions for UI/CLI
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#open-questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open questions
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="platform-research-log-draft">Platform Research Log (Draft)</h1>
+<p><strong>Project:</strong> AI Customer Agents (AI Agents Platform)
+<strong>Status:</strong> Draft (research-in-progress)
+<strong>Last Updated:</strong> 2026-03-07</p>
+<hr />
+<h2 id="purpose">Purpose</h2>
+<p>Capture research notes as <strong>dated data points</strong> (links + key facts + implications). This is meant to be merged later into:</p>
+<ul>
+<li>ITD register</li>
+<li>architecture doc</li>
+<li>PRD/design docs</li>
+</ul>
+<hr />
+<h2 id="2026-03-07">2026-03-07</h2>
+<h2 id="market-research-plan-scoped">Market research plan (scoped)</h2>
+<ul>
+<li>Scope: identify external offerings that align with Kaigents’ goals (Kubernetes-native, lightweight/low overhead where possible, commercial-safe OSS preferred, MCP/A2A interop), and decide <strong>adopt vs inspire vs avoid</strong>.</li>
+<li>Sources: prefer primary sources (official docs + GitHub repo + LICENSE text).</li>
+<li>Buckets (finish these, then move on to ITDs/tech design):</li>
+<li>Agent control plane (already covered: ARK, Kagent, Agentic Layer)</li>
+<li>Tool plane (already covered: kmcp, ToolHive)</li>
+<li>Workflow substrate (already covered: Argo/Tekton + embedded DAG libs)</li>
+<li>UX/designer baselines (already covered: Langflow, Flowise)</li>
+<li>Remaining market scan gaps:<ul>
+<li>Evaluation/observability (Langfuse, Phoenix, Weave)</li>
+<li>Agent memory products (Zep, Letta)</li>
+<li>Platform UI baseline (Backstage, Open WebUI)</li>
+<li>Tool catalog/connectors benchmark (n8n)</li>
+</ul>
+</li>
+</ul>
+<h3 id="data-point-kagent-kagent-devkagent">Data point: Kagent (kagent-dev/kagent)</h3>
+<ul>
+<li>Source: https://github.com/kagent-dev/kagent</li>
+<li>License: Apache-2.0</li>
+<li>Claim: Kubernetes controller watches kagent custom resources; includes UI + engine; engine runs agents (mentions ADK).</li>
+<li>Primary-source detail: CRD bases in <code>go/api/config/crd/bases</code> include <code>Agent</code>, <code>Memory</code>, <code>ModelConfig</code>, <code>ModelProviderConfig</code>, <code>ToolServer</code>, and <code>RemoteMCPServer</code>.</li>
+<li>Additional primary-source detail:</li>
+<li><code>Agent</code> CRD includes <code>a2aConfig</code> which serves an A2A agent endpoint off the kagent controller service (default <code>:8083</code>) at <code>/api/a2a/&lt;agent-namespace&gt;/&lt;agent-name&gt;</code>.</li>
+<li>Agents can be invoked via dashboard chat, <code>kagent invoke --agent &lt;name&gt; --task &lt;text&gt;</code>, or directly via HTTP using the agent card at <code>/api/a2a/&lt;ns&gt;/&lt;agent&gt;/.well-known/agent.json</code>.</li>
+<li><code>Agent.status.conditions</code> includes readiness/acceptance-type conditions (ready to serve requests; accepted by the system).</li>
+<li>Observed gap: Unlike ARK’s <code>Query</code>, Kagent does not obviously expose a first-class <code>Query</code>/<code>Run</code> CRD for executions and results; “runs” appear to be handled via dashboard/CLI/A2A responses rather than persisted as Kubernetes objects.</li>
+<li>Implication: Strong candidate for k8s-native agent control plane; must validate “teams” modeling and always-on patterns.</li>
+</ul>
+<h3 id="data-point-kmcp-kagent-devkmcp">Data point: kMCP (kagent-dev/kmcp)</h3>
+<ul>
+<li>Source: https://github.com/kagent-dev/kmcp</li>
+<li>License: Apache-2.0</li>
+<li>Claim: Provides CRDs + controller for MCP server deployments; transport adapters (HTTP/WS/SSE); scaffolding.</li>
+<li>Primary-source detail: Project positions itself as a toolkit spanning (1) CLI scaffolding and local dev, (2) controller + CRD for MCP servers, (3) a transport adapter providing external traffic routing and multi-transport support without code changes.</li>
+<li>Implication: Strong candidate for Kaigents tool plane, especially if we want a “prototype -&gt; production” workflow and multi-transport support as a first-class concern.</li>
+</ul>
+<h3 id="data-point-current-workspace-implementation-survey-ai-customer-agents">Data point: Current workspace implementation survey (ai-customer-agents)</h3>
+<ul>
+<li>Source: local repo <code>/home/johnj/CascadeProjects/ai-customer-agents</code></li>
+<li>Observed state: This workspace currently contains <strong>docs and planning artifacts</strong>, not an implementation.</li>
+<li>Primary-source detail:</li>
+<li>Top-level contents: <code>docs/</code>, <code>README.md</code>, <code>Makefile</code>, <code>requirements.txt</code>, <code>VERSION</code>.</li>
+<li>No Kubernetes manifests detected (<code>*.yaml</code>, <code>kustomization.yaml</code>, Helm <code>Chart.yaml</code>).</li>
+<li>No application code detected (no <code>*.py</code>, <code>go.mod</code>, <code>package.json</code>, <code>Dockerfile</code> within scan depth).</li>
+<li>Implication: Kaigents work in this repo is at the research/design stage. Implementation will require either:</li>
+<li>creating new service repos (controller/CLI/dashboard) and linking them from docs, or</li>
+<li>adding initial skeleton code + deployment artifacts into this repo.</li>
+</ul>
+<h3 id="data-point-langfuse">Data point: Langfuse</h3>
+<ul>
+<li>Source: https://github.com/langfuse/langfuse</li>
+<li>License: MIT for most code; explicit carve-out for <code>ee/</code> (enterprise) under separate license per repository LICENSE header.</li>
+<li>Primary-source detail: Repository LICENSE states content under <code>ee/</code>, <code>web/src/ee/</code>, and/or <code>worker/src/ee/</code> is licensed per <code>ee/LICENSE</code>; content outside those directories is “MIT Expat”.</li>
+<li>Claim: Open source LLM engineering platform (observability/metrics/evals/datasets) with OpenTelemetry integrations.</li>
+<li>Implication: Strong market-aligned candidate for Kaigents <strong>eval + observability plane</strong> with commercial-safe core. Treat EE as optional; ensure Kaigents depends only on MIT-licensed subset if embedding.</li>
+</ul>
+<h3 id="data-point-arize-phoenix">Data point: Arize Phoenix</h3>
+<ul>
+<li>Source: https://github.com/Arize-ai/phoenix</li>
+<li>License: Elastic License 2.0 (ELv2)</li>
+<li>Primary-source detail: ELv2 explicitly prohibits providing the software “as a hosted or managed service” that gives third parties access to substantial functionality.</li>
+<li>Claim: AI observability and evaluation.</li>
+<li>Implication: Not aligned with “commercial-safe OSS” requirement for Kaigents core (SaaS/managed-service restriction). Treat as <strong>benchmark/inspiration</strong> only, not a dependency.</li>
+</ul>
+<h3 id="data-point-wb-weave">Data point: W&amp;B Weave</h3>
+<ul>
+<li>Source: https://github.com/wandb/weave</li>
+<li>License: Apache-2.0 (repository LICENSE)</li>
+<li>Claim: Toolkit/platform for LLM app development and evaluation.</li>
+<li>Implication: Commercial-safe OSS baseline for eval/observability workflows; evaluate as inspiration/integration depending on how tightly coupled it is to W&amp;B hosted services.</li>
+</ul>
+<h3 id="data-point-zep-memory-server">Data point: Zep (memory server)</h3>
+<ul>
+<li>Source: https://github.com/getzep/zep</li>
+<li>License: Apache-2.0 (repository LICENSE)</li>
+<li>Claim: Memory server / retrieval system for agents (context engineering).</li>
+<li>Implication: Commercial-safe option to study for “memory as a service” patterns; likely an integration candidate rather than Kaigents core dependency.</li>
+</ul>
+<h3 id="data-point-letta-memory-first-agent-platform">Data point: Letta (memory-first agent platform)</h3>
+<ul>
+<li>Source: https://github.com/letta-ai/letta and https://github.com/letta-ai/letta-code</li>
+<li>License: Apache-2.0 (letta-code repository LICENSE; verify core Letta repo license separately)</li>
+<li>Claim: Platform for stateful agents with memory-first posture.</li>
+<li>Implication: Worth tracking for product concepts and memory modeling patterns; validate licensing boundaries across repos before considering any reuse.</li>
+</ul>
+<h3 id="data-point-backstage">Data point: Backstage</h3>
+<ul>
+<li>Source: https://github.com/backstage/backstage</li>
+<li>License: Apache-2.0</li>
+<li>Claim: Framework for building developer portals.</li>
+<li>Implication: Strong “platform UI baseline” for Kaigents Platform Mode: Kaigents could ship as a Backstage plugin rather than building a net-new portal; commercial-safe.</li>
+</ul>
+<h3 id="data-point-open-webui">Data point: Open WebUI</h3>
+<ul>
+<li>Source: https://github.com/open-webui/open-webui</li>
+<li>License: Custom license with a branding restriction clause (derived from BSD-3 with additional conditions).</li>
+<li>Primary-source detail: LICENSE prohibits altering/removing “Open WebUI” branding except in limited circumstances (including &lt;=50 end users or enterprise license).</li>
+<li>Claim: User-facing AI chat UI.</li>
+<li>Implication: <strong>Avoid as a core dependency</strong> for Kaigents due to branding restriction and license complexity; still useful as a UX benchmark.</li>
+</ul>
+<h3 id="data-point-n8n">Data point: n8n</h3>
+<ul>
+<li>Source: https://docs.n8n.io/sustainable-use-license/</li>
+<li>License: Sustainable Use License (fair-code) + separate proprietary n8n Enterprise License for <code>.ee.</code> code.</li>
+<li>Primary-source detail: License limits use to internal business purposes; prohibits white-labeling and hosting n8n as a paid service without an additional commercial agreement (“n8n Embed”).</li>
+<li>Claim: Workflow automation + connector ecosystem.</li>
+<li>Implication: Great market benchmark for connector UX, but <strong>not commercial-safe OSS</strong> for Kaigents core; avoid depending on it.</li>
+</ul>
+<h3 id="data-point-google-adk-googleadk-python">Data point: Google ADK (google/adk-python)</h3>
+<ul>
+<li>Source: https://github.com/google/adk-python</li>
+<li>License: Apache-2.0</li>
+<li>Claim: Code-first agent toolkit; supports multi-agent; explicitly mentions integration with A2A.</li>
+<li>Implication: Candidate runtime framework, but Python-centric. Consider as optional plugin runtime; do not bake into platform core.</li>
+</ul>
+<h3 id="data-point-a2a-protocol">Data point: A2A protocol</h3>
+<ul>
+<li>Source: https://github.com/a2aproject/A2A</li>
+<li>Claim: Open protocol for agent-to-agent interoperability.</li>
+<li>Implication: Consider as optional interop layer for cross-agent-system federation; complementary to MCP.</li>
+</ul>
+<h3 id="data-point-crewai">Data point: CrewAI</h3>
+<ul>
+<li>Source: https://github.com/crewAIInc/crewAI</li>
+<li>License: MIT</li>
+<li>Claim: Python multi-agent orchestration framework.</li>
+<li>Implication: Consider for UX/team-abstraction inspiration; evaluate operational/k8s patterns separately.</li>
+</ul>
+<h3 id="data-point-kserve">Data point: KServe</h3>
+<ul>
+<li>Source: https://github.com/kserve/kserve</li>
+<li>License: Apache-2.0</li>
+<li>Claim: k8s inference serving control plane.</li>
+<li>Implication: Possible model-serving plane; evaluate whether it helps if we standardize model endpoints (even if Lemonade/FLM underneath).</li>
+</ul>
+<h3 id="data-point-knative-serving">Data point: Knative Serving</h3>
+<ul>
+<li>Source: https://github.com/knative/serving</li>
+<li>License: Apache-2.0</li>
+<li>Claim: request-driven compute, scale-to-zero.</li>
+<li>Implication: Might be useful for bursty tasks; may not align with “mostly always-on agents”.</li>
+</ul>
+<h3 id="data-point-lemonade">Data point: Lemonade</h3>
+<ul>
+<li>Source: https://github.com/lemonade-sdk/lemonade</li>
+<li>License: Apache-2.0 (with NOTICE)</li>
+<li>Claim: Local model serving optimized for GPUs + NPUs.</li>
+<li>Implication: Strong fit for AMD Ryzen AI goal; validate k8s deployment and multi-tenant operations.</li>
+</ul>
+<h3 id="data-point-openclaw-kubernetes-operator">Data point: OpenClaw Kubernetes Operator</h3>
+<ul>
+<li>Source: https://github.com/openclaw-rocks/k8s-operator</li>
+<li>License: Apache-2.0</li>
+<li>Claim: Operator reconciles a single agent instance custom resource into a managed stack (security, observability, storage, sidecars, etc.). Includes a self-configure mechanism mediated by an allowlist policy.</li>
+<li>Implication: Strong reference implementation for operator/CRD ergonomics and “agent instance lifecycle”. Use as inspiration even if runtime/product scope differs.</li>
+</ul>
+<h3 id="data-point-dify">Data point: Dify</h3>
+<ul>
+<li>Source: https://github.com/langgenius/dify</li>
+<li>License: "Dify Open Source License" (modified Apache 2.0 with additional conditions)</li>
+<li>Claim: Visual workflow canvas + agent capabilities + model integrations; self-host or cloud.</li>
+<li>Critical license constraints:</li>
+<li>Prohibits operating a multi-tenant environment without explicit authorization.</li>
+<li>Disallows removing/modifying logo/copyright in the frontend.</li>
+<li>Producer can tighten/relax license terms; contributor code can be used commercially.</li>
+<li>Implication: Avoid as a dependency for Kaigents core (license conflicts with a permissive, multi-tenant platform). Safe only as inspiration.</li>
+</ul>
+<h3 id="data-point-flowise">Data point: Flowise</h3>
+<ul>
+<li>Source: https://github.com/FlowiseAI/Flowise</li>
+<li>License: Apache-2.0 for most code, but enterprise directory and some files are commercial-only.</li>
+<li>Claim: Visual builder for agents/workflows.</li>
+<li>Implication: Potential UI inspiration; if considering reuse, validate we only depend on Apache-licensed subset.</li>
+</ul>
+<h3 id="data-point-langflow">Data point: Langflow</h3>
+<ul>
+<li>Source: https://github.com/langflow-ai/langflow</li>
+<li>License: MIT</li>
+<li>Claim: Low-code tool for building and deploying AI agents and workflows.</li>
+<li>Implication: Good UI inspiration with permissive license; not itself a Kubernetes control plane.</li>
+</ul>
+<h3 id="data-point-ux-modality-baseline-kagent-cli-dashboard">Data point: UX modality baseline — Kagent CLI + Dashboard</h3>
+<ul>
+<li>Source: https://kagent.dev/docs/kagent/getting-started/quickstart and https://kagent.dev/docs/kagent/concepts/architecture</li>
+<li>License: Apache-2.0</li>
+<li>Claim: Kagent supports both a CLI and a web dashboard as first-class entry points.</li>
+<li>Primary-source detail:</li>
+<li>CLI includes: <code>kagent dashboard</code>, <code>kagent get</code>, <code>kagent invoke</code>, <code>kagent install</code>.</li>
+<li>Architecture docs describe: Go controller, Python engine (conversation loop) built on ADK, CLI connecting to engine, and dashboard for managing/working with agents.</li>
+<li>Implication: Strong reference for Kaigents UX layering: CRD/operator core with both CLI and dashboard; CLI is not just “kubectl wrappers” but includes interactive invocation.</li>
+</ul>
+<h3 id="data-point-argo-workflows">Data point: Argo Workflows</h3>
+<ul>
+<li>Source: https://github.com/argoproj/argo-workflows</li>
+<li>License: Apache-2.0</li>
+<li>Claim: Kubernetes-native workflow engine for DAGs and step-based workflows.</li>
+<li>Implication: Great substrate for batch-y platform tasks (eval pipelines, dataset ingestion, indexing, tool execution jobs). Not a full agent platform by itself.</li>
+</ul>
+<h3 id="data-point-temporal">Data point: Temporal</h3>
+<ul>
+<li>Source: https://github.com/temporalio/temporal</li>
+<li>License: MIT</li>
+<li>Claim: Durable workflow orchestration service.</li>
+<li>Implication: Strong option for long-running, reliable orchestration across failures/retries/timeouts. Likely too heavy for earliest Kaigents MVP, but a strong Phase 2 candidate.</li>
+</ul>
+<h3 id="data-point-argo-workflows_1">Data point: Argo Workflows</h3>
+<ul>
+<li>Source: https://github.com/argoproj/argo-workflows and https://argoproj.github.io/workflows/</li>
+<li>License: Apache-2.0</li>
+<li>Claim: Kubernetes-native workflow engine implemented as Kubernetes CRDs; supports step-based workflows and DAG dependencies where each step is a container.</li>
+<li>Implication: Good default “k8s-native DAG substrate” when we need parallel job orchestration (eval pipelines, indexing, tool jobs). Likely heavier than an embedded DAG library, but is a known-good, standard K8s integration path.</li>
+</ul>
+<h3 id="data-point-tekton-pipelines">Data point: Tekton Pipelines</h3>
+<ul>
+<li>Source: https://github.com/tektoncd/pipeline and https://tekton.dev/docs/pipelines/</li>
+<li>License: Apache-2.0</li>
+<li>Claim: Kubernetes-native pipeline engine with primitives like <code>Task</code>, <code>TaskRun</code>, <code>Pipeline</code>, <code>PipelineRun</code>, and <code>Run</code>.</li>
+<li>Implication: Strong for CI/CD-style pipelines and “pipeline runs as CRDs”. For Kaigents, could be used for deterministic platform automation, but may be more machinery than needed if the goal is a minimal, fast DAG substrate.</li>
+</ul>
+<h3 id="data-point-dagger">Data point: Dagger</h3>
+<ul>
+<li>Source: https://github.com/dagger/dagger</li>
+<li>License: Apache-2.0</li>
+<li>Claim: Local-first automation engine to build/test/ship codebases; programmable execution engine with SDKs, containerized steps, caching, and OpenTelemetry tracing.</li>
+<li>Implication: Great inspiration for developer-experience, caching, and observability patterns. Not Kubernetes-native CRD-first by default; likely better as an integration option (run a Dagger module inside a Kaigents job) than as the core workflow substrate.</li>
+</ul>
+<h3 id="data-point-lyra-go-dag-task-orchestration-library">Data point: lyra (Go DAG task orchestration library)</h3>
+<ul>
+<li>Source: https://github.com/sourabh-kumar2/lyra</li>
+<li>License: AGPL-3.0</li>
+<li>Claim: Type-safe DAG task orchestration library for Go with automatic concurrency.</li>
+<li>Implication: License is not commercial-safe for Kaigents core. Avoid adopting as a dependency; conceptually useful as a “minimal embedded DAG executor” reference.</li>
+</ul>
+<h3 id="data-point-oxigdal-workflow-rust-dag-library">Data point: oxigdal-workflow (Rust DAG library)</h3>
+<ul>
+<li>Source: https://docs.rs/crate/oxigdal-workflow/latest</li>
+<li>License: Apache-2.0 (confirmed via docs.rs crate docs)</li>
+<li>Claim: Pure-Rust DAG-based workflow engine library; advertises scheduling, parallel execution planning, and additional workflow features.</li>
+<li>Primary-source detail: docs.rs lists repository/homepage as https://github.com/cool-japan/oxigdal (appears to be a monorepo for the OxiGDAL ecosystem).</li>
+<li>Implication: Potential inspiration for a Rust-first embedded workflow substrate. Despite permissive license, it is domain-associated (geospatial) and brings a larger dependency surface; treat as an inspiration/reference until maturity and non-domain fit are validated.</li>
+</ul>
+<h3 id="data-point-dagx-rust-embedded-async-dag-executor">Data point: dagx (Rust embedded async DAG executor)</h3>
+<ul>
+<li>Source: https://docs.rs/dagx/latest/dagx/</li>
+<li>License: MIT</li>
+<li>Claim: Minimal, runtime-agnostic async DAG executor emphasizing performance; documents an inline execution fast-path for sequential layers.</li>
+<li>Primary-source detail: docs.rs lists homepage as https://github.com/swaits/dagx.</li>
+<li>Implication: Good candidate reference for an embedded “fast DAG” substrate if Kaigents chooses to run deterministic dependency graphs inside a service. Still requires Kaigents to supply persistence/durability and K8s integration.</li>
+</ul>
+<h3 id="data-point-async_dag-rust-embedded-async-dag-scheduler">Data point: async_dag (Rust embedded async DAG scheduler)</h3>
+<ul>
+<li>Source: https://docs.rs/async_dag/latest/async_dag/</li>
+<li>License: MIT OR Apache-2.0</li>
+<li>Claim: Async task scheduling utility that runs tasks at maximum possible parallelism given DAG dependencies; includes fail-fast variant (<code>TryGraph</code>).</li>
+<li>Primary-source detail: docs.rs links to repository https://github.com/chubei-oppen/async_dag.</li>
+<li>Implication: Another lightweight embedded DAG reference option; useful when the goal is “parallelize dependency graphs inside a runtime” rather than run each step as a separate Kubernetes workload.</li>
+</ul>
+<h3 id="data-point-kuberay">Data point: KubeRay</h3>
+<ul>
+<li>Source: https://github.com/ray-project/kuberay</li>
+<li>License: Apache-2.0</li>
+<li>Claim: Kubernetes operator and toolkit to run Ray applications on Kubernetes.</li>
+<li>Implication: Useful if Kaigents needs Ray-style distributed execution (mostly Python-centric). Potential mismatch with Rust-first efficiency goals; keep as an option.</li>
+</ul>
+<h3 id="data-point-crossplane">Data point: Crossplane</h3>
+<ul>
+<li>Source: https://github.com/crossplane/crossplane</li>
+<li>License: Apache-2.0</li>
+<li>Claim: Framework for building cloud-native control planes.</li>
+<li>Implication: Not an agent platform, but strong inspiration for how to build/ship a Kubernetes control plane (packaging, compositions, extension model).</li>
+</ul>
+<h3 id="data-point-agentfield">Data point: AgentField</h3>
+<ul>
+<li>Source: https://github.com/Agent-Field/agentfield</li>
+<li>License: Apache-2.0</li>
+<li>Claim: Control plane that treats AI agents like microservices.</li>
+<li>Implication: Candidate control-plane alternative to evaluate. Key question is whether it can be made CRD/GitOps-first and whether its runtime/SDK approach fits Kaigents.</li>
+</ul>
+<h3 id="data-point-kubernetes-sig-agent-sandbox">Data point: Kubernetes SIG agent-sandbox</h3>
+<ul>
+<li>Source: https://github.com/kubernetes-sigs/agent-sandbox</li>
+<li>License: Apache-2.0</li>
+<li>Claim: Sandbox CRD and controller for isolated, stateful, singleton workloads; positioned as useful for AI agent runtimes.</li>
+<li>Primary-source detail: Google Open Source blog describes core CRDs: <code>Sandbox</code>, <code>SandboxTemplate</code>, <code>SandboxClaim</code>; plus extensions like warm pools for sub-second startup and shutdown time for automated cleanup; supports multiple isolation backends (e.g., gVisor, Kata).</li>
+<li>Implication: Strong inspiration for safe execution environments and for Kaigents CRD design patterns around “claiming” an execution environment, fast startup, and deterministic teardown.</li>
+</ul>
+<h3 id="data-point-k8sgpt-operator">Data point: K8sGPT Operator</h3>
+<ul>
+<li>Source: https://github.com/k8sgpt-ai/k8sgpt-operator</li>
+<li>License: Apache-2.0</li>
+<li>Claim: Kubernetes operator that manages a K8sGPT analysis workload via a <code>K8sGPT</code> custom resource; outputs surfaced as <code>Result</code> custom resources.</li>
+<li>Implication: Useful CRD/operator reference pattern for Kaigents: reconcile a spec-driven analysis/run config into a managed workload and emit first-class result objects (for UI, CLI, and GitOps visibility).</li>
+</ul>
+<h3 id="data-point-agentic-layer-agent-runtime-operator">Data point: Agentic Layer Agent Runtime Operator</h3>
+<ul>
+<li>Source: https://github.com/agentic-layer/agent-runtime-operator</li>
+<li>License: Apache-2.0</li>
+<li>Claim: Kubernetes operator providing a unified, framework-agnostic way to deploy and manage agentic workloads; abstracts framework-specific wiring (observability stack, model routers, etc.).</li>
+<li>Primary-source detail:</li>
+<li>Docs provide install via raw Kubernetes YAML and a Flux GitOps install path (OCIRepository + Kustomization).</li>
+<li>CRD bases include: <code>Agent</code>, <code>AgenticWorkforce</code>, <code>ToolServer</code>, <code>AgentRuntimeConfiguration</code>, plus gateway and gateway-class CRDs for AI/Tool/Agent gateways.</li>
+<li>Agents communicate via A2A protocol (docs show <code>protocols: - type: A2A</code>).</li>
+<li><code>AgenticWorkforce</code> models “teams” as entry-point agents with operator-discovered transitive agents and tools (surfaced in <code>.status</code>).</li>
+<li>Additional primary-source detail: <code>AgenticWorkforce.status</code> includes <code>transitiveAgents</code> (cluster or remote agents, including remote URL to an agent card) and <code>transitiveTools</code> discovered from those agents.</li>
+<li>Observed gap: In the CRD bases inspected, there is no obvious first-class <code>Query</code>/<code>Run</code>/<code>Result</code>-style CRD for representing executions and outputs in Kubernetes objects (execution likely occurs externally via A2A calls and/or a separate component).</li>
+<li>Implication: This is one of the closest matches so far to Kaigents’ desired shape (CRD/operator-first + team modeling + interop protocol). Need to validate MCP/tooling story and whether the gateway CRDs align with Kaigents’ desired tool plane (kmcp).</li>
+</ul>
+<h3 id="data-point-toolhive-stacklok">Data point: ToolHive (Stacklok)</h3>
+<ul>
+<li>Source: https://github.com/stacklok/toolhive</li>
+<li>License: Apache-2.0</li>
+<li>Claim: Secure-by-default deployment and management for MCP servers across desktop/CLI/Kubernetes; includes a Kubernetes Operator.</li>
+<li>Primary-source detail:</li>
+<li>Operator CRDs include <code>MCPServer</code> and <code>MCPRegistry</code>.</li>
+<li><code>MCPServer</code> reconciliation creates a workload + Service and configures permissions/settings; architecture diagrams show a ToolHive-Proxy mediating communication, including stdio attach mode via Kubernetes API.</li>
+<li><code>MCPRegistry</code> supports syncing registry data (e.g., ConfigMap, Git), runs a registry API for discovery, and performs image validation.</li>
+<li>Implication: ToolHive is a serious alternative tool plane with strong emphasis on secure-by-default deployment + registry/discovery. There is real overlap with kmcp; likely decision is adopt one as the primary “MCP control plane” and borrow concepts (e.g., registry, permission profiles, proxy patterns) from the other.</li>
+</ul>
+<h3 id="data-point-ark-agents-at-scale">Data point: ARK (Agents at Scale)</h3>
+<ul>
+<li>Source: https://github.com/mckinsey/agents-at-scale-ark and https://mckinsey.github.io/agents-at-scale-ark/</li>
+<li>License: Apache-2.0</li>
+<li>Claim: Kubernetes runtime environment to host AI agents with built-in CRDs for agents, models, tools, memory, and evaluation; includes CLI and dashboard.</li>
+<li>Primary-source detail:</li>
+<li>Quickstart installs CLI via npm (<code>@agents-at-scale/ark</code>), then <code>ark install</code>, optional <code>ark models create default</code>, and <code>ark dashboard</code>.</li>
+<li>Reference docs list core resources including <code>Models</code>, <code>Agents</code>, <code>Teams</code>, <code>Queries</code>, <code>Tools</code>, <code>MCPServers</code>, <code>Memories</code>, plus <code>A2AServer</code>, <code>A2ATask</code>.</li>
+<li><code>Team</code> supports strategies: sequential, round-robin, selector, graph, and <code>selector + graph</code> with explicit edge constraints.</li>
+<li><code>Query</code> is a first-class resource representing execution; status includes phase, per-target responses, start/completion timestamps, and optional A2A metadata (<code>contextId</code>, <code>taskId</code>).</li>
+<li>Implication: One of the closest end-to-end “agent platform on Kubernetes” candidates (CRDs + controller + dashboard). Needs deeper evaluation for licensing stability, extensibility, and fit with Kaigents’ MCP-first tool plane and AMD-optimized model serving.</li>
+</ul>
+<h3 id="data-point-ux-modality-baseline-ark-cli-dashboard-dev-mode">Data point: UX modality baseline — ARK CLI + Dashboard + dev mode</h3>
+<ul>
+<li>Source: https://mckinsey.github.io/agents-at-scale-ark/quickstart/ and https://mckinsey.github.io/agents-at-scale-ark/</li>
+<li>License: Apache-2.0</li>
+<li>Claim: ARK provides a CLI (<code>ark</code>) and dashboard (<code>ark dashboard</code>) as part of the standard install.</li>
+<li>Primary-source detail:</li>
+<li>Quickstart flow: <code>npm install -g @agents-at-scale/ark</code>, <code>ark install</code>, optional <code>ark models create default</code>, <code>ark dashboard</code>.</li>
+<li>Docs call out ARK is a <strong>Technical Preview</strong> with a disclaimer.</li>
+<li>Local dev mode: <code>devspace dev</code> and <code>devspace run routes</code> for service routes (including ark-dashboard).</li>
+<li>Implication: Useful reference for “CLI drives install + dashboard access + dev-mode live reload”. Risk: tech preview status; we should emulate patterns, not depend on it.</li>
+</ul>
+<h3 id="data-point-ux-modality-baseline-langflow-visual-editor-playground-sharemcp">Data point: UX modality baseline — Langflow visual editor + Playground + Share/MCP</h3>
+<ul>
+<li>Source: https://docs.langflow.org/concepts-overview and https://docs.langflow.org/</li>
+<li>License: MIT</li>
+<li>Claim: Visual editor for building flows; includes a Playground for running/chatting with flows and viewing tool calls.</li>
+<li>Primary-source detail:</li>
+<li>Playground supports running a flow, viewing inputs/outputs, and (for agent components) displaying tool calls and outputs.</li>
+<li>Share options include export/import, API access snippets, embedding, and exposing flows as an <strong>MCP Server</strong>.</li>
+<li>Implication: Very strong inspiration for Kaigents’ eventual low-code designer UX: (1) a “playground” that shows tool invocations, (2) simple share/export, and (3) MCP-native packaging of flows.</li>
+</ul>
+<h3 id="data-point-ux-modality-baseline-flowise-visual-editor-capabilities">Data point: UX modality baseline — Flowise visual editor capabilities</h3>
+<ul>
+<li>Source: https://docs.flowiseai.com</li>
+<li>License: Apache-2.0 for the repo with some commercial-only enterprise parts (verify before reuse).</li>
+<li>Claim: Visual editor for building assistants/agent flows; documents broad capabilities (orchestration, logs/debugging, MCP integration, RBAC/SSO).</li>
+<li>Primary-source detail:</li>
+<li>Flowise UX concepts: <code>Assistant</code>, <code>Chatflow</code>, and <code>Agentflow</code> (superset) for building single/multi-agent systems.</li>
+<li>Docs claim execution logs, visual debugging, and MCP client/server nodes.</li>
+<li>Implication: Good inspiration for feature checklist of a designer UI, but licensing and “enterprise-only parts” concerns mean we should treat it primarily as inspiration.</li>
+</ul>
+<h3 id="data-point-kubernetes-sig-kube-agentic-networking">Data point: Kubernetes SIG kube-agentic-networking</h3>
+<ul>
+<li>Source: https://github.com/kubernetes-sigs/kube-agentic-networking</li>
+<li>License: Apache-2.0</li>
+<li>Claim: Standardized APIs for secure, governed communication between agents and tools (and potentially LLMs), designed around user intent rather than specific protocols; explicitly considers MCP and A2A.</li>
+<li>Primary-source detail: Tool Authorization proposal defines CRDs like <code>Backend</code> and <code>AccessPolicy</code> to enforce MCP <code>tools/call</code> authorization, but is explicitly marked <strong>PROVISIONAL</strong> and says do not implement/use in production.</li>
+<li>Implication: Strong inspiration for Kaigents Platform Mode governance/RBAC/policy layer around tools. Track this SIG’s direction, but do not depend on provisional APIs.</li>
+</ul>
+<h3 id="data-point-spiffworkflow">Data point: SpiffWorkflow</h3>
+<ul>
+<li>Source: https://github.com/sartography/SpiffWorkflow</li>
+<li>License: LGPL-3.0 (COPYING header is GNU LGPL v3)</li>
+<li>Claim: Workflow engine implemented in pure Python; supports BPMN/DMN processing and is the workflow library underlying SpiffArena.</li>
+<li>Implication: Strong source of inspiration for BPMN modeling semantics and “business process” UX, but LGPL licensing and Python runtime performance make it a poor fit as a Kaigents core dependency.</li>
+</ul>
+<h3 id="data-point-spiffarena">Data point: SpiffArena</h3>
+<ul>
+<li>Source: https://github.com/sartography/spiff-arena</li>
+<li>License: LGPL-2.1 (LICENSE header is GNU LGPL v2.1)</li>
+<li>Claim: Web-based platform around SpiffWorkflow for building/running/monitoring executable BPMN diagrams.</li>
+<li>Implication: Useful UX reference for low-code BPMN-based process design, but LGPL licensing likely blocks direct reuse in Kaigents core.</li>
+</ul>
+<h3 id="data-point-dagrs">Data point: dagrs</h3>
+<ul>
+<li>Source: https://github.com/dagrs-dev/dagrs</li>
+<li>License: Dual MIT + Apache-2.0 (repo lists LICENSE-MIT and LICENSE-APACHE)</li>
+<li>Claim: High-performance asynchronous DAG task orchestration framework in Rust.</li>
+<li>Implication: If Kaigents decides “DAG is enough” for most agent-business-process workflows, a Rust DAG substrate like this is closer to the desired performance profile than BPMN engines. Needs evaluation for durability/state persistence semantics (vs just in-process execution) and k8s control-plane integration.</li>
+</ul>
+<hr />
+<h2 id="decision-memo-draft-ark-vs-kagent-vs-agentic-layer-for-kaigents-control-plane">Decision memo (draft): ARK vs Kagent vs Agentic Layer for Kaigents control plane</h2>
+<h3 id="observed-modeling-differences">Observed modeling differences</h3>
+<ul>
+<li><strong>ARK</strong></li>
+<li><strong>Team modeling:</strong> First-class <code>Team</code> CRD with execution strategies including <code>graph</code> and <code>selector + graph</code>.</li>
+<li><strong>Run/results modeling:</strong> First-class <code>Query</code> CRD with <code>status</code> capturing responses, timestamps, phase, and A2A metadata.</li>
+<li>
+<p><strong>Implication:</strong> Strongest primary-source reference for a CRD-first platform where executions are GitOps-visible and “workflow-ish teams” are explicit.</p>
+</li>
+<li>
+<p><strong>Kagent</strong></p>
+</li>
+<li><strong>Team modeling:</strong> Not yet evidenced as a first-class “Team” CRD (current evidence is Agent-centric).</li>
+<li><strong>Run/results modeling:</strong> Execution is primarily request/response via dashboard chat, <code>kagent invoke</code>, and controller-served A2A endpoints (no obvious <code>Query</code>/<code>Run</code> CRD persisted as Kubernetes objects).</li>
+<li>
+<p><strong>Implication:</strong> Strong packaging reference (operator + UI + A2A serving + CRD-based agent/tool/model config). If Kaigents requires GitOps-visible runs/results, this likely needs an additional CRD layer.</p>
+</li>
+<li>
+<p><strong>Agentic Layer Agent Runtime Operator</strong></p>
+</li>
+<li><strong>Team modeling:</strong> First-class <code>AgenticWorkforce</code> CRD with operator-discovered <code>.status.transitiveAgents</code> and <code>.status.transitiveTools</code> (including remote agent card URLs).</li>
+<li><strong>Run/results modeling:</strong> No obvious <code>Query</code>/<code>Run</code>/<code>Result</code> CRD in inspected CRD bases; execution appears external via A2A and/or separate components.</li>
+<li><strong>Implication:</strong> Strong reference for “workforce inventory / discovery / topology” and gateway-based platform engineering patterns, but likely needs a Kaigents execution object layer.</li>
+</ul>
+<h3 id="provisional-guidance-adopt-vs-emulate">Provisional guidance (adopt vs emulate)</h3>
+<ul>
+<li><strong>Prefer emulating ARK’s <code>Query</code> pattern</strong> (execution as CRD with results in <code>status</code>) even if we do not adopt ARK wholesale.</li>
+<li><strong>Prefer emulating ARK’s <code>Team</code> strategy surface</strong> (especially <code>graph</code> and <code>selector + graph</code>) if we want lightweight workflow semantics without adopting a full BPMN engine.</li>
+<li><strong>Borrow Kagent’s UI/CLI/A2A serving patterns</strong> as reference for operator + dashboard ergonomics.</li>
+<li><strong>Borrow Agentic Layer’s discovery pattern</strong> (<code>transitiveAgents</code>/<code>transitiveTools</code>) to support Platform Mode inventory, governance, and “what can this workforce do?” UX.</li>
+</ul>
+<h3 id="minimum-kaigents-crd-set-composable-approach">Minimum Kaigents CRD set (composable approach)</h3>
+<ul>
+<li><strong><code>Agent</code></strong></li>
+<li>Desired shape: declarative agent deployment/runtime + references to model config and tool references.</li>
+<li><strong><code>Workforce</code>/<code>Team</code></strong></li>
+<li>Desired shape: team membership + strategy (<code>sequential</code>, <code>round-robin</code>, <code>selector</code>, <code>graph</code>, <code>selector+graph</code>) + optional graph constraints.</li>
+<li><strong><code>ModelConfig</code></strong></li>
+<li>Desired shape: model endpoint/config + secret refs; compatible with multiple providers and/or KServe/Lemonade endpoints.</li>
+<li><strong><code>MCPServer</code></strong> and <strong><code>Tool</code></strong></li>
+<li>Desired shape: tool definitions that reference MCP servers, with transport/address and auth/secret references.</li>
+<li><strong><code>Run</code>/<code>Query</code></strong></li>
+<li>Desired shape: first-class execution object referencing an <code>Agent</code> or <code>Team</code>, capturing input + parameters, with results and timing in <code>status</code>.</li>
+<li><strong><code>Result</code>/<code>Artifact</code></strong> (optional but useful)</li>
+<li>Desired shape: model “run outputs” as separate CRs when results are large or need lifecycle/retention policies.</li>
+<li><strong><code>Policy</code> (future / track SIG)</strong></li>
+<li>Desired shape: governed tool access (inspired by kube-agentic-networking <code>Backend</code>/<code>AccessPolicy</code>), but avoid depending on provisional APIs.</li>
+</ul>
+<hr />
+<h2 id="decision-memo-draft-workflow-substrate-for-kaigents-simple-lightweight-fast">Decision memo (draft): workflow substrate for Kaigents (simple / lightweight / fast)</h2>
+<h3 id="what-lightweight-likely-means-for-kaigents">What “lightweight” likely means for Kaigents</h3>
+<ul>
+<li><strong>Fast startup and low idle overhead</strong> (prefer in-cluster controllers that are small, or embedded libraries).</li>
+<li><strong>DAG-first</strong> semantics (dependencies + concurrency) before BPMN/durable saga semantics.</li>
+<li><strong>Execution visibility</strong> (at least “Run -&gt; Results” objects or well-structured event logs) without requiring a large control-plane stack.</li>
+</ul>
+<h3 id="candidate-buckets">Candidate buckets</h3>
+<ul>
+<li><strong>Kubernetes-native DAG engines (CRD-based):</strong></li>
+<li><strong>Argo Workflows</strong>: proven K8s-native DAG engine; good default when we want jobs-as-pods with clear orchestration and K8s primitives.</li>
+<li>
+<p><strong>Tekton Pipelines</strong>: strong “runs as CRDs” model and supply-chain ecosystem; may be overkill for a minimal agent-workflow substrate.</p>
+</li>
+<li>
+<p><strong>Embedded DAG libraries (Rust/Go):</strong></p>
+</li>
+<li>Best for performance and minimal overhead <em>inside</em> a Kaigents runtime, but require Kaigents to provide durability, persistence, and K8s execution integration.</li>
+<li>Licensing can be a blocker (e.g., <code>lyra</code> is AGPL).</li>
+<li>
+<p>Permissive embedded candidates worth tracking include <code>dagx</code> (MIT) and <code>async_dag</code> (MIT OR Apache-2.0).</p>
+</li>
+<li>
+<p><strong>Developer-first automation engines (not CRD-first):</strong></p>
+</li>
+<li><strong>Dagger</strong>: strong caching + observability patterns; likely an integration target rather than the core substrate.</li>
+</ul>
+<h3 id="provisional-recommendation">Provisional recommendation</h3>
+<ul>
+<li><strong>MVP path:</strong> Use <strong>Argo Workflows</strong> as the default K8s-native DAG substrate for “batch-y” workflows (eval, indexing, tool jobs), while keeping the agent runtime control plane separate.</li>
+<li><strong>Kaigents-native path:</strong> Define a minimal <strong><code>Run</code>/<code>Query</code></strong> CRD pattern (similar to ARK <code>Query</code>) for agent/team executions; optionally back complex deterministic flows with Argo.</li>
+<li><strong>Phase 2:</strong> Revisit “embedded Rust DAG” only if Argo’s operational footprint is too heavy or we need tighter in-process orchestration; validate permissive-licensed crates and add persistence/durability semantics.</li>
+</ul>
+<h3 id="choice-matrix-draft">Choice matrix (draft)</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Overhead (idle/runtime)</th>
+<th>Execution visibility</th>
+<th>Durability</th>
+<th>K8s integration effort</th>
+<th>License risk</th>
+<th>Best fit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Argo Workflows (CRDs)</strong></td>
+<td>Medium</td>
+<td>High (CRDs, status)</td>
+<td>Medium (workflow CR history; persistence depends on setup)</td>
+<td>Low</td>
+<td>Low</td>
+<td>Batch-y workflows where each step is a pod/container (eval, indexing, ETL, tool jobs)</td>
+</tr>
+<tr>
+<td><strong>Tekton Pipelines (CRDs)</strong></td>
+<td>Medium</td>
+<td>High (TaskRun/PipelineRun CRDs)</td>
+<td>Medium (run CR history; persistence depends on setup)</td>
+<td>Low</td>
+<td>Low</td>
+<td>CI/CD-style deterministic pipelines; supply-chain heavy environments</td>
+</tr>
+<tr>
+<td><strong>Embedded DAG (dagx/async_dag inside service)</strong></td>
+<td>Low</td>
+<td>Low by default (must add events/logs)</td>
+<td>Low by default (must persist state)</td>
+<td>Medium–High</td>
+<td>Low</td>
+<td>Fast in-process orchestration of small deterministic graphs; “micro-workflows” within an agent runtime</td>
+</tr>
+<tr>
+<td><strong>Embedded DAG (oxigdal-workflow)</strong></td>
+<td>Medium (bigger crate surface)</td>
+<td>Medium (library + optional server features)</td>
+<td>Unknown (claims state persistence; needs validation)</td>
+<td>Medium–High</td>
+<td>Low</td>
+<td>Potential reference for richer embedded workflow runtime; validate maturity and non-domain fit</td>
+</tr>
+<tr>
+<td><strong>Dagger (engine + SDKs)</strong></td>
+<td>Medium</td>
+<td>Medium–High (OTel tracing)</td>
+<td>Low–Medium (not CRD-native; depends on usage)</td>
+<td>Medium</td>
+<td>Low</td>
+<td>Developer automation modules executed in CI/jobs; inspiration for caching/observability</td>
+</tr>
+</tbody>
+</table>
+<h3 id="recommended-path-for-simple-lightweight-fast">Recommended path for “simple, lightweight, fast”</h3>
+<ul>
+<li><strong>MVP (platform-level workflows):</strong> Use <strong>Argo Workflows</strong> for batch-y DAGs that naturally map to pods/containers.</li>
+<li><strong>MVP (agent/team execution):</strong> Implement Kaigents’ own <strong><code>Run/Query</code> CRD</strong> so every execution has GitOps-visible status/results.</li>
+<li><strong>Fast path (micro-workflows inside runtime):</strong> If we need ultra-low overhead orchestration inside the agent runtime, prototype with <strong><code>dagx</code></strong> (MIT) as the embedded DAG executor and emit structured events that can also be attached back to the <code>Run/Query.status</code>.</li>
+</ul>
+<hr />
+<h2 id="proposal-draft-minimal-kaigents-execution-crds-runquery-artifact">Proposal (draft): minimal Kaigents execution CRDs (Run/Query + Artifact)</h2>
+<p>This section sketches a minimal execution object model for Kaigents that is:</p>
+<ul>
+<li><strong>GitOps-visible</strong> (execution intent in <code>spec</code>, results in <code>status</code>)</li>
+<li><strong>Lightweight</strong> (small CRDs; large payloads stored externally)</li>
+<li><strong>Composable</strong> (works whether execution is in-process DAG, A2A call, or Argo workflow)</li>
+</ul>
+<h3 id="crd-1-query-or-run">CRD 1: <code>Query</code> (or <code>Run</code>)</h3>
+<p><strong>Purpose:</strong> represent a single execution against an <code>Agent</code> or <code>Team</code>.</p>
+<p><strong>Key design rules:</strong></p>
+<ul>
+<li><code>spec</code> is the immutable-ish intent.</li>
+<li><code>status</code> is the authoritative output + progress.</li>
+<li>large outputs go into <code>Artifact</code> objects (or object storage) referenced by <code>status</code>.</li>
+</ul>
+<h4 id="suggested-spec">Suggested <code>spec</code></h4>
+<ul>
+<li><code>target</code>:</li>
+<li><code>type</code>: <code>agent</code> | <code>team</code></li>
+<li><code>name</code></li>
+<li><code>namespace</code> (optional; defaults to same namespace)</li>
+<li><code>input</code>:</li>
+<li><code>type</code>: <code>text</code> | <code>messages</code> | <code>ref</code></li>
+<li><code>text</code> (optional)</li>
+<li><code>messages</code> (optional; array)</li>
+<li><code>ref</code> (optional; ConfigMap/Secret/Artifact reference)</li>
+<li><code>parameters</code> (optional): free-form map used for templating/variable expansion.</li>
+<li><code>timeoutSeconds</code> (optional)</li>
+<li><code>stream</code> (optional): request streaming output.</li>
+<li><code>conversationId</code> (optional): stable conversation/thread key.</li>
+<li><code>retention</code> (optional):</li>
+<li><code>ttlSecondsAfterFinished</code></li>
+<li><code>maxArtifacts</code></li>
+<li><code>execution</code> (optional): hints/constraints</li>
+<li><code>mode</code>: <code>inprocess</code> | <code>a2a</code> | <code>argo</code></li>
+<li><code>engineRef</code> (optional)</li>
+</ul>
+<h4 id="suggested-status">Suggested <code>status</code></h4>
+<ul>
+<li><code>phase</code>: <code>pending</code> | <code>running</code> | <code>done</code> | <code>failed</code> | <code>canceled</code> | <code>timedout</code></li>
+<li><code>conditions</code>: standard K8s conditions (<code>Accepted</code>, <code>Running</code>, <code>Succeeded</code>).</li>
+<li><code>startTime</code>, <code>completionTime</code></li>
+<li><code>responses</code>: list of per-target or per-step outputs:</li>
+<li><code>content</code> (small text)</li>
+<li><code>artifactRef</code> (for large output)</li>
+<li><code>metadata</code> (token usage, model, tool invocations summary)</li>
+<li><code>error</code>:</li>
+<li><code>code</code></li>
+<li><code>message</code></li>
+<li><code>retryable</code> (bool)</li>
+<li><code>a2a</code> (optional): <code>contextId</code>, <code>taskId</code> (when executed via A2A)</li>
+<li><code>engine</code> (optional):</li>
+<li><code>argoWorkflowRef</code> (when backed by Argo)</li>
+<li><code>executorPodRef</code> (when executed in a dedicated pod)</li>
+</ul>
+<h4 id="yaml-skeleton">YAML skeleton</h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kaigents.io/v1alpha1</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Query</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nt">metadata</span><span class="p">:</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example-query</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nt">spec</span><span class="p">:</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="nt">target</span><span class="p">:</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example-agent</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">  </span><span class="nt">input</span><span class="p">:</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="nt">text</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Summarize</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">incident</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">propose</span><span class="nv"> </span><span class="s">next</span><span class="nv"> </span><span class="s">steps.&quot;</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">  </span><span class="nt">timeoutSeconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">120</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">  </span><span class="nt">retention</span><span class="p">:</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">    </span><span class="nt">ttlSecondsAfterFinished</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">86400</span>
+</code></pre></div>
+<h3 id="crd-2-optional-but-recommended-artifact">CRD 2 (optional but recommended): <code>Artifact</code></h3>
+<p><strong>Purpose:</strong> store large outputs and intermediate artifacts out-of-band (object store, database, etc.) while keeping CRDs small.</p>
+<h4 id="suggested-spec_1">Suggested <code>spec</code></h4>
+<ul>
+<li><code>ownerQueryRef</code> (optional): link back to the Query/Run.</li>
+<li><code>mimeType</code></li>
+<li><code>sizeBytes</code> (optional)</li>
+<li><code>storage</code>:</li>
+<li><code>type</code>: <code>inline</code> | <code>s3</code> | <code>http</code> | <code>db</code></li>
+<li>for <code>s3</code>: <code>bucket</code>, <code>key</code>, <code>endpoint</code>, <code>region</code> (optional)</li>
+<li>for <code>http</code>: <code>url</code></li>
+</ul>
+<hr />
+<h2 id="decision-memo-draft-ux-modalities-for-kaigents-crd-cli-dashboard-designer">Decision memo (draft): UX modalities for Kaigents (CRD + CLI + Dashboard + Designer)</h2>
+<h3 id="findings-primary-source-inspired">Findings (primary-source inspired)</h3>
+<ul>
+<li><strong>Kagent</strong> demonstrates a clean separation of:</li>
+<li><strong>controller + CRDs</strong> (platform core)</li>
+<li><strong>engine</strong> (runtime loop)</li>
+<li><strong>CLI</strong> (including invoke)</li>
+<li>
+<p><strong>dashboard</strong> (web chat + management)</p>
+</li>
+<li>
+<p><strong>ARK</strong> demonstrates a “CLI as the installer + launcher” pattern and provides a dashboard, plus a dev-mode workflow.</p>
+</li>
+<li>
+<p><strong>Langflow/Flowise</strong> demonstrate that the core value of a low-code designer is not just drawing graphs:</p>
+</li>
+<li>a <strong>Playground</strong> that shows tool calls and outputs</li>
+<li>simple <strong>Share/Export</strong> and “turn it into an API/tool” paths</li>
+<li>MCP-native integration points</li>
+</ul>
+<h3 id="provisional-sequencing-recommendation">Provisional sequencing recommendation</h3>
+<ul>
+<li><strong>Phase 1 (minimum lovable platform UX):</strong></li>
+<li>CRDs + reconciliation (GitOps-first)</li>
+<li>
+<p>A Kaigents CLI that covers:</p>
+<ul>
+<li>install/uninstall</li>
+<li>list/get resources</li>
+<li>invoke/run (with structured output)</li>
+</ul>
+</li>
+<li>
+<p><strong>Phase 1.5 (operator UX):</strong></p>
+</li>
+<li>
+<p>A small dashboard focused on:</p>
+<ul>
+<li>browsing agents/teams/tools/models</li>
+<li>running queries and viewing outputs/events</li>
+</ul>
+</li>
+<li>
+<p><strong>Phase 2+ (designer UX):</strong></p>
+</li>
+<li>Low-code designer with:<ul>
+<li>graph editing</li>
+<li>playground that surfaces tool calls</li>
+<li>export/share to CRDs and/or MCP tools</li>
+</ul>
+</li>
+</ul>
+<h3 id="ux-patterns-to-emulate-concrete">UX patterns to emulate (concrete)</h3>
+<ul>
+<li><strong>CLI “invoke” as first-class</strong> (Kagent): not just <code>kubectl apply</code>, but a supported interactive execution entry point.</li>
+<li><strong>Dashboard accessible via CLI</strong> (Kagent/ARK): a consistent <code>kaigents dashboard</code> command that handles port-forwarding/routes.</li>
+<li><strong>Playground with tool-call trace</strong> (Langflow): make tool invocation visibility a first-order concept.</li>
+<li>
+<p><strong>Export/share</strong> (Langflow): generate artifacts that can be deployed as CRDs and/or exposed as MCP tools.</p>
+</li>
+<li>
+<p><code>hash</code> (optional): content hash for integrity.</p>
+</li>
+<li><code>expiresAt</code> (optional)</li>
+</ul>
+<h4 id="suggested-status_1">Suggested <code>status</code></h4>
+<ul>
+<li><code>phase</code>: <code>pending</code> | <code>ready</code> | <code>failed</code></li>
+<li><code>conditions</code></li>
+<li><code>resolvedUrl</code> (optional): pre-signed URL or internal URL</li>
+</ul>
+<h4 id="yaml-skeleton_1">YAML skeleton</h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kaigents.io/v1alpha1</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Artifact</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nt">metadata</span><span class="p">:</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example-artifact</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="nt">spec</span><span class="p">:</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="nt">mimeType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text/html</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="nt">storage</span><span class="p">:</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">s3</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="nt">bucket</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kaigents-artifacts</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">runs/example-query/report.html</span>
+</code></pre></div>
+<h3 id="retention-gc-conventions-minimal">Retention / GC conventions (minimal)</h3>
+<ul>
+<li>Prefer TTL-based GC on <code>Query</code> and <code>Artifact</code> via a controller (or <code>ttlSecondsAfterFinished</code> semantics similar to Jobs).</li>
+<li>The controller should:</li>
+<li>delete <code>Artifact</code> objects when their owning <code>Query</code> expires</li>
+<li>optionally delete underlying object-store keys when deleting an <code>Artifact</code> (configurable)</li>
+</ul>
+<h3 id="status-conventions-for-uicli">Status conventions for UI/CLI</h3>
+<ul>
+<li><code>phase</code> is always set once accepted.</li>
+<li><code>completionTime</code> must be set for terminal phases: <code>done</code>, <code>failed</code>, <code>canceled</code>, <code>timedout</code>.</li>
+<li><code>responses</code> should remain bounded (store full transcripts in artifacts when needed).</li>
+</ul>
+<h2 id="open-questions">Open questions</h2>
+<ul>
+<li>What existing platform offers: team designer + ops control plane + permissive license?</li>
+<li>How much of Kagent’s engine can be swapped for a Rust runtime while keeping CRDs/UX?</li>
+<li>What is the minimal set of CRDs required for “team + tool + model + run”?</li>
+<li>Can we treat model serving as a separate plane (KServe vs Lemonade vs both)?</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

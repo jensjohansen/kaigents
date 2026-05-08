@@ -1,0 +1,2514 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Production-grade substrate for operating AI agent teams.">
+      
+      
+      
+        <link rel="canonical" href="https://jensjohansen.github.io/kaigents/product/domain-model/">
+      
+      
+        <link rel="prev" href="../kaigents-prd/">
+      
+      
+        <link rel="next" href="../managed-services/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Domain Model - Kaigents</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#kaigents-product-domain-model-draft" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Kaigents" class="md-header__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kaigents
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Domain Model
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../kaigents-introduction/" class="md-tabs__link">
+          
+  
+  
+  Product
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/kaigents-architecture-and-design/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../ops/temporal-installation/" class="md-tabs__link">
+          
+  
+  
+  Operations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../strategy/corporate_ai_strategy/" class="md-tabs__link">
+          
+  
+  
+  Strategy
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../CODING_STANDARDS_AND_DOD/" class="md-tabs__link">
+          
+  
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Kaigents" class="md-nav__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kaigents
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Product
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kaigents-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kaigents-prd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Model
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#terminology-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Terminology principles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-process-modeling-matters-for-ai-agent-platforms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why process modeling matters for AI agent platforms
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-entities-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core entities (definitions)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core entities (definitions)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-process-process-definition-workflow-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) Process (Process Definition / Workflow Definition)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-task-step-activity-task-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) Task (Step / Activity / Task Definition)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-agent-actor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) Agent (Actor)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3a-persona-personality-prompt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3a) Persona (Personality prompt)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-team-composite-actor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) Team (Composite Actor)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4) Team (Composite Actor)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#coordination-models-must-be-explicitly-specified-by-the-product-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coordination models (must be explicitly specified by the product model)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) Model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6) Tool
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-core-entities-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Additional core entities (definitions)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Additional core entities (definitions)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#6a-workspace-tenant-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6a) Workspace (Tenant / Project)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-role" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7) Role
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-requirements-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8) Requirements / Policy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8a-context-case-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8a) Context / Case File
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-quality-gate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9) Quality gate
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#executions-instances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Executions (instances)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Executions (instances)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#10-work-request-process-instance-workflow-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10) Work Request (Process Instance / Workflow Execution)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#11-work-item-task-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11) Work Item (Task Instance)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-work-attempt-task-execution-attempt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12) Work Attempt (Task Execution / Attempt)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-artifact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13) Artifact
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-event-timeline-audit-event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14) Event (Timeline / Audit Event)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#continuous-improvement-and-flow-lean-inspired" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Continuous improvement and flow (LEAN-inspired)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Continuous improvement and flow (LEAN-inspired)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#15-capacity-constrained-resource" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15) Capacity (Constrained resource)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-wip-limit-work-in-progress-limit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16) WIP Limit (Work-in-progress limit)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#17-rework" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17) Rework
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#18-experiment-improvement-experiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18) Experiment (Improvement experiment)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#19-metric-measure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19) Metric (Measure)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relationships-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relationships (summary)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../managed-services/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Managed Services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kairon-retail-managed-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kairon Retail
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/example-team/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your First Team
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/temporal-validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/kaigents-architecture-and-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/ai_agent_engine_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ops/temporal-installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Temporal Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Strategy
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Strategy
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/corporate_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Corporate AI Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/marketing_ai_agent_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marketing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/security_operations_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CODING_STANDARDS_AND_DOD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation-plan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation/kaigents-implementation-tracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#terminology-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Terminology principles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-process-modeling-matters-for-ai-agent-platforms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why process modeling matters for AI agent platforms
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-entities-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core entities (definitions)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core entities (definitions)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-process-process-definition-workflow-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) Process (Process Definition / Workflow Definition)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-task-step-activity-task-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) Task (Step / Activity / Task Definition)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-agent-actor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) Agent (Actor)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3a-persona-personality-prompt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3a) Persona (Personality prompt)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-team-composite-actor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) Team (Composite Actor)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4) Team (Composite Actor)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#coordination-models-must-be-explicitly-specified-by-the-product-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coordination models (must be explicitly specified by the product model)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) Model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6) Tool
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-core-entities-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Additional core entities (definitions)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Additional core entities (definitions)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#6a-workspace-tenant-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6a) Workspace (Tenant / Project)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-role" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7) Role
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-requirements-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8) Requirements / Policy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8a-context-case-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8a) Context / Case File
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-quality-gate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9) Quality gate
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#executions-instances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Executions (instances)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Executions (instances)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#10-work-request-process-instance-workflow-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10) Work Request (Process Instance / Workflow Execution)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#11-work-item-task-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11) Work Item (Task Instance)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-work-attempt-task-execution-attempt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12) Work Attempt (Task Execution / Attempt)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-artifact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13) Artifact
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-event-timeline-audit-event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14) Event (Timeline / Audit Event)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#continuous-improvement-and-flow-lean-inspired" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Continuous improvement and flow (LEAN-inspired)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Continuous improvement and flow (LEAN-inspired)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#15-capacity-constrained-resource" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15) Capacity (Constrained resource)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-wip-limit-work-in-progress-limit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16) WIP Limit (Work-in-progress limit)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#17-rework" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17) Rework
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#18-experiment-improvement-experiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18) Experiment (Improvement experiment)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#19-metric-measure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19) Metric (Measure)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relationships-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relationships (summary)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="kaigents-product-domain-model-draft">Kaigents Product Domain Model (Draft)</h1>
+<h2 id="purpose">Purpose</h2>
+<p>This document defines the core product-domain entities in Kaigents and the relationships between them, independent of any implementation details (Kubernetes, controllers, jobs, pods, etc.).</p>
+<p>Kaigents is a platform for designing and operating <strong>AI Agents and Teams of Agents</strong> that execute <strong>Business Processes</strong> using <strong>Models</strong>, <strong>Tools</strong>, and <strong>Requirements/Policies</strong> that constrain and verify outcomes.</p>
+<h2 id="terminology-principles">Terminology principles</h2>
+<ul>
+<li>Use <strong>plain-English primary terms</strong> so a non-expert can read the product model.</li>
+<li>Provide <strong>workflow/BPMN equivalent terms</strong> in parentheses to avoid friction with domain experts.</li>
+<li>Separate <strong>definitions</strong> (reusable templates) from <strong>instances</strong> (a specific execution).</li>
+</ul>
+<h2 id="why-process-modeling-matters-for-ai-agent-platforms">Why process modeling matters for AI agent platforms</h2>
+<p>Many AI agent platforms make it easy to build a single automation that works in a developer’s head, but they often leave the “process” implicit:
+- The intended sequence of work is informal.
+- Policies and requirements are tribal knowledge.
+- Quality gates and approvals are bolted on ad hoc.
+- Auditability is inconsistent.</p>
+<p>Kaigents treats <strong>process modeling</strong> as a first-class product concern:
+- You define a <strong>Process</strong> as a reusable template.
+- You execute a <strong>Work Request</strong> as a specific instance.
+- You capture traceability through <strong>Events</strong> and <strong>Artifacts</strong>.</p>
+<p>If you’re new to business process modeling, the single most important concept is this:</p>
+<p><strong>Definitions are not executions.</strong></p>
+<p>You can update a process definition over time, while each execution (work request) remains a historical record of what happened for that specific request.</p>
+<h2 id="core-entities-definitions">Core entities (definitions)</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>classDiagram
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  class Workspace
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  class Process {
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    +objective
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    +deliverables
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  }
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  class Task {
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    +inputs
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    +outputs
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    +successCriteria
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>  }
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>  class Agent {
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    +type: Human|AI
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    +constraints
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>  }
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>  class Team {
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    +coordinationModel
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>  }
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>  class Role
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>  class Model
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>  class Tool
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>  class RequirementOrPolicy
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>  class QualityGate
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>  class Persona
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>  class CaseFile
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>  Workspace &quot;1&quot; --&gt; &quot;0..*&quot; Process : owns
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>  Workspace &quot;1&quot; --&gt; &quot;0..*&quot; Agent : owns
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>  Workspace &quot;1&quot; --&gt; &quot;0..*&quot; Team : owns
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>  Workspace &quot;1&quot; --&gt; &quot;0..*&quot; Tool : owns
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>  Workspace &quot;1&quot; --&gt; &quot;0..*&quot; Model : owns
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>  Process &quot;1&quot; --&gt; &quot;1..*&quot; Task : contains
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>  Task &quot;0..*&quot; --&gt; &quot;0..*&quot; Task : rework-to
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>  Team &quot;1&quot; --&gt; &quot;1..*&quot; Agent : members
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>  Role &quot;1&quot; --&gt; &quot;1..*&quot; Agent : can be performed by
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>  Task &quot;0..*&quot; --&gt; &quot;0..*&quot; Role : responsible role
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>  Task &quot;0..*&quot; --&gt; &quot;0..*&quot; Tool : allowed/required
+<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>  Task &quot;0..*&quot; --&gt; &quot;0..*&quot; Model : allowed/required
+<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>  Process &quot;0..*&quot; --&gt; &quot;0..*&quot; RequirementOrPolicy : constrained by
+<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>  Process &quot;0..*&quot; --&gt; &quot;0..*&quot; QualityGate : gated by
+<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>  Task &quot;0..*&quot; --&gt; &quot;0..*&quot; QualityGate : gated by
+<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>  Agent &quot;0..1&quot; --&gt; &quot;0..1&quot; Persona : behavior style
+<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>  Process &quot;0..*&quot; --&gt; &quot;0..*&quot; CaseFile : defines expected context
+</code></pre></div>
+<h3 id="1-process-process-definition-workflow-definition">1) Process (Process Definition / Workflow Definition)</h3>
+<p>A <strong>Process</strong> is a reusable definition of a business procedure.</p>
+<p>A process specifies:
+- The objective and expected deliverables
+- The sequence/structure of work as <strong>Tasks</strong> (workflow steps) including ordering, dependencies, and branching
+- The set of participating <strong>Actors</strong> (AI and/or human)
+- The constraints, requirements, and quality gates that must be satisfied
+- The allowable <strong>Tools</strong> and <strong>Models</strong> (directly or via actors)</p>
+<p>A process is <em>not</em> an execution. It is a definition.</p>
+<p>A process definition is modeled as a <strong>directed graph</strong> of tasks:
+- In the common case, it behaves like a straightforward flow.
+- When rework is required, the graph may contain <strong>explicit rework edges</strong> (cycles).</p>
+<p>To keep rework usable and safe, rework must be <strong>bounded</strong> (for example by attempt limits, time limits, or escalation requirements).</p>
+<h3 id="2-task-step-activity-task-definition">2) Task (Step / Activity / Task Definition)</h3>
+<p>A <strong>Task</strong> is a unit of work (a step) within a process definition.</p>
+<p>A task specifies:
+- Inputs required
+- Outputs produced (including artifacts)
+- Success criteria / acceptance checks
+- Which <strong>Actor(s)</strong> are responsible
+- Which <strong>Tools</strong> may/should be used
+- Which <strong>Model</strong> may/should be used (if the responsible actor is an AI actor)
+- Execution semantics (manual step, AI step, mixed, approval required, retry policy)</p>
+<p>A task is a definition; its execution is an instance in a process interaction.</p>
+<h3 id="3-agent-actor">3) Agent (Actor)</h3>
+<p>An <strong>Actor</strong> is a participant that can perform tasks.</p>
+<p>Kaigents uses the term <strong>Agent</strong> to mean an <strong>actor definition</strong>.</p>
+<p>An actor can be:
+- <strong>AI actor</strong>: performs tasks using one or more Models and Tools
+- <strong>Human actor</strong>: performs tasks via human action, potentially with AI assistance</p>
+<p>An actor definition includes:
+- Role and responsibilities within processes
+- Operating constraints (allowed tools, allowed data access, safety policies)
+- Communication contract (what the actor expects, what it produces)</p>
+<p>Agents also need <strong>identity</strong> for governance and audit:
+- A human agent maps to a user identity (and group memberships).
+- An AI agent needs a distinct service identity so a security/audit framework can answer:
+  - “Which agent performed this action?”
+  - “Under what permissions?”
+  - “On behalf of which workspace/team?”</p>
+<p>An AI actor additionally includes:
+- Prompting and context strategy
+- Default model selection rules (or explicit model binding)
+- Tool usage policy/allowlist</p>
+<h3 id="3a-persona-personality-prompt">3a) Persona (Personality prompt)</h3>
+<p>A <strong>Persona</strong> is a reusable definition of an agent’s behavior style and communication norms.</p>
+<p>Personas are not processes and not policies. They answer:
+- “How should the agent behave?”
+- “What tone, rigor, or risk posture should it adopt?”</p>
+<p>A persona can be applied to an AI agent, a team, or scoped to a specific process.</p>
+<h3 id="4-team-composite-actor">4) Team (Composite Actor)</h3>
+<p>A <strong>Team</strong> is a composite actor made of multiple actors.</p>
+<p>A team specifies:
+- Member actors (AI and/or human)
+- Team-level objectives and constraints
+- Interaction pattern(s) for collaboration (coordination model)</p>
+<p>A team is itself an actor and can be assigned responsibility for tasks.</p>
+<h4 id="coordination-models-must-be-explicitly-specified-by-the-product-model">Coordination models (must be explicitly specified by the product model)</h4>
+<p>The product domain must specify which coordination model a team uses for task execution, such as:
+- <strong>Supervisor + specialists</strong>: a coordinator delegates subtasks to members
+- <strong>Sequential handoff</strong>: actors operate in a defined order
+- <strong>Parallel then merge</strong>: actors work concurrently and a merge/arbiter step consolidates results
+- <strong>Debate/critique loop</strong>: one actor proposes, another critiques, iterations are bounded</p>
+<p>If a team is used without an explicit coordination model, the system behavior is undefined.</p>
+<h3 id="5-model">5) Model</h3>
+<p>A <strong>Model</strong> is a callable AI capability used by AI actors.</p>
+<p>The domain representation includes:
+- Provider type and access configuration (conceptually)
+- Supported capabilities (chat, tool-calling, vision, embeddings, etc.)
+- Constraints (latency class, cost class, data handling restrictions)</p>
+<p>A model is not an actor. Models are used by AI actors.</p>
+<h3 id="6-tool">6) Tool</h3>
+<p>A <strong>Tool</strong> is an external capability invoked by actors during tasks.</p>
+<p>A tool definition includes:
+- Name and purpose
+- Input/output contract
+- Safety constraints (timeouts, rate limits, output bounds)
+- Audit requirements (what must be logged)</p>
+<p>Tools can be grouped into connectors (e.g., MCP servers) but that is an implementation detail.</p>
+<h2 id="additional-core-entities-definitions">Additional core entities (definitions)</h2>
+<h3 id="6a-workspace-tenant-project">6a) Workspace (Tenant / Project)</h3>
+<p>A <strong>Workspace</strong> is an ownership and governance boundary.</p>
+<p>Workspaces answer:
+- Who owns this process/tool/model/agent?
+- Who can view or edit it?
+- Which identities are authorized to execute it?</p>
+<p>If Kaigents is used by multiple business units, workspaces prevent accidental cross-team coupling.</p>
+<h3 id="7-role">7) Role</h3>
+<p>A <strong>Role</strong> is a named responsibility profile used to describe what an Agent (human or AI) is accountable for within a process.</p>
+<p>A role helps separate:
+- The business expectation (role)
+- The performer (agent)</p>
+<h3 id="8-requirements-policy">8) Requirements / Policy</h3>
+<p>A <strong>Requirement</strong> or <strong>Policy</strong> is a normative rule that constrains how a process is executed and how outcomes are validated.</p>
+<p>Examples:
+- “All claims must cite sources.”
+- “PII must not be sent to external tools.”
+- “A human approver must sign off before customer-facing publication.”</p>
+<p>Requirements/policies can apply at different scopes:
+- Process-wide
+- Task-specific
+- Tool/model usage constraints</p>
+<h3 id="8a-context-case-file">8a) Context / Case File</h3>
+<p>A <strong>Case File</strong> (or <strong>Context</strong>) is the collection of relevant materials for a specific type of work.</p>
+<p>Case files are <strong>descriptive</strong>, not normative:
+- They contain facts, source documents, references, and prior artifacts.
+- They are the “working set” that agents should use to complete a request.</p>
+<p>This is distinct from <strong>Requirements/Policy</strong>, which are the rules that constrain what is allowed and what qualifies as correct.</p>
+<h3 id="9-quality-gate">9) Quality gate</h3>
+<p>A <strong>Quality gate</strong> is a check that must pass before a process (or a task) can advance.</p>
+<p>Quality gates can be:
+- Automated checks (schema validation, linting, citation checks)
+- AI checks (critique/review agent)
+- Human checks (approval)</p>
+<h2 id="executions-instances">Executions (instances)</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>classDiagram
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  class WorkRequest {
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    +state
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    +startedAt
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    +endedAt
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>  }
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>  class WorkItem {
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    +state
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    +assignedTo
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>  }
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>  class WorkAttempt {
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    +attempt
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    +startedAt
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    +endedAt
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>    +outcome
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>  }
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>  class Agent
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>  class Team
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>  class Artifact
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>  class Event
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>  class Tool
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>  class Model
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>  class Process
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>  class Task
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>  class CaseFile
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>  class Capacity
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>  class WIPLimit
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>  class Experiment
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>  class Metric
+<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>
+<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>  WorkRequest &quot;1&quot; --&gt; &quot;1&quot; Process : instantiates
+<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>  WorkRequest &quot;1&quot; --&gt; &quot;1..*&quot; WorkItem : creates
+<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a>  WorkItem &quot;1&quot; --&gt; &quot;1&quot; Task : instance of
+<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a>  WorkItem &quot;1&quot; --&gt; &quot;0..*&quot; WorkAttempt : attempts
+<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a>  WorkItem &quot;0..1&quot; --&gt; &quot;0..1&quot; Agent : assigned to
+<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a>  WorkItem &quot;0..1&quot; --&gt; &quot;0..1&quot; Team : assigned to
+<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a>  WorkRequest &quot;1&quot; --&gt; &quot;0..*&quot; Artifact : produces
+<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a>  WorkRequest &quot;1&quot; --&gt; &quot;0..*&quot; Event : records
+<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a>  WorkAttempt &quot;0..*&quot; --&gt; &quot;0..*&quot; Tool : invokes
+<a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a>  WorkAttempt &quot;0..*&quot; --&gt; &quot;0..*&quot; Model : uses
+<a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a>  WorkRequest &quot;0..1&quot; --&gt; &quot;0..1&quot; CaseFile : working set
+<a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a>
+<a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a>  WorkRequest &quot;0..1&quot; --&gt; &quot;0..1&quot; Experiment : executed as
+<a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a>  WorkRequest &quot;0..*&quot; --&gt; &quot;0..*&quot; Metric : produces
+<a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a>  WorkItem &quot;0..1&quot; --&gt; &quot;0..1&quot; Capacity : consumes
+<a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a>  Process &quot;0..*&quot; --&gt; &quot;0..*&quot; WIPLimit : constrained by
+</code></pre></div>
+<h3 id="10-work-request-process-instance-workflow-execution">10) Work Request (Process Instance / Workflow Execution)</h3>
+<p>A <strong>Work Request</strong> is an execution instance of a Process.</p>
+<p>A work request:
+- Has an initiating request and context
+- Creates instances of tasks (work items)
+- Produces a timeline/audit trail of actions
+- Produces artifacts
+- Has explicit state (planned, in-progress, blocked, completed, failed, cancelled)</p>
+<h3 id="11-work-item-task-instance">11) Work Item (Task Instance)</h3>
+<p>A <strong>Work Item</strong> is the runtime instance of a Task inside a work request.</p>
+<p>The purpose of a work item is to make a task concrete and assignable.</p>
+<p>Work items support:
+- Assignment (to a human agent, AI agent, or team)
+- Status (queued, running, blocked, completed, failed, cancelled)
+- Retries and escalation</p>
+<h3 id="12-work-attempt-task-execution-attempt">12) Work Attempt (Task Execution / Attempt)</h3>
+<p>A <strong>Work Attempt</strong> records one attempt to perform a work item.</p>
+<p>Work attempt records:
+- Inputs and produced outputs
+- Actor assignments and participation
+- Tool invocations and their outcomes
+- Model invocations (if applicable)
+- Evidence for acceptance checks</p>
+<h3 id="13-artifact">13) Artifact</h3>
+<p>An <strong>Artifact</strong> is a tangible item (document, dataset, record, report, decision log, etc.) that a <strong>Work Attempt</strong> creates or operates on.</p>
+<p>Artifacts can be:
+- Inputs to a work attempt
+- Outputs of a work attempt
+- Both (e.g., a document that is revised)</p>
+<p>Artifacts should be referenceable and auditable (what was produced, by whom/what, and when).</p>
+<h3 id="14-event-timeline-audit-event">14) Event (Timeline / Audit Event)</h3>
+<p>An <strong>Event</strong> is an append-only record of something that happened during a work request.</p>
+<p>Events capture:
+- Work item state transitions
+- Tool/model invocations
+- Human approvals/decisions
+- Errors and exceptions</p>
+<h2 id="continuous-improvement-and-flow-lean-inspired">Continuous improvement and flow (LEAN-inspired)</h2>
+<p>This section captures the concepts needed to operate business processes at scale: constrained resources, work-in-progress, rework, experimentation, and continuous improvement.</p>
+<h3 id="15-capacity-constrained-resource">15) Capacity (Constrained resource)</h3>
+<p><strong>Capacity</strong> represents a constrained resource that limits throughput.</p>
+<p>Examples:
+- Human time (reviewers, approvers)
+- AI budget (model spend per day)
+- Tool capacity (rate limits)
+- Operational limits (concurrency, quota)</p>
+<p>Capacity is the reason a process needs prioritization, queueing, and WIP limits.</p>
+<h3 id="16-wip-limit-work-in-progress-limit">16) WIP Limit (Work-in-progress limit)</h3>
+<p>A <strong>WIP Limit</strong> constrains how many work items (or work requests) may be in a given state at once.</p>
+<p>WIP limits are used to:
+- Prevent overload
+- Reduce thrashing and context switching
+- Improve cycle time and predictability</p>
+<p>WIP limits can be applied to a process, a task step, a team, or a role.</p>
+<h3 id="17-rework">17) Rework</h3>
+<p><strong>Rework</strong> is intentional repetition of work caused by quality failures, missing inputs, policy violations, or downstream changes.</p>
+<p>In the domain model, rework manifests as:
+- Additional work attempts on the same work item
+- A work item returning to an earlier state
+- Additional work items created to address gaps</p>
+<h3 id="18-experiment-improvement-experiment">18) Experiment (Improvement experiment)</h3>
+<p>An <strong>Experiment</strong> is a structured change intended to improve outcomes (quality, cost, time, safety).</p>
+<p>An experiment defines:
+- Hypothesis (what improvement is expected)
+- Treatment (what change is applied: persona, model, tool set, task ordering, gate)
+- Measurement plan (which metrics determine success)
+- Scope (which processes/work requests are included)</p>
+<h3 id="19-metric-measure">19) Metric (Measure)</h3>
+<p>A <strong>Metric</strong> is a quantitative measure used to evaluate process performance and improvement.</p>
+<p>Common metrics:
+- Lead time / cycle time
+- Rework rate
+- Quality gate pass rate
+- Cost per work request
+- Tool/model error rate</p>
+<h2 id="relationships-summary">Relationships (summary)</h2>
+<ul>
+<li>A <strong>Process</strong> contains one or more <strong>Tasks</strong>.</li>
+<li>A <strong>Work Request</strong> instantiates a Process.</li>
+<li>A <strong>Work Request</strong> creates one or more <strong>Work Items</strong> (instances of Tasks).</li>
+<li>A <strong>Work Item</strong> is performed by an <strong>Agent</strong> or <strong>Team</strong>.</li>
+<li>A <strong>Work Item</strong> may have one or more <strong>Work Attempts</strong> (attempts).</li>
+<li>An <strong>Agent</strong> is either an <strong>AI agent</strong> or a <strong>Human agent</strong>.</li>
+<li>A <strong>Team</strong> is a composite actor that contains multiple Agents and a coordination model.</li>
+<li>An <strong>AI agent</strong> uses one or more <strong>Models</strong>.</li>
+<li>Agents/Teams invoke <strong>Tools</strong> while performing work.</li>
+<li><strong>Requirements/Policies</strong> and <strong>Quality gates</strong> constrain Processes, Tasks, Tools, and Models.</li>
+<li>
+<p><strong>Artifacts</strong> and <strong>Events</strong> are produced during a Work Request and provide auditability.</p>
+</li>
+<li>
+<p><strong>Capacity</strong> and <strong>WIP Limits</strong> constrain flow and determine throughput.</p>
+</li>
+<li><strong>Rework</strong> increases the number of work attempts and may create additional work items.</li>
+<li><strong>Experiments</strong> are executed through selected work requests and evaluated using <strong>Metrics</strong>.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

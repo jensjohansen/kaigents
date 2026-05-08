@@ -1,0 +1,2101 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Production-grade substrate for operating AI agent teams.">
+      
+      
+      
+        <link rel="canonical" href="https://jensjohansen.github.io/kaigents/research/technology/itd-register/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>ITD Register — Kaigents (Important Technical Decisions) - Kaigents</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#itd-register-kaigents-important-technical-decisions" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Kaigents" class="md-header__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kaigents
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              ITD Register — Kaigents (Important Technical Decisions)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../product/kaigents-introduction/" class="md-tabs__link">
+          
+  
+  
+  Product
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../architecture/kaigents-architecture-and-design/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../ops/temporal-installation/" class="md-tabs__link">
+          
+  
+  
+  Operations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../strategy/corporate_ai_strategy/" class="md-tabs__link">
+          
+  
+  
+  Strategy
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../CODING_STANDARDS_AND_DOD/" class="md-tabs__link">
+          
+  
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Kaigents" class="md-nav__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kaigents
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Product
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../product/kaigents-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../product/kaigents-prd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../product/domain-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../product/managed-services/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Managed Services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../product/kairon-retail-managed-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kairon Retail
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/example-team/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your First Team
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/temporal-validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/kaigents-architecture-and-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/ai_agent_engine_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ops/temporal-installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Temporal Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Strategy
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Strategy
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../strategy/corporate_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Corporate AI Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../strategy/marketing_ai_agent_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marketing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../strategy/security_operations_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../CODING_STANDARDS_AND_DOD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../implementation-plan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../implementation/kaigents-implementation-tracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#at-a-glance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        At a glance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#itds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ITDs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ITDs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#itd-01-agent-control-plane-baseline-kagent-ark-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ITD-01 — Agent control plane baseline: Kagent + ARK patterns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itd-02-model-serving-hardware-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ITD-02 — Model serving + hardware optimization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itd-03-mcp-server-management-kmcp-kmcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ITD-03 — MCP server management: kMCP (kmcp)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itd-04-vector-database-qdrant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ITD-04 — Vector database: Qdrant
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itd-05-graph-database-nebulagraph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ITD-05 — Graph database: NebulaGraph
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itd-06-documentstate-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ITD-06 — Document/state store
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itd-07-agent-runtime-framework-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ITD-07 — Agent runtime framework strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itd-08-workflow-substrate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ITD-08 — Workflow substrate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itd-09-ux-modality-sequencing-crd-cli-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ITD-09 — UX modality sequencing (CRD + CLI + UI)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itd-10-authnauthz-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ITD-10 — AuthN/AuthZ integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itd-11-observability-baseline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ITD-11 — Observability baseline
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itd-12-primary-implementation-languagestooling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ITD-12 — Primary implementation languages/tooling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itd-13-artifact-blob-storage-s3-compatible-object-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ITD-13 — Artifact blob storage (S3-compatible object store)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itd-14-secure-artifact-access-pattern-for-private-buckets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ITD-14 — Secure artifact access pattern for private buckets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itd-15-harbor-image-pull-robot-naming-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ITD-15 — Harbor image pull robot naming convention
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itd-16-durable-process-execution-engine-of-record" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ITD-16 — Durable process execution engine of record
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="itd-register-kaigents-important-technical-decisions">ITD Register — Kaigents (Important Technical Decisions)</h1>
+<h2 id="purpose">Purpose</h2>
+<p>This document tracks the major technical decisions (ITDs) for Kaigents and the status of each decision.</p>
+<p>Status values:</p>
+<ul>
+<li>Completed: Decision made / direction chosen</li>
+<li>Pending: Not yet decided</li>
+</ul>
+<h2 id="at-a-glance">At a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Topic area</th>
+<th>ITDs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Control plane + runtime</td>
+<td>ITD-01, ITD-07</td>
+</tr>
+<tr>
+<td>Models and inference</td>
+<td>ITD-02</td>
+</tr>
+<tr>
+<td>Tool plane</td>
+<td>ITD-03</td>
+</tr>
+<tr>
+<td>Storage</td>
+<td>ITD-04, ITD-05, ITD-06, ITD-13, ITD-14</td>
+</tr>
+<tr>
+<td>Workflow substrate</td>
+<td>ITD-08, ITD-16</td>
+</tr>
+<tr>
+<td>Product surfaces</td>
+<td>ITD-09</td>
+</tr>
+<tr>
+<td>Identity and access</td>
+<td>ITD-10</td>
+</tr>
+<tr>
+<td>Operations</td>
+<td>ITD-11, ITD-15</td>
+</tr>
+<tr>
+<td>Development stack</td>
+<td>ITD-12</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Decision area</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ITD-01</td>
+<td>Agent control plane baseline</td>
+<td>Completed</td>
+</tr>
+<tr>
+<td>ITD-02</td>
+<td>Model serving + hardware optimization</td>
+<td>Completed</td>
+</tr>
+<tr>
+<td>ITD-03</td>
+<td>MCP server management</td>
+<td>Completed</td>
+</tr>
+<tr>
+<td>ITD-04</td>
+<td>Vector database</td>
+<td>Completed</td>
+</tr>
+<tr>
+<td>ITD-05</td>
+<td>Graph database</td>
+<td>Completed</td>
+</tr>
+<tr>
+<td>ITD-06</td>
+<td>Document/state store</td>
+<td>Completed</td>
+</tr>
+<tr>
+<td>ITD-07</td>
+<td>Agent runtime framework strategy</td>
+<td>Completed</td>
+</tr>
+<tr>
+<td>ITD-08</td>
+<td>Workflow substrate</td>
+<td>Completed</td>
+</tr>
+<tr>
+<td>ITD-09</td>
+<td>UX modality sequencing (CRD + CLI + UI designer)</td>
+<td>Completed</td>
+</tr>
+<tr>
+<td>ITD-10</td>
+<td>AuthN/AuthZ integration</td>
+<td>Completed</td>
+</tr>
+<tr>
+<td>ITD-11</td>
+<td>Observability baseline</td>
+<td>Completed</td>
+</tr>
+<tr>
+<td>ITD-12</td>
+<td>Primary implementation languages/tooling</td>
+<td>Completed</td>
+</tr>
+<tr>
+<td>ITD-13</td>
+<td>Artifact blob storage (S3-compatible object store)</td>
+<td>Completed</td>
+</tr>
+<tr>
+<td>ITD-14</td>
+<td>Secure artifact access pattern for private buckets</td>
+<td>Completed</td>
+</tr>
+<tr>
+<td>ITD-15</td>
+<td>Harbor image pull robot naming convention</td>
+<td>Completed</td>
+</tr>
+<tr>
+<td>ITD-16</td>
+<td>Durable process execution engine of record</td>
+<td>Completed</td>
+</tr>
+</tbody>
+</table>
+<h2 id="itds">ITDs</h2>
+<h3 id="itd-01-agent-control-plane-baseline-kagent-ark-patterns">ITD-01 — Agent control plane baseline: Kagent + ARK patterns</h3>
+<ul>
+<li>Status: Completed</li>
+<li>Business problem:</li>
+<li>We need a Kubernetes-native control plane for agents/teams and execution, with commercial-safe licensing and a clear operator UX.</li>
+<li>Options considered:</li>
+<li>Kagent (chosen as baseline pattern)</li>
+<li>ARK (chosen as baseline pattern)</li>
+<li>Agentic Layer Agent Runtime Operator</li>
+<li>Chosen option:</li>
+<li>Use <strong>Kagent + ARK</strong> as reference baselines for Kaigents’ control plane model and UX.</li>
+<li>Primary reason:</li>
+<li>Both are K8s-native and align with CRD + CLI + dashboard modality; ARK demonstrates a first-class <code>Query</code> execution resource; Kagent demonstrates CLI and dashboard entry points.</li>
+<li>Impacts:</li>
+<li>Kaigents should preserve a CRD-first, GitOps-friendly approach and invest in CLI/dashboard parity early.</li>
+</ul>
+<h3 id="itd-02-model-serving-hardware-optimization">ITD-02 — Model serving + hardware optimization</h3>
+<ul>
+<li>Status: Completed</li>
+<li>Business problem:</li>
+<li>Kaigents wants a credible AMD Ryzen AI optimization story while still supporting standard K8s operations.</li>
+<li>Options considered:</li>
+<li>Lemonade Server (Apache-2.0) as an OpenAI-compatible server with multiple backends (CPU/Vulkan/ROCm; Windows NPU backends)</li>
+<li>Lemonade Server with FastFlowLM backend for Ryzen AI NPU (note: proprietary binary license terms for accelerated kernels)</li>
+<li>KServe as a Kubernetes-native serving control plane (standardized model endpoints, rollout/scale/policy)</li>
+<li>Ollama as a developer baseline for local iteration</li>
+<li>Chosen option:</li>
+<li>Use <strong>Lemonade Server</strong> as the primary serving runtime because it supports <strong>hybrid execution across NPU + GPU + CPU</strong> through backends.</li>
+<li>Treat the <strong>FastFlowLM NPU acceleration kernels</strong> as <strong>integrate-only (user-supplied)</strong> due to proprietary binary licensing terms.</li>
+<li>Keep <strong>KServe</strong> as a <strong>compatible, optional control-plane integration</strong> for clusters that want standardized KServe semantics (not the primary baseline).</li>
+<li>Primary reason:</li>
+<li>Lemonade provides a single OpenAI-compatible server surface while still enabling AMD optimization paths across CPU/GPU/NPU.</li>
+<li>FastFlowLM’s NPU acceleration relies on <strong>proprietary binaries</strong> with <strong>redistribution restrictions</strong> and a <strong>revenue threshold</strong>, which conflicts with “commercial-safe OSS core” and predictable redistribution; therefore Kaigents cannot bundle/redistribute those kernels.</li>
+<li>KServe alone does not address hybrid execution requirements; it is useful as an optional standardized integration layer rather than the baseline runtime.</li>
+<li>Impacts:</li>
+<li>Kaigents should standardize on an <strong>OpenAI-compatible HTTP interface</strong> for model endpoints.</li>
+<li>Kaigents should explicitly classify model runtimes:<ul>
+<li><strong>Core-supported (redistributable)</strong>: permissive OSS runtimes suitable for Kubernetes packaging.</li>
+<li><strong>Integrate-only (user-supplied)</strong>: FastFlowLM NPU acceleration kernels, where users bring their own installer/binaries and accept the license terms.</li>
+</ul>
+</li>
+<li>Hardware optimization story becomes a layered message:<ul>
+<li><strong>AMD GPUs on Linux/Windows</strong>: permissive stacks (e.g., ROCm/Vulkan backends) under the KServe control plane.</li>
+<li><strong>Ryzen AI NPU (XDNA2)</strong>: Lemonade + FastFlowLM integration for edge/local deployments (user-supplied kernels); not required for cluster MVP.</li>
+</ul>
+</li>
+</ul>
+<h3 id="itd-03-mcp-server-management-kmcp-kmcp">ITD-03 — MCP server management: kMCP (kmcp)</h3>
+<ul>
+<li>Status: Completed</li>
+<li>Business problem:</li>
+<li>We need a Kubernetes-native way to deploy/manage MCP servers with a clean dev-to-prod path.</li>
+<li>Options considered:</li>
+<li>kMCP (kmcp) (chosen)</li>
+<li>ToolHive</li>
+<li>Custom MCP deployment</li>
+<li>Chosen option:</li>
+<li>kMCP (kmcp)</li>
+<li>Primary reason:</li>
+<li>CRD + controller approach with multi-transport support and scaffolding aligns with Kaigents tool plane goals.</li>
+<li>Impacts:</li>
+<li>Kaigents tool plane should be MCP-first and integrate with kmcp semantics.</li>
+</ul>
+<h3 id="itd-04-vector-database-qdrant">ITD-04 — Vector database: Qdrant</h3>
+<ul>
+<li>Status: Completed</li>
+<li>Business problem:</li>
+<li>We need a commercial-safe vector store for retrieval workloads.</li>
+<li>Options considered:</li>
+<li>Qdrant (chosen)</li>
+<li>Pinecone</li>
+<li>Chosen option:</li>
+<li>Qdrant</li>
+<li>Primary reason:</li>
+<li>Apache-2.0 licensing and strong operational fit.</li>
+<li>Impacts:</li>
+<li>Retrieval and embedding strategy will need to align with Qdrant collection management.</li>
+</ul>
+<h3 id="itd-05-graph-database-nebulagraph">ITD-05 — Graph database: NebulaGraph</h3>
+<ul>
+<li>Status: Completed</li>
+<li>Business problem:</li>
+<li>We need a commercial-safe graph store candidate for knowledge graphs and relationship-heavy modeling.</li>
+<li>Options considered:</li>
+<li>NebulaGraph (chosen)</li>
+<li>Neo4j</li>
+<li>Chosen option:</li>
+<li>NebulaGraph</li>
+<li>Primary reason:</li>
+<li>Apache-2.0 licensing and distributed scalability.</li>
+<li>Impacts:</li>
+<li>Graph schema and queries will need to map to nGQL.</li>
+</ul>
+<h3 id="itd-06-documentstate-store">ITD-06 — Document/state store</h3>
+<ul>
+<li>Status: Completed</li>
+<li>Business problem:</li>
+<li>We need a durable store for runs, artifacts, and agent state that works well in Kubernetes.</li>
+<li>Options considered:</li>
+<li>RethinkDB</li>
+<li>Postgres</li>
+<li>Chosen option:</li>
+<li>RethinkDB</li>
+<li>Primary reason:</li>
+<li>For a JSON document store workload, RethinkDB is materially more responsive under load than PostgreSQL for indexed document queries on sparse data.</li>
+<li>Impacts:</li>
+<li>Kaigents’ persisted run/event documents should be modeled as JSON-first records with secondary indexes designed around the query patterns used by CLI/UI and observability.</li>
+</ul>
+<h3 id="itd-07-agent-runtime-framework-strategy">ITD-07 — Agent runtime framework strategy</h3>
+<ul>
+<li>Status: Completed</li>
+<li>Business problem:</li>
+<li>We need a runtime loop for agents/teams that is reliable, observable, and compatible with platform goals.</li>
+<li>Options considered:</li>
+<li>Google ADK (Python)</li>
+<li>LangGraph (Python)</li>
+<li>“runtime-agnostic” execution engines (ARK-style)</li>
+<li>Chosen option:</li>
+<li>Use a <strong>runtime-agnostic execution engine</strong> (ARK-style) with <strong>pluggable runtimes</strong>, and treat ADK/LangGraph as <strong>optional runtime implementations</strong> rather than hard platform dependencies.</li>
+<li>Primary reason:</li>
+<li>Preserves Kubernetes-native control plane semantics while avoiding tight coupling to a single Python framework; keeps the door open for Go/Rust execution engines and multiple agent runtime implementations.</li>
+<li>Impacts:</li>
+<li>Kaigents CRDs should target stable execution semantics (inputs, tool-calls, outputs, status) while allowing different runtime implementations behind an execution-engine interface.</li>
+</ul>
+<h3 id="itd-08-workflow-substrate">ITD-08 — Workflow substrate</h3>
+<ul>
+<li>Status: Completed</li>
+<li>Business problem:</li>
+<li>We need a simple, lightweight and fast workflow substrate for batch-y DAGs and integration tasks.</li>
+<li>Options considered:</li>
+<li>Embedded DAG libraries (Rust)</li>
+<li>Argo Workflows</li>
+<li>Tekton Pipelines</li>
+<li>Chosen option:</li>
+<li>Use an <strong>embedded Rust DAG substrate</strong> as the default workflow engine for Kaigents.</li>
+<li>Provide an escape hatch for DAG nodes to <strong>offload</strong> work into Kubernetes workloads (e.g., <code>Job</code>/<code>Pod</code>) when isolation or resource scheduling demands it.</li>
+<li>Treat Argo/Tekton as <strong>optional integration targets</strong>, not the default substrate.</li>
+<li>Primary reason:</li>
+<li>Embedded DAGs avoid the operational and latency overhead of “workflow-as-a-controller plus step-as-a-pod” for the common case of many small steps and high fan-out.</li>
+<li>Rust DAG libraries are permissively licensed and enable a tight integration with Kaigents’ run/state model, observability events, and hybrid hardware scheduling.</li>
+<li>The offload escape hatch preserves step isolation and Kubernetes scheduling when needed without forcing every step into that model.</li>
+<li>Impacts:</li>
+<li>Kaigents must implement persistence for DAG state (node status, retries, timing, outputs) in the document/state store so runs are durable across process restarts.</li>
+<li>Retries do not change the execution topology; Milestone 1 remains a DAG substrate rather than a general workflow graph with cycles.</li>
+<li>Kaigents must implement first-class execution visibility (events, logs, traces) since we are not inheriting Argo UI/CRD status semantics.</li>
+<li>Kaigents can still support Argo/Tekton by generating workflows or running them as an integration path, but the platform core does not depend on them.</li>
+</ul>
+<p>Milestone scope clarification:</p>
+<ul>
+<li>This decision describes the <strong>Milestone 1</strong> embedded workflow substrate for short-lived, batch-y DAG execution.</li>
+<li>Retries and cancellation are execution semantics on DAG nodes; they do not imply rework loops or cyclic process graphs.</li>
+<li>Longer-lived process semantics (human-in-the-loop waiting, durable resumability across restarts over days/weeks, bounded rework loops) are tracked separately as ITD-16.</li>
+</ul>
+<h3 id="itd-09-ux-modality-sequencing-crd-cli-ui">ITD-09 — UX modality sequencing (CRD + CLI + UI)</h3>
+<ul>
+<li>Status: Completed</li>
+<li>Business problem:</li>
+<li>Kaigents must support declarative CRDs, a CLI, and an eventual low-code designer.</li>
+<li>Options considered:</li>
+<li>CRD + CLI first (Kagent/ARK patterns)</li>
+<li>UI-first (Langflow/Flowise patterns)</li>
+<li>Chosen option:</li>
+<li>Build <strong>CRD + CLI + lightweight dashboard</strong> first; treat low-code designer (Langflow/Flowise-style) as a later integration surface.</li>
+<li>Primary reason:</li>
+<li>CRD+CLI first preserves GitOps workflows and unblocks early adopters; UI-first systems tend to introduce early coupling and licensing/packaging complexity.</li>
+<li>Impacts:</li>
+<li>Initial UX should focus on:<ul>
+<li><code>kubectl</code>-compatible CRDs</li>
+<li>a Kaigents CLI that supports both resource management and interactive invocation</li>
+<li>a dashboard that can render run history and tool-call traces</li>
+</ul>
+</li>
+</ul>
+<h3 id="itd-10-authnauthz-integration">ITD-10 — AuthN/AuthZ integration</h3>
+<ul>
+<li>Status: Completed</li>
+<li>Business problem:</li>
+<li>Platform Mode requires secure access controls aligned with enterprise IdPs.</li>
+<li>Options considered:</li>
+<li>Keycloak (OIDC)</li>
+<li>OpenLDAP</li>
+<li>Database-backed auth (local users)</li>
+<li>Chosen option:</li>
+<li>Keycloak</li>
+<li>Primary reason:</li>
+<li>Keycloak supports a broad set of AuthN/AuthZ strategies, fits commercial-safe OSS requirements, and provides a durable path to SSO without locking Kaigents into a proprietary IdP.</li>
+<li>Impacts:</li>
+<li>Kaigents should standardize on OIDC for platform authentication, with a migration-friendly path from simpler deployments (DB auth) to enterprise SSO.</li>
+</ul>
+<h3 id="itd-11-observability-baseline">ITD-11 — Observability baseline</h3>
+<ul>
+<li>Status: Completed</li>
+<li>Business problem:</li>
+<li>Kaigents requires reliable logs/metrics/traces for agent runs, tools, and workflows.</li>
+<li>Options considered:</li>
+<li>OpenTelemetry baseline + Prometheus/Grafana</li>
+<li>Langfuse as optional eval/observability platform</li>
+<li>Arize Phoenix (benchmark; license restricted)</li>
+<li>Chosen option:</li>
+<li>Use <strong>OpenTelemetry</strong> as the primary instrumentation standard (traces + metrics + logs where applicable).</li>
+<li>Use <strong>Prometheus + Grafana</strong> as the default cluster-level metrics/visualization baseline.</li>
+<li>Treat <strong>Langfuse</strong> as an optional higher-level LLM observability/eval product (ensure we integrate only against MIT-licensed core).</li>
+<li>Primary reason:</li>
+<li>OpenTelemetry provides a vendor-neutral, language-agnostic standard for tracing and context propagation across distributed components (agent runtime, tool plane, workflow execution, model serving).</li>
+<li>Prometheus provides a proven pull-based metrics pipeline with strong Kubernetes ergonomics; Grafana provides flexible visualization and alerting on top of those metrics.</li>
+<li>This baseline is technically aligned with Kaigents’ need to correlate “runs” with tool calls, model calls, and workflow steps via a shared trace context and structured events.</li>
+<li>Phoenix is not suitable as a dependency for a commercial-safe platform core due to its ELv2 license constraints.</li>
+<li>Impacts:</li>
+<li>Kaigents needs a stable event schema for runs/tool calls/workflow nodes that can be rendered in CLI/UI and exported as OTel spans and metrics.</li>
+<li>Kaigents should propagate trace context across:<ul>
+<li>agent runtime loop</li>
+<li>MCP tool invocations</li>
+<li>workflow DAG node execution</li>
+<li>model serving requests</li>
+</ul>
+</li>
+<li>Kaigents should expose “run timelines” that can be viewed both in-platform (CLI/UI) and in external tooling (Grafana/trace backend).</li>
+</ul>
+<h3 id="itd-12-primary-implementation-languagestooling">ITD-12 — Primary implementation languages/tooling</h3>
+<ul>
+<li>Status: Completed</li>
+<li>Business problem:</li>
+<li>Kaigents wants to balance performance (Rust/Go) with ecosystem leverage (Python) while staying K8s-native.</li>
+<li>Options considered:</li>
+<li>Go operator + Python runtimes (Kagent pattern)</li>
+<li>Go operator + Rust runtimes</li>
+<li>Python-first</li>
+<li>Chosen option:</li>
+<li>Default to <strong>Rust</strong> for the Kaigents execution engine components where low overhead and concurrency matter (embedded DAG substrate, run coordinator, scheduling, eventing).</li>
+<li>Use <strong>Go</strong> where it is the pragmatic choice for Kubernetes controllers/operators and CLIs.</li>
+<li>Allow <strong>Python</strong> as an optional runtime/plugin lane (e.g., ADK/LangGraph-compatible execution engines) without making the platform core dependent on Python.</li>
+<li>Primary reason:</li>
+<li>Rust enables a lightweight, high-throughput always-on runtime with strong concurrency and predictable resource usage.</li>
+<li>Go remains best-in-class for Kubernetes-native controller development and operational tooling in the K8s ecosystem.</li>
+<li>Keeping Python optional preserves access to the agent framework ecosystem while avoiding a Python-only platform architecture.</li>
+<li>Impacts:</li>
+<li>Kaigents should define clear component boundaries so the Rust execution engine can evolve independently of the Go control plane.</li>
+<li>Kaigents must define a stable “execution engine” contract (inputs/outputs/events/status) so multiple runtimes (Rust, Python) can be supported.</li>
+</ul>
+<h3 id="itd-13-artifact-blob-storage-s3-compatible-object-store">ITD-13 — Artifact blob storage (S3-compatible object store)</h3>
+<ul>
+<li>Status: Completed</li>
+<li>Business problem:</li>
+<li>We need a durable, scalable, cost-effective storage substrate for large/binary artifacts that is decoupled from the indexed document/state store.</li>
+<li>We want to support cluster deployments using Ceph RGW while staying compatible with S3 semantics.</li>
+<li>Options considered:</li>
+<li>Store artifact bytes directly in the document/state store (not suitable for large blobs)</li>
+<li>Store artifact bytes on local disk/PVC (simple but less portable; harder multi-node scaling)</li>
+<li>Store artifact bytes in an S3-compatible object store (Ceph RGW) (chosen)</li>
+<li>Chosen option:</li>
+<li>Use <strong>S3-compatible object storage</strong> (Ceph RGW in-cluster) as the preferred production storage for artifact bytes.</li>
+<li>Keep indexed metadata (artifact records, timeline events) in the document/state store; artifact records reference object storage locations.</li>
+<li>Primary reason:</li>
+<li>Object storage is the right durability/performance/cost fit for large media/files; indexed stores are optimized for metadata and query.</li>
+<li>Impacts:</li>
+<li>Kaigents artifact metadata should support a storage reference that can point to object storage (e.g., <code>s3://bucket/key</code>).</li>
+<li>Kaigents should adopt stable key-prefix conventions (tenant/project/agent) so artifacts can be listed and lifecycle-managed without storing every run immutably.</li>
+</ul>
+<h3 id="itd-14-secure-artifact-access-pattern-for-private-buckets">ITD-14 — Secure artifact access pattern for private buckets</h3>
+<ul>
+<li>Status: Completed</li>
+<li>Business problem:</li>
+<li>We need browser- and CLI-friendly artifact access without making buckets public.</li>
+<li>We need correct streaming behavior for media (Range requests) and predictable headers for caches and clients.</li>
+<li>Options considered:</li>
+<li>Public bucket policies / static website hosting (rejected)</li>
+<li>Client-side presigned URLs exposed directly to users (acceptable in some deployments, but not the baseline)</li>
+<li>Server-side SigV4 signing proxy to private buckets (chosen baseline)</li>
+<li>Chosen option:</li>
+<li>Use a <strong>server-side SigV4 proxy pattern</strong> to access private S3 buckets, preserving important HTTP semantics.</li>
+<li>Primary reason:</li>
+<li>Keeps buckets private while still enabling simple URLs and browser access patterns.</li>
+<li>Impacts:</li>
+<li>Kaigents (or a companion gateway) should preserve: <code>Range</code>, <code>ETag</code>, <code>Last-Modified</code>, <code>Accept-Ranges</code>, <code>Content-Range</code>, and <code>Cache-Control</code> headers when proxying.</li>
+<li>Kaigents should avoid coupling core requirements to any specific gateway product scope; this is an implementation pattern that can be applied by multiple services.</li>
+</ul>
+<h3 id="itd-15-harbor-image-pull-robot-naming-convention">ITD-15 — Harbor image pull robot naming convention</h3>
+<ul>
+<li>Status: Completed</li>
+<li>Business problem:</li>
+<li>Kaigents (and other platform workloads) run in Kubernetes namespaces and pull private images from Harbor.</li>
+<li>Harbor robot accounts are often created as project-scoped credentials for image pulls.</li>
+<li>If robot names are not discoverable, operators waste time correlating Harbor robot credentials to Kubernetes namespaces.</li>
+<li>Options considered:</li>
+<li>Free-form robot naming (inconsistent; hard to correlate)</li>
+<li>Encode repository or chart name into the robot (still ambiguous when namespaces change)</li>
+<li>Standardize on a <em>reference implementation</em> convention for our deployments, without imposing it on Kaigents users (chosen)</li>
+<li>Chosen option:</li>
+<li>Kaigents <strong>does not require</strong> a specific Kubernetes namespace naming scheme, registry choice, or IdP choice.</li>
+<li>For Kaigents’ <strong>default reference implementation</strong> (including Keycloak-backed Harbor where local Harbor users may be disabled), standardize on:<ul>
+<li>Kubernetes namespace: <code>kaigents</code></li>
+<li>Harbor robot account: <code>robot$kaigents+kaigents</code></li>
+</ul>
+</li>
+<li>This convention is recommended for our internal environments and examples because it is searchable and easy to correlate, but it is not a Kaigents platform requirement.</li>
+<li>Primary reason:</li>
+<li>Keeps our docs/runbooks consistent while preserving customer freedom to choose namespaces and auth models.</li>
+<li>Impacts:</li>
+<li>The cluster operator runbook should standardize on a single pull-secret name per namespace (e.g. <code>harbor-regcred</code>) whose credentials map to a Harbor robot chosen by the cluster operator.</li>
+<li>Our reference implementation runbook should use the defaults above; if a deployment uses a different namespace, the robot/secret should be created accordingly.</li>
+</ul>
+<h3 id="itd-16-durable-process-execution-engine-of-record">ITD-16 — Durable process execution engine of record</h3>
+<ul>
+<li>Status: Completed</li>
+</ul>
+<p>Decision statement:</p>
+<ul>
+<li>Adopt <strong>Temporal</strong> as the durable process execution engine of record for Kaigents Work Requests that require long-running durability (hours to days/weeks), human-in-the-loop waits, bounded rework loops (cycles), cancellation, and a reconstructable history for audit.</li>
+</ul>
+<p>Scope boundary (relationship to ITD-08):</p>
+<ul>
+<li>ITD-08 covers the <strong>Milestone 1</strong> embedded DAG substrate for short-lived, batch-y workflows.</li>
+<li>ITD-16 governs the <strong>long-running durable execution path</strong> and must support waiting on humans/external systems and resuming safely across restarts.</li>
+<li>Both substrates coexist; the choice is made at request time based on the <code>Process</code> definition.</li>
+</ul>
+<p>Non-negotiables / acceptance criteria:</p>
+<ul>
+<li><strong>Product-model alignment (substrate + definition model):</strong></li>
+<li>Kaigents can define a minimal <strong>Process/Task</strong> model (CRDs).</li>
+<li>Kaigents can compile/map that model into the Temporal execution model without exposing engine-native concepts to end users.</li>
+<li><strong>Durability and recovery:</strong></li>
+<li>Work Requests remain durable while waiting.</li>
+<li>Resumption is reliable after worker restarts.</li>
+<li><strong>Audit/history:</strong></li>
+<li>A Work Request produces a durable history via Temporal's persistence.</li>
+<li><strong>Commercial-safe OSS posture:</strong></li>
+<li>Temporal (MIT) is redistributable and compatible with Kaigents’ OSS posture.</li>
+</ul>
+<p>Options considered:</p>
+<ul>
+<li>Adopt <strong>Temporal</strong> (chosen)</li>
+<li>Build a <strong>Kaigents-specific</strong> durable process engine.</li>
+</ul>
+<p>Decision record:</p>
+<ul>
+<li>Chosen option: <strong>Temporal</strong></li>
+<li>Primary reason:</li>
+<li>Temporal is the industry standard for durable execution, providing out-of-the-box reliability, visibility, and scalability that would take years to replicate.</li>
+<li>Its MIT license aligns with Kaigents' OSS goals.</li>
+<li>It handles the "hard parts" of distributed systems (retries, timeouts, state management) transparently.</li>
+</ul>
+<p>Impacts (regardless of chosen engine):</p>
+<ul>
+<li>The product domain model becomes authoritative:</li>
+<li>Process/Task (definitions)</li>
+<li>Work Request / Work Item / Work Attempt (executions)</li>
+<li>Kaigents must define a stable execution-engine interface that:</li>
+<li>hides engine-specific concepts behind Kaigents terminology</li>
+<li>emits a consistent event stream to the run/work-request timeline</li>
+<li>supports human-in-the-loop waits and bounded rework semantics</li>
+<li>Milestone 1 embedded DAG is not invalidated; it remains a lightweight substrate for short-lived workflows, while ITD-16 governs the long-running durable execution path.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

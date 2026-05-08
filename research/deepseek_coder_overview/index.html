@@ -1,0 +1,2553 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Production-grade substrate for operating AI agent teams.">
+      
+      
+      
+        <link rel="canonical" href="https://jensjohansen.github.io/kaigents/research/deepseek_coder_overview/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>DeepSeek-Coder: Capabilities, Performance, and Affordable Self-Hosting Options - Kaigents</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#deepseek-coder-capabilities-performance-and-affordable-self-hosting-options" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Kaigents" class="md-header__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kaigents
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              DeepSeek-Coder: Capabilities, Performance, and Affordable Self-Hosting Options
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../product/kaigents-introduction/" class="md-tabs__link">
+          
+  
+  
+  Product
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/kaigents-architecture-and-design/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../ops/temporal-installation/" class="md-tabs__link">
+          
+  
+  
+  Operations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../strategy/corporate_ai_strategy/" class="md-tabs__link">
+          
+  
+  
+  Strategy
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../CODING_STANDARDS_AND_DOD/" class="md-tabs__link">
+          
+  
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Kaigents" class="md-nav__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kaigents
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Product
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kaigents-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kaigents-prd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/domain-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/managed-services/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Managed Services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kairon-retail-managed-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kairon Retail
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/example-team/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your First Team
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/temporal-validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/kaigents-architecture-and-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/ai_agent_engine_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ops/temporal-installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Temporal Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Strategy
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Strategy
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/corporate_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Corporate AI Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/marketing_ai_agent_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marketing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/security_operations_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CODING_STANDARDS_AND_DOD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation-plan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation/kaigents-implementation-tracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#abstract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Abstract
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introduction
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introduction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-background" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Background
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-model-variants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Model Variants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-technical-architecture-and-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Technical Architecture and Capabilities
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Technical Architecture and Capabilities">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-model-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Model Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-supported-programming-languages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Supported Programming Languages
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-key-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Key Capabilities
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.3 Key Capabilities">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#code-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code Generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#context-aware-completion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Context-Aware Completion
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bug-detection-and-fixing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bug Detection and Fixing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#code-refactoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code Refactoring
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#documentation-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation Generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-performance-benchmarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Performance Benchmarks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Performance Benchmarks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-humaneval-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 HumanEval Results
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-mbpp-benchmark" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 MBPP Benchmark
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-multi-language-benchmarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Multi-Language Benchmarks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-real-world-task-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Real-World Task Evaluation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-affordable-self-hosting-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Affordable Self-Hosting Options
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Affordable Self-Hosting Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-hardware-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Hardware Requirements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.1 Hardware Requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#minimum-requirements-for-deepseek-coder-13b" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minimum Requirements for DeepSeek-Coder-1.3B
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommended-for-deepseek-coder-67b" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommended for DeepSeek-Coder-6.7B
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optimal-for-deepseek-coder-33b" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optimal for DeepSeek-Coder-33B
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternative-amd-hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alternative: AMD Hardware
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-quantization-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Quantization Options
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-deployment-frameworks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Deployment Frameworks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.3 Deployment Frameworks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#llamacpp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        llama.cpp
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#text-generation-webui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Text Generation WebUI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lm-studio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LM Studio
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vllm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        vLLM
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-cost-effective-deployment-strategies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Cost-Effective Deployment Strategies
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.4 Cost-Effective Deployment Strategies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#strategy-1-local-workstation-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Strategy 1: Local Workstation Deployment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#strategy-2-shared-server-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Strategy 2: Shared Server Deployment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#strategy-3-cloud-gpu-rental-intermittent-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Strategy 3: Cloud GPU Rental (Intermittent Usage)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#strategy-4-low-end-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Strategy 4: Low-End Deployment
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-step-by-step-deployment-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 Step-by-Step Deployment Guide
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-performance-optimization-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6 Performance Optimization Tips
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-use-cases-and-integration-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Use Cases and Integration Scenarios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Use Cases and Integration Scenarios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-individual-developer-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Individual Developer Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-small-team-collaboration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Small Team Collaboration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-specialized-development-environments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Specialized Development Environments
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-limitations-and-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Limitations and Considerations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Limitations and Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-technical-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Technical Limitations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-practical-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Practical Considerations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-future-directions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Future Directions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Conclusion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="deepseek-coder-capabilities-performance-and-affordable-self-hosting-options">DeepSeek-Coder: Capabilities, Performance, and Affordable Self-Hosting Options</h1>
+<p><em>Research Date: May 3, 2025</em></p>
+<h2 id="abstract">Abstract</h2>
+<p>This research paper provides a comprehensive overview of DeepSeek-Coder, a specialized large language model designed for code generation, understanding, and editing tasks. We analyze its architecture, capabilities, and performance metrics compared to other code-focused models. Additionally, we explore practical and affordable approaches to self-hosting DeepSeek-Coder, including hardware requirements, optimization techniques, and deployment strategies suitable for individual developers and small teams. Our findings indicate that DeepSeek-Coder offers state-of-the-art performance for many programming tasks and can be effectively deployed on consumer hardware with appropriate optimization techniques.</p>
+<h2 id="1-introduction">1. Introduction</h2>
+<p>The development of specialized large language models (LLMs) for programming tasks has significantly advanced the field of AI-assisted software development. Among these specialized models, DeepSeek-Coder has emerged as a particularly powerful option, combining strong performance with relatively efficient resource utilization. This paper examines DeepSeek-Coder's capabilities, benchmarks its performance against alternatives, and provides practical guidance for self-hosting the model on affordable hardware.</p>
+<h3 id="11-background">1.1 Background</h3>
+<p>DeepSeek-Coder was developed by DeepSeek AI, a research lab focused on advancing artificial intelligence capabilities. The model was specifically trained to excel at code-related tasks, including:</p>
+<ul>
+<li>Code generation from natural language descriptions</li>
+<li>Code completion and suggestion</li>
+<li>Bug identification and fixing</li>
+<li>Code explanation and documentation</li>
+<li>Code translation between programming languages</li>
+</ul>
+<p>The model was trained on a massive corpus of code from various sources, including open-source repositories, programming tutorials, and documentation. This extensive training has enabled DeepSeek-Coder to develop a deep understanding of programming concepts, syntax, and best practices across multiple programming languages.</p>
+<h3 id="12-model-variants">1.2 Model Variants</h3>
+<p>DeepSeek-Coder is available in several variants, each with different parameter counts and capabilities:</p>
+<table>
+<thead>
+<tr>
+<th>Model Variant</th>
+<th>Parameters</th>
+<th>Context Window</th>
+<th>Release Date</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DeepSeek-Coder-33B</td>
+<td>33 billion</td>
+<td>16K tokens</td>
+<td>October 2023</td>
+</tr>
+<tr>
+<td>DeepSeek-Coder-6.7B</td>
+<td>6.7 billion</td>
+<td>16K tokens</td>
+<td>October 2023</td>
+</tr>
+<tr>
+<td>DeepSeek-Coder-1.3B</td>
+<td>1.3 billion</td>
+<td>16K tokens</td>
+<td>October 2023</td>
+</tr>
+<tr>
+<td>DeepSeek-Coder-Instruct-33B</td>
+<td>33 billion</td>
+<td>16K tokens</td>
+<td>October 2023</td>
+</tr>
+<tr>
+<td>DeepSeek-Coder-Instruct-6.7B</td>
+<td>6.7 billion</td>
+<td>16K tokens</td>
+<td>October 2023</td>
+</tr>
+<tr>
+<td>DeepSeek-Coder-V2-Base</td>
+<td>16 billion</td>
+<td>32K tokens</td>
+<td>April 2025</td>
+</tr>
+<tr>
+<td>DeepSeek-Coder-V2-Instruct</td>
+<td>16 billion</td>
+<td>32K tokens</td>
+<td>April 2025</td>
+</tr>
+</tbody>
+</table>
+<p>The "Instruct" variants are fine-tuned to follow natural language instructions, making them more suitable for direct interaction with developers. The base models are optimized for integration into development tools and environments.</p>
+<h2 id="2-technical-architecture-and-capabilities">2. Technical Architecture and Capabilities</h2>
+<h3 id="21-model-architecture">2.1 Model Architecture</h3>
+<p>DeepSeek-Coder is based on a decoder-only transformer architecture, similar to other LLMs like Llama and GPT models. However, it incorporates several architectural innovations specifically designed to enhance code understanding and generation:</p>
+<ol>
+<li><strong>Enhanced Attention Mechanisms</strong>: Modified attention patterns that better capture the hierarchical and nested structure of code</li>
+<li><strong>Specialized Tokenization</strong>: A tokenizer optimized for code, with special handling for programming syntax and common coding patterns</li>
+<li><strong>Extended Context Window</strong>: Support for longer context windows (16K-32K tokens) to accommodate larger code files and projects</li>
+<li><strong>Multi-language Training</strong>: Specialized training on a diverse set of programming languages</li>
+</ol>
+<p>The model's architecture enables it to maintain a coherent understanding of code structure across long files, track variable definitions and usage, and understand complex programming concepts.</p>
+<h3 id="22-supported-programming-languages">2.2 Supported Programming Languages</h3>
+<p>DeepSeek-Coder demonstrates strong capabilities across a wide range of programming languages, with particularly strong performance in:</p>
+<ul>
+<li>Python</li>
+<li>JavaScript/TypeScript</li>
+<li>Java</li>
+<li>C/C++</li>
+<li>Go</li>
+<li>Rust</li>
+<li>PHP</li>
+<li>Ruby</li>
+<li>SQL</li>
+<li>HTML/CSS</li>
+<li>Shell scripting</li>
+</ul>
+<p>The model can also handle less common languages, though with varying degrees of proficiency depending on the representation of these languages in its training data.</p>
+<h3 id="23-key-capabilities">2.3 Key Capabilities</h3>
+<p>DeepSeek-Coder excels in several key areas:</p>
+<h4 id="code-generation">Code Generation</h4>
+<p>The model can generate complete functions, classes, or modules based on natural language descriptions. It demonstrates a strong ability to implement complex algorithms, data structures, and design patterns.</p>
+<h4 id="context-aware-completion">Context-Aware Completion</h4>
+<p>Unlike simpler code completion tools, DeepSeek-Coder can analyze the entire codebase context to provide completions that maintain consistency with existing code patterns, variable naming conventions, and architectural choices.</p>
+<h4 id="bug-detection-and-fixing">Bug Detection and Fixing</h4>
+<p>The model can identify potential bugs, logic errors, and performance issues in code, and suggest appropriate fixes. This includes detecting subtle issues like off-by-one errors, memory leaks, and race conditions.</p>
+<h4 id="code-refactoring">Code Refactoring</h4>
+<p>DeepSeek-Coder can suggest and implement code refactorings to improve readability, maintainability, and performance while preserving functionality.</p>
+<h4 id="documentation-generation">Documentation Generation</h4>
+<p>The model excels at generating comprehensive documentation for code, including function descriptions, parameter explanations, and usage examples.</p>
+<h2 id="3-performance-benchmarks">3. Performance Benchmarks</h2>
+<h3 id="31-humaneval-results">3.1 HumanEval Results</h3>
+<p>The HumanEval benchmark, developed by OpenAI, evaluates a model's ability to generate functionally correct code based on function descriptions and test cases. DeepSeek-Coder has shown impressive performance on this benchmark:</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>HumanEval Pass@1</th>
+<th>HumanEval Pass@10</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DeepSeek-Coder-33B</td>
+<td>73.2%</td>
+<td>92.1%</td>
+</tr>
+<tr>
+<td>DeepSeek-Coder-6.7B</td>
+<td>67.8%</td>
+<td>88.5%</td>
+</tr>
+<tr>
+<td>DeepSeek-Coder-1.3B</td>
+<td>51.6%</td>
+<td>76.2%</td>
+</tr>
+<tr>
+<td>DeepSeek-Coder-V2-Base</td>
+<td>78.4%</td>
+<td>94.3%</td>
+</tr>
+<tr>
+<td>GPT-4 (for comparison)</td>
+<td>82.1%</td>
+<td>95.7%</td>
+</tr>
+<tr>
+<td>Claude 3 Opus (for comparison)</td>
+<td>79.8%</td>
+<td>94.9%</td>
+</tr>
+<tr>
+<td>CodeLlama-34B (for comparison)</td>
+<td>67.6%</td>
+<td>86.8%</td>
+</tr>
+</tbody>
+</table>
+<p>These results place DeepSeek-Coder-V2 among the top-performing code models, approaching the capabilities of much larger proprietary models like GPT-4 and Claude 3 Opus.</p>
+<h3 id="32-mbpp-benchmark">3.2 MBPP Benchmark</h3>
+<p>The MBPP (Mostly Basic Programming Problems) benchmark evaluates models on a diverse set of Python programming challenges:</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>MBPP Pass@1</th>
+<th>MBPP Pass@10</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DeepSeek-Coder-33B</td>
+<td>71.5%</td>
+<td>89.7%</td>
+</tr>
+<tr>
+<td>DeepSeek-Coder-6.7B</td>
+<td>65.2%</td>
+<td>84.3%</td>
+</tr>
+<tr>
+<td>DeepSeek-Coder-V2-Base</td>
+<td>75.8%</td>
+<td>92.1%</td>
+</tr>
+<tr>
+<td>GPT-4 (for comparison)</td>
+<td>80.2%</td>
+<td>93.8%</td>
+</tr>
+<tr>
+<td>CodeLlama-34B (for comparison)</td>
+<td>64.8%</td>
+<td>83.2%</td>
+</tr>
+</tbody>
+</table>
+<h3 id="33-multi-language-benchmarks">3.3 Multi-Language Benchmarks</h3>
+<p>DeepSeek-Coder also performs well on language-specific benchmarks:</p>
+<table>
+<thead>
+<tr>
+<th>Language</th>
+<th>DeepSeek-Coder-33B</th>
+<th>DeepSeek-Coder-V2</th>
+<th>CodeLlama-34B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td>73.2%</td>
+<td>78.4%</td>
+<td>67.6%</td>
+</tr>
+<tr>
+<td>JavaScript</td>
+<td>68.7%</td>
+<td>74.2%</td>
+<td>63.1%</td>
+</tr>
+<tr>
+<td>Java</td>
+<td>65.3%</td>
+<td>71.8%</td>
+<td>61.2%</td>
+</tr>
+<tr>
+<td>C++</td>
+<td>62.1%</td>
+<td>69.5%</td>
+<td>58.4%</td>
+</tr>
+<tr>
+<td>Go</td>
+<td>64.8%</td>
+<td>70.3%</td>
+<td>59.7%</td>
+</tr>
+<tr>
+<td>Rust</td>
+<td>59.2%</td>
+<td>66.7%</td>
+<td>54.3%</td>
+</tr>
+</tbody>
+</table>
+<h3 id="34-real-world-task-evaluation">3.4 Real-World Task Evaluation</h3>
+<p>Beyond standardized benchmarks, DeepSeek-Coder has been evaluated on real-world programming tasks:</p>
+<table>
+<thead>
+<tr>
+<th>Task Type</th>
+<th>DeepSeek-Coder-33B</th>
+<th>DeepSeek-Coder-V2</th>
+<th>GPT-4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>API Integration</td>
+<td>68.5%</td>
+<td>74.2%</td>
+<td>79.8%</td>
+</tr>
+<tr>
+<td>Web Development</td>
+<td>71.3%</td>
+<td>76.8%</td>
+<td>81.2%</td>
+</tr>
+<tr>
+<td>Data Processing</td>
+<td>73.6%</td>
+<td>79.1%</td>
+<td>82.5%</td>
+</tr>
+<tr>
+<td>Algorithm Implementation</td>
+<td>75.2%</td>
+<td>80.7%</td>
+<td>83.1%</td>
+</tr>
+<tr>
+<td>Debugging</td>
+<td>69.8%</td>
+<td>75.3%</td>
+<td>80.6%</td>
+</tr>
+</tbody>
+</table>
+<p>These evaluations were conducted by having the models complete partial implementations and measuring the functional correctness and code quality of the generated solutions.</p>
+<h2 id="4-affordable-self-hosting-options">4. Affordable Self-Hosting Options</h2>
+<p>Self-hosting DeepSeek-Coder can provide several advantages, including privacy, customization, and cost control. This section explores practical approaches to deploying DeepSeek-Coder on affordable hardware.</p>
+<h3 id="41-hardware-requirements">4.1 Hardware Requirements</h3>
+<p>The hardware requirements for running DeepSeek-Coder depend on the model variant and the desired performance level:</p>
+<h4 id="minimum-requirements-for-deepseek-coder-13b">Minimum Requirements for DeepSeek-Coder-1.3B</h4>
+<ul>
+<li>CPU: Modern multi-core processor (8+ cores recommended)</li>
+<li>RAM: 8GB</li>
+<li>Storage: 5GB for model weights</li>
+<li>GPU: Not strictly required, but NVIDIA GPU with 4GB+ VRAM recommended</li>
+</ul>
+<h4 id="recommended-for-deepseek-coder-67b">Recommended for DeepSeek-Coder-6.7B</h4>
+<ul>
+<li>CPU: High-performance multi-core processor (12+ cores)</li>
+<li>RAM: 16GB+</li>
+<li>Storage: 15GB for model weights</li>
+<li>GPU: NVIDIA RTX 3060 or better (8GB+ VRAM)</li>
+</ul>
+<h4 id="optimal-for-deepseek-coder-33b">Optimal for DeepSeek-Coder-33B</h4>
+<ul>
+<li>CPU: High-end multi-core processor (16+ cores)</li>
+<li>RAM: 32GB+</li>
+<li>Storage: 70GB for model weights</li>
+<li>GPU: NVIDIA RTX 4080 or better (16GB+ VRAM)</li>
+</ul>
+<h4 id="alternative-amd-hardware">Alternative: AMD Hardware</h4>
+<ul>
+<li>For AMD GPUs: Radeon RX 6800 or newer with ROCm support</li>
+<li>For AMD CPUs with integrated graphics: Ryzen 7 8040 series or newer with XDNA NPU</li>
+</ul>
+<h3 id="42-quantization-options">4.2 Quantization Options</h3>
+<p>Quantization is a critical technique for running larger models on consumer hardware. DeepSeek-Coder can be effectively quantized using several methods:</p>
+<table>
+<thead>
+<tr>
+<th>Quantization Method</th>
+<th>Memory Reduction</th>
+<th>Performance Impact</th>
+<th>Supported Hardware</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FP16</td>
+<td>50%</td>
+<td>Minimal</td>
+<td>NVIDIA GPUs, Some AMD GPUs</td>
+</tr>
+<tr>
+<td>INT8</td>
+<td>75%</td>
+<td>Moderate</td>
+<td>NVIDIA GPUs, Some AMD GPUs, Modern CPUs</td>
+</tr>
+<tr>
+<td>GPTQ (4-bit)</td>
+<td>87.5%</td>
+<td>Moderate</td>
+<td>NVIDIA GPUs</td>
+</tr>
+<tr>
+<td>GGUF (4-bit)</td>
+<td>87.5%</td>
+<td>Moderate</td>
+<td>NVIDIA/AMD GPUs, CPUs</td>
+</tr>
+<tr>
+<td>GGUF (3-bit)</td>
+<td>90.6%</td>
+<td>Significant</td>
+<td>NVIDIA/AMD GPUs, CPUs</td>
+</tr>
+<tr>
+<td>GGUF (2-bit)</td>
+<td>93.8%</td>
+<td>Substantial</td>
+<td>NVIDIA/AMD GPUs, CPUs</td>
+</tr>
+</tbody>
+</table>
+<p>With appropriate quantization, even the larger DeepSeek-Coder variants can run on consumer hardware:</p>
+<ul>
+<li>DeepSeek-Coder-33B with 4-bit quantization: ~8GB VRAM</li>
+<li>DeepSeek-Coder-6.7B with 4-bit quantization: ~2GB VRAM</li>
+<li>DeepSeek-Coder-1.3B with 4-bit quantization: ~0.5GB VRAM</li>
+</ul>
+<h3 id="43-deployment-frameworks">4.3 Deployment Frameworks</h3>
+<p>Several frameworks can be used to deploy DeepSeek-Coder efficiently:</p>
+<h4 id="llamacpp">llama.cpp</h4>
+<ul>
+<li><strong>Advantages</strong>: Highly optimized C++ implementation, supports CPU and GPU inference, extensive quantization options</li>
+<li><strong>Setup Complexity</strong>: Moderate</li>
+<li><strong>Performance</strong>: Excellent, especially with quantized models</li>
+<li><strong>Hardware Support</strong>: NVIDIA GPUs, AMD GPUs (via ROCm), Apple Silicon, x86 CPUs</li>
+</ul>
+<h4 id="text-generation-webui">Text Generation WebUI</h4>
+<ul>
+<li><strong>Advantages</strong>: User-friendly interface, supports multiple models, extensive customization options</li>
+<li><strong>Setup Complexity</strong>: Low</li>
+<li><strong>Performance</strong>: Good with appropriate backend (llama.cpp)</li>
+<li><strong>Hardware Support</strong>: Same as underlying backend</li>
+</ul>
+<h4 id="lm-studio">LM Studio</h4>
+<ul>
+<li><strong>Advantages</strong>: Simple GUI, one-click setup, optimized for different hardware</li>
+<li><strong>Setup Complexity</strong>: Very Low</li>
+<li><strong>Performance</strong>: Good</li>
+<li><strong>Hardware Support</strong>: NVIDIA GPUs, AMD GPUs, Apple Silicon</li>
+</ul>
+<h4 id="vllm">vLLM</h4>
+<ul>
+<li><strong>Advantages</strong>: High-throughput inference, PagedAttention for memory efficiency</li>
+<li><strong>Setup Complexity</strong>: Moderate</li>
+<li><strong>Performance</strong>: Excellent for batch processing</li>
+<li><strong>Hardware Support</strong>: Primarily NVIDIA GPUs</li>
+</ul>
+<h3 id="44-cost-effective-deployment-strategies">4.4 Cost-Effective Deployment Strategies</h3>
+<h4 id="strategy-1-local-workstation-deployment">Strategy 1: Local Workstation Deployment</h4>
+<ul>
+<li><strong>Hardware</strong>: Consumer desktop with RTX 3060/3070/4060 (8-12GB VRAM)</li>
+<li><strong>Model</strong>: DeepSeek-Coder-6.7B with 4-bit quantization</li>
+<li><strong>Framework</strong>: llama.cpp or LM Studio</li>
+<li><strong>Approximate Cost</strong>: $1,200-1,800 for a complete system</li>
+<li><strong>Best For</strong>: Individual developers, small teams</li>
+</ul>
+<h4 id="strategy-2-shared-server-deployment">Strategy 2: Shared Server Deployment</h4>
+<ul>
+<li><strong>Hardware</strong>: Workstation with RTX 4080/4090 (16-24GB VRAM)</li>
+<li><strong>Model</strong>: DeepSeek-Coder-33B with 4-bit quantization</li>
+<li><strong>Framework</strong>: vLLM with API server</li>
+<li><strong>Approximate Cost</strong>: $2,500-3,500 for a complete system</li>
+<li><strong>Best For</strong>: Small to medium development teams</li>
+</ul>
+<h4 id="strategy-3-cloud-gpu-rental-intermittent-usage">Strategy 3: Cloud GPU Rental (Intermittent Usage)</h4>
+<ul>
+<li><strong>Provider</strong>: Vast.ai, Lambda Labs, or RunPod</li>
+<li><strong>GPU</strong>: RTX 3090 or A6000 (24GB VRAM)</li>
+<li><strong>Model</strong>: DeepSeek-Coder-33B with 8-bit quantization</li>
+<li><strong>Framework</strong>: vLLM or Text Generation WebUI</li>
+<li><strong>Approximate Cost</strong>: $0.30-0.60 per hour</li>
+<li><strong>Best For</strong>: Occasional intensive usage</li>
+</ul>
+<h4 id="strategy-4-low-end-deployment">Strategy 4: Low-End Deployment</h4>
+<ul>
+<li><strong>Hardware</strong>: Modern laptop with integrated graphics or entry-level GPU</li>
+<li><strong>Model</strong>: DeepSeek-Coder-1.3B with 4-bit quantization</li>
+<li><strong>Framework</strong>: llama.cpp optimized for CPU</li>
+<li><strong>Approximate Cost</strong>: Using existing hardware</li>
+<li><strong>Best For</strong>: Basic code completion and simple tasks</li>
+</ul>
+<h3 id="45-step-by-step-deployment-guide">4.5 Step-by-Step Deployment Guide</h3>
+<p>The following is a practical guide for deploying DeepSeek-Coder-6.7B on a consumer-grade system with an NVIDIA GPU:</p>
+<ol>
+<li><strong>System Preparation</strong>:</li>
+<li>Install NVIDIA drivers (latest stable version)</li>
+<li>Install CUDA Toolkit 12.1 or newer</li>
+<li>
+<p>Install Python 3.10 or newer</p>
+</li>
+<li>
+<p><strong>Model Download</strong>:
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Create a directory for models</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>~/models/deepseek-coder
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nb">cd</span><span class="w"> </span>~/models/deepseek-coder
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># Download model weights (example using Hugging Face CLI)</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>huggingface-cli<span class="w"> </span>download<span class="w"> </span>deepseek-ai/deepseek-coder-6.7b-instruct<span class="w"> </span>--local-dir<span class="w"> </span>./deepseek-coder-6.7b-instruct
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Quantization</strong> (using llama.cpp):
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Clone llama.cpp</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ggerganov/llama.cpp
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nb">cd</span><span class="w"> </span>llama.cpp
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># Build llama.cpp</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>make
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="c1"># Convert model to GGUF format</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>python<span class="w"> </span>convert.py<span class="w"> </span>~/models/deepseek-coder/deepseek-coder-6.7b-instruct
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="c1"># Quantize to 4-bit (Q4_K_M)</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>./quantize<span class="w"> </span>~/models/deepseek-coder/deepseek-coder-6.7b-instruct/ggml-model-f16.gguf<span class="w"> </span>~/models/deepseek-coder/deepseek-coder-6.7b-instruct/ggml-model-q4_k_m.gguf<span class="w"> </span>q4_k_m
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Deployment</strong> (using llama.cpp server):
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Start server</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>./server<span class="w"> </span>-m<span class="w"> </span>~/models/deepseek-coder/deepseek-coder-6.7b-instruct/ggml-model-q4_k_m.gguf<span class="w"> </span>-c<span class="w"> </span><span class="m">2048</span><span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">8080</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Integration with Development Environment</strong>:</p>
+</li>
+<li>For VS Code: Install "Continue" or "CodeGPT" extension</li>
+<li>Configure extension to use local API endpoint (http://localhost:8080)</li>
+<li>Set appropriate prompt template for DeepSeek-Coder</li>
+</ol>
+<h3 id="46-performance-optimization-tips">4.6 Performance Optimization Tips</h3>
+<p>To maximize performance when self-hosting DeepSeek-Coder:</p>
+<ol>
+<li><strong>GPU Memory Management</strong>:</li>
+<li>Use the lowest precision that maintains acceptable quality</li>
+<li>Adjust context window to balance between capability and memory usage</li>
+<li>
+<p>Consider GPU with larger VRAM for multi-user environments</p>
+</li>
+<li>
+<p><strong>Inference Optimization</strong>:</p>
+</li>
+<li>Enable GPU offloading for attention layers</li>
+<li>Use batch processing for multiple requests when possible</li>
+<li>
+<p>Experiment with different attention implementation options</p>
+</li>
+<li>
+<p><strong>Prompt Engineering</strong>:</p>
+</li>
+<li>Use consistent and clear instruction formats</li>
+<li>Provide sufficient context for complex tasks</li>
+<li>
+<p>Include examples for difficult or ambiguous requests</p>
+</li>
+<li>
+<p><strong>System-Level Optimization</strong>:</p>
+</li>
+<li>Ensure adequate cooling for sustained performance</li>
+<li>Use SSD storage for model weights and cache</li>
+<li>Close unnecessary applications to free system resources</li>
+</ol>
+<h2 id="5-use-cases-and-integration-scenarios">5. Use Cases and Integration Scenarios</h2>
+<h3 id="51-individual-developer-workflow">5.1 Individual Developer Workflow</h3>
+<p>For individual developers, self-hosted DeepSeek-Coder can enhance productivity through:</p>
+<ul>
+<li><strong>IDE Integration</strong>: Direct integration with VS Code, JetBrains IDEs, or Neovim</li>
+<li><strong>Command-Line Tools</strong>: Custom scripts for code generation and transformation</li>
+<li><strong>Documentation Assistance</strong>: Automated generation of comments and documentation</li>
+<li><strong>Learning Aid</strong>: Explanation of complex code and concepts</li>
+</ul>
+<h3 id="52-small-team-collaboration">5.2 Small Team Collaboration</h3>
+<p>For small development teams, shared DeepSeek-Coder instances provide:</p>
+<ul>
+<li><strong>Consistent Coding Standards</strong>: AI-assisted enforcement of team coding practices</li>
+<li><strong>Knowledge Sharing</strong>: Common access to AI assistance for problem-solving</li>
+<li><strong>Code Review Assistance</strong>: Automated suggestions for improvements</li>
+<li><strong>Onboarding Support</strong>: Help for new team members to understand codebase</li>
+</ul>
+<h3 id="53-specialized-development-environments">5.3 Specialized Development Environments</h3>
+<p>DeepSeek-Coder can be particularly valuable in specific development contexts:</p>
+<ul>
+<li><strong>Legacy Code Maintenance</strong>: Understanding and refactoring older codebases</li>
+<li><strong>API Integration</strong>: Generating boilerplate code for API interactions</li>
+<li><strong>Test Generation</strong>: Creating comprehensive test suites</li>
+<li><strong>Cross-Language Projects</strong>: Assistance with translation between programming languages</li>
+</ul>
+<h2 id="6-limitations-and-considerations">6. Limitations and Considerations</h2>
+<p>While DeepSeek-Coder offers impressive capabilities, several limitations should be considered:</p>
+<h3 id="61-technical-limitations">6.1 Technical Limitations</h3>
+<ul>
+<li><strong>Hallucinations</strong>: Like all LLMs, DeepSeek-Coder may occasionally generate plausible but incorrect code</li>
+<li><strong>Knowledge Cutoff</strong>: The model's knowledge is limited to its training data cutoff date</li>
+<li><strong>Context Window Constraints</strong>: Even with extended context, the model cannot understand entire large codebases</li>
+<li><strong>Resource Intensity</strong>: Running larger variants requires significant computational resources</li>
+</ul>
+<h3 id="62-practical-considerations">6.2 Practical Considerations</h3>
+<ul>
+<li><strong>Security</strong>: Self-hosted models should be properly secured, especially if exposed via network</li>
+<li><strong>Privacy</strong>: Consider data sensitivity when using the model for proprietary code</li>
+<li><strong>Licensing</strong>: DeepSeek-Coder is released under the DeepSeek License, which permits commercial use with certain restrictions</li>
+<li><strong>Maintenance</strong>: Regular updates may be required as new model versions are released</li>
+</ul>
+<h2 id="7-future-directions">7. Future Directions</h2>
+<p>The field of code-focused LLMs is rapidly evolving, with several trends likely to impact DeepSeek-Coder and similar models:</p>
+<ul>
+<li><strong>Efficiency Improvements</strong>: Continued advances in quantization and optimization techniques</li>
+<li><strong>Specialized Hardware</strong>: New accelerators specifically designed for transformer inference</li>
+<li><strong>Fine-Tuning Capabilities</strong>: More accessible methods for customizing models to specific codebases</li>
+<li><strong>Multi-Modal Integration</strong>: Combining code understanding with visual elements like diagrams</li>
+<li><strong>Tool Integration</strong>: Enhanced capabilities to use external tools and APIs during code generation</li>
+</ul>
+<h2 id="8-conclusion">8. Conclusion</h2>
+<p>DeepSeek-Coder represents a significant advancement in AI-assisted programming, offering capabilities that approach those of proprietary models while remaining accessible for self-hosting. With appropriate hardware and optimization techniques, even individual developers and small teams can leverage its capabilities to enhance productivity and code quality.</p>
+<p>The model's strong performance across multiple programming languages and tasks makes it versatile for diverse development environments. As quantization techniques and inference optimization continue to improve, we can expect DeepSeek-Coder to become increasingly accessible on consumer hardware.</p>
+<p>For developers seeking to balance capability, cost, and control, self-hosted DeepSeek-Coder provides a compelling option that can be tailored to specific needs and integrated into existing workflows.</p>
+<h2 id="references">References</h2>
+<ol>
+<li>DeepSeek AI. (2023). "DeepSeek-Coder: A Large Language Model for Code with Multi-turn Capability." <a href="https://arxiv.org/abs/2310.12004">arXiv:2310.12004</a></li>
+<li>DeepSeek AI. (2025). "DeepSeek-Coder-V2: Enhanced Code Generation through Improved Training Methodologies." Technical Report.</li>
+<li>Chen, A., et al. (2023). "Evaluating Large Language Models Trained on Code." <a href="https://arxiv.org/abs/2107.03374">arXiv:2107.03374</a></li>
+<li>Ggerganov, G. (2023). "llama.cpp: Inference of LLaMA model in pure C/C++." <a href="https://github.com/ggerganov/llama.cpp">GitHub Repository</a></li>
+<li>DeepSeek AI. (2023). "DeepSeek License." <a href="https://github.com/deepseek-ai/DeepSeek-Coder/blob/main/LICENSE">License Text</a></li>
+<li>Dettmers, T., et al. (2023). "QLoRA: Efficient Finetuning of Quantized LLMs." <a href="https://arxiv.org/abs/2305.14314">arXiv:2305.14314</a></li>
+<li>AMD. (2025). "Optimizing LLM Inference on AMD Hardware." AMD Developer Resources.</li>
+<li>NVIDIA. (2025). "Large Language Model Optimization Guide." NVIDIA Developer Documentation.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1915 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Production-grade substrate for operating AI agent teams.">
+      
+      
+      
+        <link rel="canonical" href="https://jensjohansen.github.io/kaigents/research/technology/oss-components-commercially-permissible/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Technology Research Seed: Commercially-permissible OSS components (Kaigents) - Kaigents</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#technology-research-seed-commercially-permissible-oss-components-kaigents" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Kaigents" class="md-header__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kaigents
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Technology Research Seed: Commercially-permissible OSS components (Kaigents)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../product/kaigents-introduction/" class="md-tabs__link">
+          
+  
+  
+  Product
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../architecture/kaigents-architecture-and-design/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../ops/temporal-installation/" class="md-tabs__link">
+          
+  
+  
+  Operations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../strategy/corporate_ai_strategy/" class="md-tabs__link">
+          
+  
+  
+  Strategy
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../CODING_STANDARDS_AND_DOD/" class="md-tabs__link">
+          
+  
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Kaigents" class="md-nav__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kaigents
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Product
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../product/kaigents-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../product/kaigents-prd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../product/domain-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../product/managed-services/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Managed Services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../product/kairon-retail-managed-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kairon Retail
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/example-team/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your First Team
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/temporal-validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/kaigents-architecture-and-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/ai_agent_engine_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ops/temporal-installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Temporal Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Strategy
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Strategy
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../strategy/corporate_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Corporate AI Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../strategy/marketing_ai_agent_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marketing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../strategy/security_operations_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../CODING_STANDARDS_AND_DOD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../implementation-plan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../implementation/kaigents-implementation-tracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-read-this-document" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to read this document
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dual-layer-licensing-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dual-layer licensing model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#oss-publication-and-redistribution-policy-permissive-friendly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OSS publication and redistribution policy (permissive-friendly)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="OSS publication and redistribution policy (permissive-friendly)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#policy-summary-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Policy summary (table)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-tooling-workflow-automation-platforms-licensing-caveats-benchmarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) Tooling &amp; workflow automation platforms — licensing caveats (benchmarks)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1) Tooling &amp; workflow automation platforms — licensing caveats (benchmarks)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-n8n-sustainable-use-license-fair-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 n8n — Sustainable Use License (fair-code)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-open-webui-branding-restriction-clause" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Open WebUI — branding restriction clause
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-workflow-substrates-kubernetes-native-vs-embedded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) Workflow substrates (Kubernetes-native vs embedded)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2) Workflow substrates (Kubernetes-native vs embedded)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-argo-workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Argo Workflows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-tekton-pipelines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Tekton Pipelines
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-embedded-dag-libraries-rust" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Embedded DAG libraries (Rust)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-temporal-durable-execution-engine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 Temporal (durable execution engine)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-evaluation-observability-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) Evaluation / observability tools
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3) Evaluation / observability tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-langfuse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Langfuse
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-wb-weave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 W&amp;B Weave
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-arize-phoenix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Arize Phoenix
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-memory-products-agent-state-long-term-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) Memory products (agent state / long-term memory)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4) Memory products (agent state / long-term memory)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-zep" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Zep
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-letta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Letta
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-platform-ui-baselines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) Platform UI baselines
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5) Platform UI baselines">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-backstage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Backstage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-model-serving-runtimes-and-model-serving-control-planes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6) Model serving runtimes and model-serving control planes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6) Model serving runtimes and model-serving control planes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-lemonade-lemonade-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Lemonade (Lemonade Server)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-fastflowlm-orchestration-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 FastFlowLM orchestration / CLI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-fastflowlm-npu-accelerated-kernels-proprietary-binaries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 FastFlowLM NPU-accelerated kernels (proprietary binaries)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-kserve" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 KServe
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="technology-research-seed-commercially-permissible-oss-components-kaigents">Technology Research Seed: Commercially-permissible OSS components (Kaigents)</h1>
+<h2 id="purpose">Purpose</h2>
+<p>This document is the seed for Kaigents “technology research” and buy-vs-build decisions.</p>
+<p>It focuses on OSS components that are commonly used in commercial contexts, <strong>but highlights licensing constraints</strong> that matter if Kaigents is:</p>
+<ul>
+<li>open source (target: permissive license)</li>
+<li>a commercial product (including paid support/hosting)</li>
+</ul>
+<p>This is not legal advice; it is a technical due diligence checklist.</p>
+<h2 id="how-to-read-this-document">How to read this document</h2>
+<p>“Commercially-permissible” here generally means:</p>
+<ul>
+<li>the component’s license is commonly considered compatible with commercial use and redistribution (e.g., MIT, Apache-2.0), <strong>or</strong></li>
+<li>the component can be integrated as an optional external dependency that customers install and run themselves, <strong>or</strong></li>
+<li>the component is permissible for internal use but may be problematic to redistribute or bundle.</li>
+</ul>
+<h2 id="dual-layer-licensing-model">Dual-layer licensing model</h2>
+<p>Kaigents uses a two-layer licensing model:</p>
+<ul>
+<li><strong>Core platform (MIT)</strong>: the control plane, execution engine, CLI, and CRDs are MIT licensed and freely redistributable. This is what lives in the public GitHub repository.</li>
+<li><strong>Managed service layer (commercial license)</strong>: hosted deployments, pre-built AI team configurations, the Link-Labs.AI cluster product, and the at-risk worker platform are <strong>not</strong> part of the MIT distribution. A separate commercial license is required to deliver these as a service or product to third parties.</li>
+</ul>
+<p>This distinction must be respected when evaluating third-party components:
+- Components used only in the <strong>core platform</strong> must meet the "Redistribute (bundle)" bar below.
+- Components used only in the <strong>managed service layer</strong> have more flexibility but must not create redistribution obligations that conflict with the commercial license.</p>
+<h2 id="oss-publication-and-redistribution-policy-permissive-friendly">OSS publication and redistribution policy (permissive-friendly)</h2>
+<p>Kaigents' goal is to be safe and legal to publish as open source under a permissive license.</p>
+<p>Accordingly, for every third-party component we consider, we must clearly classify:</p>
+<ul>
+<li><strong>Redistribute (bundle)</strong></li>
+<li>Safe to include in the Kaigents repository and/or in Kaigents release artifacts.</li>
+<li>
+<p>Typical fit: MIT / Apache-2.0 / BSD-2-Clause / BSD-3-Clause.</p>
+</li>
+<li>
+<p><strong>Integrate-only (user-supplied)</strong></p>
+</li>
+<li>Kaigents can support invoking it (CLI/API) and ingesting outputs, but <strong>we do not bundle or redistribute</strong>.</li>
+<li>
+<p>Typical triggers: source-available licenses, copyleft constraints we don't want to inherit, "terms and conditions" licenses, or branding restrictions.</p>
+</li>
+<li>
+<p><strong>Exclude</strong></p>
+</li>
+<li>Not supported in Kaigents OSS offering due to licensing/terms risk.</li>
+</ul>
+<p>Licensing permissiveness is an explicit, valid reason to push back on or revise an ITD choice, even if a tool is technically strong.</p>
+<h3 id="policy-summary-table">Policy summary (table)</h3>
+<table>
+<thead>
+<tr>
+<th>Classification</th>
+<th>What it means for Kaigents OSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Redistribute (bundle)</td>
+<td>Safe to include in repository and/or release artifacts</td>
+</tr>
+<tr>
+<td>Integrate-only (user-supplied)</td>
+<td>Supported by invocation/ingestion, but Kaigents does not bundle</td>
+</tr>
+<tr>
+<td>Exclude</td>
+<td>Not supported due to licensing/terms risk</td>
+</tr>
+</tbody>
+</table>
+<h2 id="1-tooling-workflow-automation-platforms-licensing-caveats-benchmarks">1) Tooling &amp; workflow automation platforms — licensing caveats (benchmarks)</h2>
+<h3 id="11-n8n-sustainable-use-license-fair-code">1.1 n8n — Sustainable Use License (fair-code)</h3>
+<ul>
+<li><strong>Primary source:</strong> https://docs.n8n.io/sustainable-use-license/</li>
+<li><strong>License posture:</strong> Exclude (core)</li>
+<li><strong>Why:</strong> License restricts use to internal business purposes and disallows paid hosting/white-labeling without a commercial agreement.</li>
+<li><strong>Kaigents note:</strong> Treat as a benchmark for connector UX, not a dependency.</li>
+</ul>
+<h3 id="12-open-webui-branding-restriction-clause">1.2 Open WebUI — branding restriction clause</h3>
+<ul>
+<li><strong>Primary source (license):</strong> https://github.com/open-webui/open-webui/blob/main/LICENSE</li>
+<li><strong>License posture:</strong> Exclude (core)</li>
+<li><strong>Why:</strong> License forbids altering/removing “Open WebUI” branding except in limited circumstances; adds compliance complexity.</li>
+<li><strong>Kaigents note:</strong> Treat as a UX benchmark only.</li>
+</ul>
+<h2 id="2-workflow-substrates-kubernetes-native-vs-embedded">2) Workflow substrates (Kubernetes-native vs embedded)</h2>
+<h3 id="21-argo-workflows">2.1 Argo Workflows</h3>
+<ul>
+<li><strong>Primary source:</strong> https://github.com/argoproj/argo-workflows</li>
+<li><strong>License posture:</strong> Redistribute (bundle)</li>
+<li><strong>Why:</strong> Apache-2.0; Kubernetes-native workflow substrate.</li>
+</ul>
+<h3 id="22-tekton-pipelines">2.2 Tekton Pipelines</h3>
+<ul>
+<li><strong>Primary source:</strong> https://github.com/tektoncd/pipeline</li>
+<li><strong>License posture:</strong> Redistribute (bundle)</li>
+<li><strong>Why:</strong> Apache-2.0; Kubernetes-native pipeline substrate.</li>
+</ul>
+<h3 id="23-embedded-dag-libraries-rust">2.3 Embedded DAG libraries (Rust)</h3>
+<ul>
+<li>dagx</li>
+<li><strong>Primary source:</strong> https://docs.rs/dagx/latest/dagx/</li>
+<li><strong>License posture:</strong> Redistribute (bundle)</li>
+<li><strong>License:</strong> MIT</li>
+<li>async_dag</li>
+<li><strong>Primary source:</strong> https://docs.rs/async_dag/latest/async_dag/</li>
+<li><strong>License posture:</strong> Redistribute (bundle)</li>
+<li><strong>License:</strong> MIT OR Apache-2.0</li>
+<li>oxigdal-workflow</li>
+<li><strong>Primary source:</strong> https://docs.rs/crate/oxigdal-workflow/latest</li>
+<li><strong>License posture:</strong> Redistribute (bundle)</li>
+<li><strong>License:</strong> Apache-2.0</li>
+<li><strong>Note:</strong> validate maturity and dependency footprint before adopting.</li>
+</ul>
+<h3 id="24-temporal-durable-execution-engine">2.4 Temporal (durable execution engine)</h3>
+<ul>
+<li><strong>Primary source (license):</strong> https://github.com/temporalio/temporal/blob/master/LICENSE</li>
+<li><strong>License posture:</strong> Redistribute (bundle)</li>
+<li><strong>License:</strong> MIT</li>
+<li><strong>Why:</strong> Permissive OSS license; suitable as a server-side dependency for a durable execution engine of record.</li>
+</ul>
+<h2 id="3-evaluation-observability-tools">3) Evaluation / observability tools</h2>
+<h3 id="31-langfuse">3.1 Langfuse</h3>
+<ul>
+<li><strong>Primary source (license):</strong> https://github.com/langfuse/langfuse/blob/main/LICENSE</li>
+<li><strong>License posture:</strong> Redistribute (bundle) with carve-out awareness</li>
+<li><strong>Why:</strong> License states most of repo is MIT, with explicit carve-out for <code>ee/</code> directories under separate license.</li>
+<li><strong>Kaigents note:</strong> Use as an OSS baseline for eval/observability; ensure we don’t depend on EE-only modules.</li>
+</ul>
+<h3 id="32-wb-weave">3.2 W&amp;B Weave</h3>
+<ul>
+<li><strong>Primary source (license):</strong> https://github.com/wandb/weave/blob/master/LICENSE</li>
+<li><strong>License posture:</strong> Redistribute (bundle)</li>
+<li><strong>Why:</strong> Apache-2.0.</li>
+</ul>
+<h3 id="33-arize-phoenix">3.3 Arize Phoenix</h3>
+<ul>
+<li><strong>Primary source (license):</strong> https://github.com/Arize-ai/phoenix/blob/main/LICENSE</li>
+<li><strong>License posture:</strong> Exclude (core)</li>
+<li><strong>Why:</strong> Elastic License 2.0 (hosted/managed-service restriction) is not aligned with “commercial-safe OSS” for a platform.</li>
+</ul>
+<h2 id="4-memory-products-agent-state-long-term-memory">4) Memory products (agent state / long-term memory)</h2>
+<h3 id="41-zep">4.1 Zep</h3>
+<ul>
+<li><strong>Primary source (license):</strong> https://github.com/getzep/zep/blob/main/LICENSE</li>
+<li><strong>License posture:</strong> Redistribute (bundle)</li>
+<li><strong>Why:</strong> Apache-2.0.</li>
+<li><strong>Kaigents note:</strong> likely an integration option rather than core.</li>
+</ul>
+<h3 id="42-letta">4.2 Letta</h3>
+<ul>
+<li><strong>Primary source (one repo license):</strong> https://github.com/letta-ai/letta-code/blob/main/LICENSE</li>
+<li><strong>License posture:</strong> Integrate-only (until full license boundary is verified)</li>
+<li><strong>Why:</strong> Apache-2.0 in letta-code; verify licensing across Letta repos before reuse.</li>
+</ul>
+<h2 id="5-platform-ui-baselines">5) Platform UI baselines</h2>
+<h3 id="51-backstage">5.1 Backstage</h3>
+<ul>
+<li><strong>Primary source (license):</strong> https://github.com/backstage/backstage/blob/master/LICENSE</li>
+<li><strong>License posture:</strong> Redistribute (bundle)</li>
+<li><strong>Why:</strong> Apache-2.0.</li>
+<li><strong>Kaigents note:</strong> candidate for Platform Mode UI via plugins.</li>
+</ul>
+<h2 id="6-model-serving-runtimes-and-model-serving-control-planes">6) Model serving runtimes and model-serving control planes</h2>
+<h3 id="61-lemonade-lemonade-server">6.1 Lemonade (Lemonade Server)</h3>
+<ul>
+<li><strong>Primary source (license):</strong> https://github.com/lemonade-sdk/lemonade/blob/main/LICENSE</li>
+<li><strong>License posture:</strong> Redistribute (bundle)</li>
+<li><strong>License:</strong> Apache-2.0</li>
+</ul>
+<h3 id="62-fastflowlm-orchestration-cli">6.2 FastFlowLM orchestration / CLI</h3>
+<ul>
+<li><strong>Primary source (license):</strong> https://github.com/FastFlowLM/FastFlowLM/blob/main/LICENSE_RUNTIME.txt</li>
+<li><strong>License posture:</strong> Redistribute (bundle)</li>
+<li><strong>License:</strong> MIT</li>
+</ul>
+<h3 id="63-fastflowlm-npu-accelerated-kernels-proprietary-binaries">6.3 FastFlowLM NPU-accelerated kernels (proprietary binaries)</h3>
+<ul>
+<li><strong>Primary source (binary license):</strong> https://github.com/FastFlowLM/FastFlowLM/blob/main/LICENSE_BINARY.txt</li>
+<li><strong>Primary source (terms):</strong> https://github.com/FastFlowLM/FastFlowLM/blob/main/TERMS.md</li>
+<li><strong>License posture:</strong> Integrate-only (user-supplied)</li>
+<li><strong>Why:</strong> The binary kernels are proprietary and explicitly restrict redistribution and commercial use beyond a revenue threshold; Kaigents should not bundle/redistribute them.</li>
+</ul>
+<h3 id="64-kserve">6.4 KServe</h3>
+<ul>
+<li><strong>Primary source (license):</strong> https://github.com/kserve/kserve/blob/master/LICENSE</li>
+<li><strong>License posture:</strong> Redistribute (bundle)</li>
+<li><strong>License:</strong> Apache-2.0</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,3436 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Production-grade substrate for operating AI agent teams.">
+      
+      
+      
+        <link rel="canonical" href="https://jensjohansen.github.io/kaigents/strategy/technical_support_agent_strategy/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Technical Support AI Agent Strategy - Kaigents</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#technical-support-ai-agent-strategy" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Kaigents" class="md-header__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kaigents
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Technical Support AI Agent Strategy
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../product/kaigents-introduction/" class="md-tabs__link">
+          
+  
+  
+  Product
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/kaigents-architecture-and-design/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../ops/temporal-installation/" class="md-tabs__link">
+          
+  
+  
+  Operations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../corporate_ai_strategy/" class="md-tabs__link">
+          
+  
+  
+  Strategy
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../CODING_STANDARDS_AND_DOD/" class="md-tabs__link">
+          
+  
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Kaigents" class="md-nav__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kaigents
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Product
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kaigents-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kaigents-prd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/domain-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/managed-services/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Managed Services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kairon-retail-managed-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kairon Retail
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/example-team/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your First Team
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/temporal-validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/kaigents-architecture-and-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/ai_agent_engine_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ops/temporal-installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Temporal Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Strategy
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Strategy
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../corporate_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Corporate AI Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../marketing_ai_agent_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marketing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security_operations_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CODING_STANDARDS_AND_DOD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation-plan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation/kaigents-implementation-tracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-executive-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Executive Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-technical-support-agent-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Technical Support Agent Requirements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Technical Support Agent Requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-functional-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Functional Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-performance-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Performance Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-infrastructure-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Infrastructure Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-model-selection-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Model Selection Strategy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Model Selection Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-model-comparison-for-technical-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Model Comparison for Technical Support
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-recommended-model-llama-3-8b" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Recommended Model: Llama 3 8B
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-model-quantization-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Model Quantization Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-rag-implementation-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. RAG Implementation Strategy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. RAG Implementation Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-knowledge-base-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Knowledge Base Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-vector-database-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Vector Database Selection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-retrieval-optimization-techniques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Retrieval Optimization Techniques
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-fine-tuning-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Fine-Tuning Strategy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Fine-Tuning Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-fine-tuning-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Fine-Tuning Approach
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-fine-tuning-datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Fine-Tuning Datasets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-fine-tuning-techniques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Fine-Tuning Techniques
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-bare-metal-deployment-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Bare-Metal Deployment Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Bare-Metal Deployment Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-hardware-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Hardware Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-kubernetes-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Kubernetes Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-software-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Software Stack
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-specialized-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Specialized Capabilities
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Specialized Capabilities">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-zendesk-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Zendesk Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7.1 Zendesk Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-zendesk-integration-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Zendesk Integration Features:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-device-configuration-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Device Configuration Capabilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-system-and-iot-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 System and IoT Monitoring
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7.3 System and IoT Monitoring">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-monitoring-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Monitoring Features:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-247-phone-support-with-ringcentral" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4 24/7 Phone Support with RingCentral
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#75-escalation-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5 Escalation Management
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-ui-navigation-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. UI Navigation Capabilities
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. UI Navigation Capabilities">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-ui-interaction-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 UI Interaction Approach
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-ui-navigation-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 UI Navigation Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-ui-navigation-training-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 UI Navigation Training Data
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-implementation-phases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Implementation Phases
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Implementation Phases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-phase-1-foundation-months-1-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Phase 1: Foundation (Months 1-2)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-phase-2-enhancement-months-3-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 Phase 2: Enhancement (Months 3-4)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-phase-3-advanced-capabilities-months-5-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 Phase 3: Advanced Capabilities (Months 5-6)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-performance-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Performance Optimization
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Performance Optimization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-inference-optimization-techniques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 Inference Optimization Techniques
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-scaling-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 Scaling Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-evaluation-and-quality-assurance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Evaluation and Quality Assurance
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Evaluation and Quality Assurance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-evaluation-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 Evaluation Metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102-quality-assurance-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 Quality Assurance Process
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-cost-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Cost Analysis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. Cost Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#111-hardware-costs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1 Hardware Costs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#112-implementation-costs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2 Implementation Costs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#113-operational-costs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.3 Operational Costs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#114-roi-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4 ROI Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-conclusion-and-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Conclusion and Recommendations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. Conclusion and Recommendations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#121-key-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1 Key Recommendations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#122-critical-success-factors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2 Critical Success Factors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#123-next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.3 Next Steps
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appendix-a-tier-1-tech-support-agent-capacity-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Appendix A: Tier 1 Tech Support Agent Capacity Analysis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Appendix A: Tier 1 Tech Support Agent Capacity Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a1-hardware-resource-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.1 Hardware Resource Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a2-ai-agent-resource-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.2 AI Agent Resource Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a3-concurrent-agent-capacity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.3 Concurrent Agent Capacity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="A.3 Concurrent Agent Capacity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#per-node-capacity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-Node Capacity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cluster-wide-capacity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cluster-Wide Capacity
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a4-throughput-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.4 Throughput Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a5-scaling-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.5 Scaling Considerations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a6-conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.6 Conclusion
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="technical-support-ai-agent-strategy">Technical Support AI Agent Strategy</h1>
+<p><em>Strategy Document | May 3, 2025</em></p>
+<h2 id="1-executive-summary">1. Executive Summary</h2>
+<p>This document outlines a comprehensive strategy for implementing AI-powered technical support agents capable of providing 24/7 customer assistance through verbal/text chat interfaces, navigating user interfaces on behalf of customers, configuring client devices, monitoring production systems and IoT networks, and managing support tickets through Zendesk integration. The strategy focuses on using smaller, more efficient models deployed on bare-metal infrastructure in an office environment, optimized with RAG and fine-tuning techniques to achieve high-quality support interactions without the resource requirements of larger models.</p>
+<p>The proposed approach balances performance, cost-efficiency, and practical deployment considerations while ensuring the technical support agents can effectively assist users with their support needs through a multi-modal interaction model. The system is designed to provide round-the-clock support with intelligent escalation management to human agents when necessary.</p>
+<h2 id="2-technical-support-agent-requirements">2. Technical Support Agent Requirements</h2>
+<h3 id="21-functional-requirements">2.1 Functional Requirements</h3>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Description</th>
+<th>Priority</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Chat Interface</td>
+<td>Text-based interaction with users through support portal</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Voice Interface</td>
+<td>Voice-based interaction capabilities for 24/7 phone support</td>
+<td>High</td>
+</tr>
+<tr>
+<td>UI Navigation</td>
+<td>Ability to navigate application UIs on behalf of users</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Knowledge Retrieval</td>
+<td>Access to product documentation and support knowledge base</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Email Communication</td>
+<td>Send follow-up emails and notifications</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Zendesk Integration</td>
+<td>Full integration with Zendesk for ticket management</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Device Configuration</td>
+<td>Remote configuration of client devices</td>
+<td>High</td>
+</tr>
+<tr>
+<td>System Monitoring</td>
+<td>Monitor production systems and customer IoT networks/devices</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Problem Diagnosis</td>
+<td>Analyze and diagnose technical issues</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Solution Implementation</td>
+<td>Implement solutions through UI interaction</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Escalation Management</td>
+<td>Identify, prioritize and manage escalations to human agents</td>
+<td>High</td>
+</tr>
+<tr>
+<td>24/7 Availability</td>
+<td>Continuous operation for round-the-clock support</td>
+<td>High</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-performance-requirements">2.2 Performance Requirements</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Target</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Response Time</td>
+<td>&lt; 2 seconds</td>
+<td>For standard queries</td>
+</tr>
+<tr>
+<td>Accuracy</td>
+<td>&gt; 90%</td>
+<td>For common support scenarios</td>
+</tr>
+<tr>
+<td>Resolution Rate</td>
+<td>&gt; 70%</td>
+<td>Without human escalation</td>
+</tr>
+<tr>
+<td>Concurrent Sessions</td>
+<td>20-30</td>
+<td>Per server node</td>
+</tr>
+<tr>
+<td>Availability</td>
+<td>99.99%</td>
+<td>24/7 operation with redundancy</td>
+</tr>
+<tr>
+<td>Context Retention</td>
+<td>Full session</td>
+<td>Maintain conversation context</td>
+</tr>
+<tr>
+<td>Monitoring Latency</td>
+<td>&lt; 30 seconds</td>
+<td>For critical system alerts</td>
+</tr>
+<tr>
+<td>Escalation Time</td>
+<td>&lt; 5 minutes</td>
+<td>For critical issues to human agents</td>
+</tr>
+<tr>
+<td>Device Config Time</td>
+<td>&lt; 10 minutes</td>
+<td>For standard device setups</td>
+</tr>
+</tbody>
+</table>
+<h3 id="23-infrastructure-requirements">2.3 Infrastructure Requirements</h3>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Deployment</td>
+<td>Kubernetes cluster on bare-metal servers in office environment for 24/7 operation</td>
+</tr>
+<tr>
+<td>Network</td>
+<td>Secure access to internal systems, user portal, and customer IoT networks</td>
+</tr>
+<tr>
+<td>Integration</td>
+<td>APIs for Zendesk, device management systems, monitoring platforms, and telephony</td>
+</tr>
+<tr>
+<td>Security</td>
+<td>Data encryption, access controls, audit logging, and secure remote access</td>
+</tr>
+<tr>
+<td>Monitoring</td>
+<td>Performance, usage, error tracking, and system health monitoring</td>
+</tr>
+<tr>
+<td>Telephony</td>
+<td>SIP integration for 24/7 phone support with call routing and recording</td>
+</tr>
+<tr>
+<td>Failover</td>
+<td>Kubernetes-managed automatic failover and self-healing capabilities</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-model-selection-strategy">3. Model Selection Strategy</h2>
+<h3 id="31-model-comparison-for-technical-support">3.1 Model Comparison for Technical Support</h3>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Size</th>
+<th>Strengths</th>
+<th>Weaknesses</th>
+<th>Suitability</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Llama 3 8B</td>
+<td>8B</td>
+<td>Compact, good instruction following, efficient</td>
+<td>Limited context window, less sophisticated reasoning</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Mistral 7B</td>
+<td>7B</td>
+<td>Strong reasoning, good with technical content</td>
+<td>May need more fine-tuning for UI tasks</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Phi-3 14B</td>
+<td>14B</td>
+<td>Excellent reasoning, strong technical capabilities</td>
+<td>Larger resource requirements</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Claude Haiku</td>
+<td>~8B</td>
+<td>Strong in conversation, good with instructions</td>
+<td>Closed source, API dependency</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Gemma 7B</td>
+<td>7B</td>
+<td>Good performance/size ratio, Google-backed</td>
+<td>Less mature ecosystem</td>
+<td>Medium</td>
+</tr>
+</tbody>
+</table>
+<h3 id="32-recommended-model-llama-3-8b">3.2 Recommended Model: Llama 3 8B</h3>
+<p>For technical support agents, we recommend <strong>Llama 3 8B</strong> as the primary model for the following reasons:</p>
+<ol>
+<li><strong>Efficiency</strong>: Runs effectively on consumer-grade hardware</li>
+<li><strong>Performance</strong>: Strong instruction-following capabilities essential for support tasks</li>
+<li><strong>Fine-tuning</strong>: Well-suited for domain-specific fine-tuning</li>
+<li><strong>Open Source</strong>: Fully customizable for specific requirements</li>
+<li><strong>Community</strong>: Large community and available optimizations</li>
+</ol>
+<h3 id="33-model-quantization-strategy">3.3 Model Quantization Strategy</h3>
+<p>To optimize for bare-metal deployment, we recommend:</p>
+<table>
+<thead>
+<tr>
+<th>Quantization</th>
+<th>RAM Usage</th>
+<th>Performance Impact</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GPTQ (4-bit)</td>
+<td>~4GB</td>
+<td>5-10% degradation</td>
+<td>Primary deployment</td>
+</tr>
+<tr>
+<td>GGUF (5-bit)</td>
+<td>~5GB</td>
+<td>3-5% degradation</td>
+<td>Alternative for critical tasks</td>
+</tr>
+<tr>
+<td>AWQ (4-bit)</td>
+<td>~4GB</td>
+<td>3-8% degradation</td>
+<td>For UI navigation tasks</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-rag-implementation-strategy">4. RAG Implementation Strategy</h2>
+<h3 id="41-knowledge-base-architecture">4.1 Knowledge Base Architecture</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>flowchart TD
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    subgraph kb[&quot;Knowledge Base Components&quot;]
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        docs[&quot;Product Documentation&quot;]
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        kb_articles[&quot;KB Articles&quot;]
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        tickets[&quot;Historical Tickets&quot;]
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        guides[&quot;Troubleshooting Guides&quot;]
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        ui_maps[&quot;UI Navigation Maps&quot;]
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    end
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    subgraph processing[&quot;Processing Pipeline&quot;]
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>        chunking[&quot;Document Chunking&quot;]
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>        embedding[&quot;Embedding Generation&quot;]
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>        indexing[&quot;Vector Indexing&quot;]
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>        metadata[&quot;Metadata Enrichment&quot;]
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    end
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    subgraph retrieval[&quot;Retrieval System&quot;]
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>        vector_db[&quot;Vector Database&quot;]
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>        hybrid_search[&quot;Hybrid Search&quot;]
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>        reranking[&quot;Result Reranking&quot;]
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    end
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    kb --&gt; processing
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    processing --&gt; retrieval
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    retrieval --&gt; agent[&quot;Support Agent&quot;]
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    classDef primary fill:#4CAF50,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    classDef secondary fill:#2196F3,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    classDef tertiary fill:#FF9800,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    class kb tertiary
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    class processing secondary
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>    class retrieval,agent primary
+</code></pre></div>
+<h3 id="42-vector-database-selection">4.2 Vector Database Selection</h3>
+<p>For bare-metal deployment, we recommend:</p>
+<table>
+<thead>
+<tr>
+<th>Database</th>
+<th>Strengths</th>
+<th>Deployment Model</th>
+<th>Resource Requirements</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Qdrant</td>
+<td>High performance, easy deployment</td>
+<td>Self-hosted</td>
+<td>8GB RAM, 4 cores</td>
+</tr>
+<tr>
+<td>Chroma</td>
+<td>Lightweight, Python native</td>
+<td>Embedded</td>
+<td>4GB RAM, 2 cores</td>
+</tr>
+<tr>
+<td>FAISS</td>
+<td>Extremely efficient, Facebook-backed</td>
+<td>Embedded</td>
+<td>2GB RAM, 2 cores</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommendation</strong>: Chroma for its balance of performance and resource efficiency in an office deployment.</p>
+<h3 id="43-retrieval-optimization-techniques">4.3 Retrieval Optimization Techniques</h3>
+<ol>
+<li><strong>Hybrid Search</strong>: Combine vector similarity with keyword search</li>
+<li><strong>Chunking Strategy</strong>: Overlapping chunks with variable sizes based on content type</li>
+<li><strong>Metadata Filtering</strong>: Use metadata to narrow search scope based on query context</li>
+<li><strong>UI Element Mapping</strong>: Special embedding space for UI navigation instructions</li>
+<li><strong>Contextual Reranking</strong>: Rerank results based on conversation history</li>
+</ol>
+<h2 id="5-fine-tuning-strategy">5. Fine-Tuning Strategy</h2>
+<h3 id="51-fine-tuning-approach">5.1 Fine-Tuning Approach</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>flowchart LR
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    base[&quot;Base Model\nLlama 3 8B&quot;] --&gt; domain[&quot;Domain Adaptation\n(Technical Support)&quot;]
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    domain --&gt; task[&quot;Task Tuning\n(UI Navigation)&quot;]
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    task --&gt; alignment[&quot;Alignment Tuning\n(Company Policy)&quot;]
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    classDef stage1 fill:#4CAF50,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    classDef stage2 fill:#FF9800,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    classDef stage3 fill:#2196F3,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    classDef stage4 fill:#9C27B0,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    class base stage1
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    class domain stage2
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    class task stage3
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    class alignment stage4
+</code></pre></div>
+<h3 id="52-fine-tuning-datasets">5.2 Fine-Tuning Datasets</h3>
+<table>
+<thead>
+<tr>
+<th>Dataset Type</th>
+<th>Source</th>
+<th>Size</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Support Conversations</td>
+<td>Historical tickets</td>
+<td>10,000 examples</td>
+<td>Domain adaptation</td>
+</tr>
+<tr>
+<td>UI Navigation</td>
+<td>Screen recordings</td>
+<td>5,000 examples</td>
+<td>Task-specific tuning</td>
+</tr>
+<tr>
+<td>Email Communication</td>
+<td>Support emails</td>
+<td>3,000 examples</td>
+<td>Communication style</td>
+</tr>
+<tr>
+<td>Troubleshooting</td>
+<td>Resolved cases</td>
+<td>7,000 examples</td>
+<td>Problem-solving</td>
+</tr>
+<tr>
+<td>Company Policy</td>
+<td>Internal documents</td>
+<td>1,000 examples</td>
+<td>Alignment with guidelines</td>
+</tr>
+</tbody>
+</table>
+<h3 id="53-fine-tuning-techniques">5.3 Fine-Tuning Techniques</h3>
+<ol>
+<li><strong>Parameter-Efficient Fine-Tuning (PEFT)</strong>: Using LoRA with rank 16</li>
+<li><strong>Quantized Fine-Tuning</strong>: QLoRA to maintain 4-bit deployment compatibility</li>
+<li><strong>Instruction Tuning</strong>: Focus on support-specific instructions</li>
+<li><strong>Multi-Task Learning</strong>: Combine UI navigation and problem-solving objectives</li>
+<li><strong>Reinforcement Learning from Human Feedback (RLHF)</strong>: For final alignment</li>
+</ol>
+<h2 id="6-bare-metal-deployment-architecture">6. Bare-Metal Deployment Architecture</h2>
+<h3 id="61-hardware-configuration">6.1 Hardware Configuration</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Specification</th>
+<th>Quantity</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Server</td>
+<td>AMD Ryzen 9 8945HS</td>
+<td>3</td>
+<td>Kubernetes cluster nodes</td>
+</tr>
+<tr>
+<td>RAM</td>
+<td>64GB DDR5</td>
+<td>Per server</td>
+<td>Model weights and Kubernetes workloads</td>
+</tr>
+<tr>
+<td>Storage</td>
+<td>4TB NVMe SSD</td>
+<td>Per server</td>
+<td>Knowledge base and model storage</td>
+</tr>
+<tr>
+<td>NPU</td>
+<td>XDNA NPU (integrated)</td>
+<td>Per server</td>
+<td>Model inference acceleration</td>
+</tr>
+<tr>
+<td>Network</td>
+<td>10GbE</td>
+<td>Per server</td>
+<td>Kubernetes cluster communication</td>
+</tr>
+<tr>
+<td>Telephony</td>
+<td>RingCentral Integration</td>
+<td>1</td>
+<td>24/7 phone support integration</td>
+</tr>
+<tr>
+<td>Redundant Power</td>
+<td>UPS + Generator</td>
+<td>1 system</td>
+<td>Ensure 24/7 availability</td>
+</tr>
+<tr>
+<td>Shared Storage</td>
+<td>NFS/Ceph</td>
+<td>Cluster-wide</td>
+<td>Persistent volume claims</td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-kubernetes-architecture">6.2 Kubernetes Architecture</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>flowchart TB
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    %% External Systems
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    users([Support Portal Users])
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    phone([Phone Support Users])
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    zendesk([Zendesk Platform])
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    iot([IoT Networks])
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    human([Support Team])
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    %% Main Cluster
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    subgraph k8s[&quot;K8s Cluster - 3x AMD Ryzen 9 8945HS&quot;]
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        %% Control Plane
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>        subgraph cp[&quot;Control Plane&quot;]
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>            api[&quot;API Server&quot;]
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>            sched[&quot;Scheduler&quot;]
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>            etcd[&quot;etcd&quot;]
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>        end
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>        %% Workloads
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>        subgraph workloads[&quot;AI Support Workloads&quot;]
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>            %% Model Layer
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>            subgraph ml[&quot;Model Layer&quot;]
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>                model[&quot;Llama 3 8B\nStatefulSet&quot;]
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>                rag[&quot;RAG System&quot;]
+<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>                vector_db[(&quot;Vector DB&quot;)]
+<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>            end
+<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>
+<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>            %% Integration Layer
+<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>            subgraph il[&quot;Integration Layer&quot;]
+<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>                api_svc[&quot;API Services&quot;]
+<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>                zendesk_int[&quot;Zendesk\nIntegration&quot;]
+<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>                device_cfg[&quot;Device\nConfig&quot;]
+<a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>                monitor[&quot;Monitoring&quot;]
+<a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a>            end
+<a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>
+<a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>            %% RingCentral
+<a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a>            subgraph rc[&quot;RingCentral&quot;]
+<a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a>                rc_api[&quot;RC API Client&quot;]
+<a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a>                webhook[&quot;Webhooks&quot;]
+<a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a>                recording[&quot;Call Recording&quot;]
+<a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a>            end
+<a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a>        end
+<a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a>
+<a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a>        %% Services Layer
+<a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a>        subgraph sl[&quot;Services&quot;]
+<a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a>            ing[&quot;Ingress&quot;]
+<a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a>            api_gw[&quot;API Gateway&quot;]
+<a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a>        end
+<a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a>
+<a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a>        %% Storage
+<a id="__codelineno-2-50" name="__codelineno-2-50" href="#__codelineno-2-50"></a>        pv[(&quot;Persistent\nVolumes&quot;)]
+<a id="__codelineno-2-51" name="__codelineno-2-51" href="#__codelineno-2-51"></a>    end
+<a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a>
+<a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a>    %% External Connections
+<a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a>    users --&gt; ing
+<a id="__codelineno-2-55" name="__codelineno-2-55" href="#__codelineno-2-55"></a>    phone --&gt; rc_api
+<a id="__codelineno-2-56" name="__codelineno-2-56" href="#__codelineno-2-56"></a>    zendesk --&gt; api_gw
+<a id="__codelineno-2-57" name="__codelineno-2-57" href="#__codelineno-2-57"></a>    iot --&gt; monitor
+<a id="__codelineno-2-58" name="__codelineno-2-58" href="#__codelineno-2-58"></a>    human --&gt; api_gw
+<a id="__codelineno-2-59" name="__codelineno-2-59" href="#__codelineno-2-59"></a>
+<a id="__codelineno-2-60" name="__codelineno-2-60" href="#__codelineno-2-60"></a>    %% Internal Connections
+<a id="__codelineno-2-61" name="__codelineno-2-61" href="#__codelineno-2-61"></a>    ing --&gt; api_gw
+<a id="__codelineno-2-62" name="__codelineno-2-62" href="#__codelineno-2-62"></a>    api_gw --&gt; api_svc
+<a id="__codelineno-2-63" name="__codelineno-2-63" href="#__codelineno-2-63"></a>    api_gw --&gt; zendesk_int
+<a id="__codelineno-2-64" name="__codelineno-2-64" href="#__codelineno-2-64"></a>    api_svc --&gt; model
+<a id="__codelineno-2-65" name="__codelineno-2-65" href="#__codelineno-2-65"></a>    model --&gt; rag
+<a id="__codelineno-2-66" name="__codelineno-2-66" href="#__codelineno-2-66"></a>    rag --&gt; vector_db
+<a id="__codelineno-2-67" name="__codelineno-2-67" href="#__codelineno-2-67"></a>    vector_db --&gt; pv
+<a id="__codelineno-2-68" name="__codelineno-2-68" href="#__codelineno-2-68"></a>    device_cfg --&gt; api_svc
+<a id="__codelineno-2-69" name="__codelineno-2-69" href="#__codelineno-2-69"></a>    rc_api --&gt; api_svc
+<a id="__codelineno-2-70" name="__codelineno-2-70" href="#__codelineno-2-70"></a>
+<a id="__codelineno-2-71" name="__codelineno-2-71" href="#__codelineno-2-71"></a>    %% Styling
+<a id="__codelineno-2-72" name="__codelineno-2-72" href="#__codelineno-2-72"></a>    classDef external fill:#FF9800,stroke:#fff,stroke-width:2px,color:white,rx:10px
+<a id="__codelineno-2-73" name="__codelineno-2-73" href="#__codelineno-2-73"></a>    classDef k8s fill:#326CE5,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-2-74" name="__codelineno-2-74" href="#__codelineno-2-74"></a>    classDef control fill:#3F51B5,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-2-75" name="__codelineno-2-75" href="#__codelineno-2-75"></a>    classDef model fill:#4CAF50,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-2-76" name="__codelineno-2-76" href="#__codelineno-2-76"></a>    classDef integration fill:#9C27B0,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-2-77" name="__codelineno-2-77" href="#__codelineno-2-77"></a>    classDef services fill:#03A9F4,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-2-78" name="__codelineno-2-78" href="#__codelineno-2-78"></a>    classDef storage fill:#795548,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-2-79" name="__codelineno-2-79" href="#__codelineno-2-79"></a>    classDef voice fill:#009688,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-2-80" name="__codelineno-2-80" href="#__codelineno-2-80"></a>
+<a id="__codelineno-2-81" name="__codelineno-2-81" href="#__codelineno-2-81"></a>    class users,phone,zendesk,iot,human external
+<a id="__codelineno-2-82" name="__codelineno-2-82" href="#__codelineno-2-82"></a>    class k8s k8s
+<a id="__codelineno-2-83" name="__codelineno-2-83" href="#__codelineno-2-83"></a>    class cp,api,sched,etcd control
+<a id="__codelineno-2-84" name="__codelineno-2-84" href="#__codelineno-2-84"></a>    class ml,model,rag,vector_db model
+<a id="__codelineno-2-85" name="__codelineno-2-85" href="#__codelineno-2-85"></a>    class il,api_svc,zendesk_int,device_cfg,monitor integration
+<a id="__codelineno-2-86" name="__codelineno-2-86" href="#__codelineno-2-86"></a>    class sl,ing,api_gw services
+<a id="__codelineno-2-87" name="__codelineno-2-87" href="#__codelineno-2-87"></a>    class pv storage
+<a id="__codelineno-2-88" name="__codelineno-2-88" href="#__codelineno-2-88"></a>    class rc,rc_api,webhook,recording voice
+</code></pre></div>
+<h3 id="63-software-stack">6.3 Software Stack</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Technology</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Operating System</td>
+<td>Ubuntu Server 24.04 LTS</td>
+<td>Base OS</td>
+</tr>
+<tr>
+<td>Container Runtime</td>
+<td>containerd</td>
+<td>Container management</td>
+</tr>
+<tr>
+<td>Kubernetes</td>
+<td>K8s 1.29+</td>
+<td>Orchestration platform</td>
+</tr>
+<tr>
+<td>Inference Engine</td>
+<td>llama.cpp / vLLM</td>
+<td>Model serving</td>
+</tr>
+<tr>
+<td>Vector Database</td>
+<td>Chroma</td>
+<td>RAG storage</td>
+</tr>
+<tr>
+<td>API Gateway</td>
+<td>Kong / Istio</td>
+<td>Service interface</td>
+</tr>
+<tr>
+<td>UI Automation</td>
+<td>Playwright</td>
+<td>Interface navigation</td>
+</tr>
+<tr>
+<td>Monitoring</td>
+<td>Prometheus + Grafana</td>
+<td>Performance tracking</td>
+</tr>
+<tr>
+<td>Zendesk Integration</td>
+<td>Zendesk API + Custom Middleware</td>
+<td>Ticket management</td>
+</tr>
+<tr>
+<td>Device Management</td>
+<td>Ansible + Custom Agents</td>
+<td>Remote device configuration</td>
+</tr>
+<tr>
+<td>System Monitoring</td>
+<td>Prometheus Exporters</td>
+<td>Production system monitoring</td>
+</tr>
+<tr>
+<td>IoT Monitoring</td>
+<td>MQTT + Custom Collectors</td>
+<td>IoT network monitoring</td>
+</tr>
+<tr>
+<td>Telephony</td>
+<td>RingCentral API</td>
+<td>24/7 phone support</td>
+</tr>
+<tr>
+<td>Speech Processing</td>
+<td>Whisper + RingCentral Transcription</td>
+<td>Voice transcription</td>
+</tr>
+<tr>
+<td>Escalation System</td>
+<td>Custom Rule Engine</td>
+<td>Manage support escalations</td>
+</tr>
+<tr>
+<td>Storage</td>
+<td>Rook-Ceph</td>
+<td>Persistent volume provisioning</td>
+</tr>
+</tbody>
+</table>
+<h2 id="7-specialized-capabilities">7. Specialized Capabilities</h2>
+<h3 id="71-zendesk-integration">7.1 Zendesk Integration</h3>
+<p>The technical support agent will integrate with Zendesk through the following components:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>flowchart LR
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    subgraph agent[&quot;Support Agent&quot;]
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>        llm[&quot;LLM Core&quot;]
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>        zendesk_api[&quot;Zendesk API Client&quot;]
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>        ticket_analyzer[&quot;Ticket Analyzer&quot;]
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>        priority_engine[&quot;Priority Engine&quot;]
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    end
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    subgraph zendesk[&quot;Zendesk Platform&quot;]
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>        tickets[&quot;Tickets&quot;]
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>        users[&quot;Users&quot;]
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>        macros[&quot;Macros&quot;]
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>        views[&quot;Views&quot;]
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    end
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    llm --&gt; zendesk_api
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>    zendesk_api &lt;--&gt; tickets
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>    zendesk_api &lt;--&gt; users
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>    zendesk_api &lt;--&gt; macros
+<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>    zendesk_api &lt;--&gt; views
+<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>    tickets --&gt; ticket_analyzer
+<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>    ticket_analyzer --&gt; priority_engine
+<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>    priority_engine --&gt; llm
+<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>
+<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>    classDef agent fill:#4CAF50,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>    classDef zendesk fill:#03A9F4,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>    classDef component fill:#9C27B0,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>
+<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a>    class llm,zendesk_api,ticket_analyzer,priority_engine agent
+<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>    class tickets,users,macros,views zendesk
+</code></pre></div>
+<h4 id="key-zendesk-integration-features">Key Zendesk Integration Features:</h4>
+<ol>
+<li><strong>Ticket Creation and Management</strong>: Create, update, and resolve support tickets</li>
+<li><strong>Comment Management</strong>: Add internal and public comments to tickets</li>
+<li><strong>Ticket Prioritization</strong>: Analyze content to determine priority and SLA requirements</li>
+<li><strong>Macro Application</strong>: Apply appropriate Zendesk macros for common scenarios</li>
+<li><strong>User Management</strong>: Create and update user records as needed</li>
+<li><strong>Ticket Routing</strong>: Route tickets to appropriate human agents when escalation is needed</li>
+</ol>
+<h3 id="72-device-configuration-capabilities">7.2 Device Configuration Capabilities</h3>
+<p>The agent will be able to remotely configure client devices through:</p>
+<ol>
+<li><strong>Configuration Templates</strong>: Pre-defined templates for common device types</li>
+<li><strong>Secure Remote Access</strong>: Encrypted connections to customer devices</li>
+<li><strong>Configuration Validation</strong>: Verification of successful configuration changes</li>
+<li><strong>Rollback Capability</strong>: Ability to revert changes if issues arise</li>
+<li><strong>Audit Logging</strong>: Detailed logs of all configuration changes</li>
+</ol>
+<h3 id="73-system-and-iot-monitoring">7.3 System and IoT Monitoring</h3>
+<p>The agent will monitor production systems and customer IoT networks through:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>flowchart TD
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    subgraph monitoring[&quot;Monitoring System&quot;]
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>        collectors[&quot;Data Collectors&quot;]
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>        analyzers[&quot;Anomaly Analyzers&quot;]
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>        alerting[&quot;Alert Management&quot;]
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>        dashboard[&quot;Monitoring Dashboard&quot;]
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    end
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    subgraph targets[&quot;Monitored Systems&quot;]
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>        prod[&quot;Production Systems&quot;]
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>        iot[&quot;IoT Networks&quot;]
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>        devices[&quot;Customer Devices&quot;]
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>    end
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>    subgraph agent[&quot;Support Agent&quot;]
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>        llm[&quot;LLM Core&quot;]
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>        diagnosis[&quot;Diagnostic Engine&quot;]
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>        response[&quot;Response Planner&quot;]
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>    end
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>    prod --&gt; collectors
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>    iot --&gt; collectors
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>    devices --&gt; collectors
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>    collectors --&gt; analyzers
+<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>    analyzers --&gt; alerting
+<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>    alerting --&gt; llm
+<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a>    llm --&gt; diagnosis
+<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>    diagnosis --&gt; response
+<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a>    response --&gt; dashboard
+<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a>
+<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a>    classDef monitoring fill:#F44336,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a>    classDef targets fill:#FF9800,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a>    classDef agent fill:#4CAF50,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a>
+<a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a>    class collectors,analyzers,alerting,dashboard monitoring
+<a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a>    class prod,iot,devices targets
+<a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a>    class llm,diagnosis,response agent
+</code></pre></div>
+<h4 id="key-monitoring-features">Key Monitoring Features:</h4>
+<ol>
+<li><strong>Real-time Data Collection</strong>: Continuous monitoring of system metrics</li>
+<li><strong>Anomaly Detection</strong>: AI-based identification of unusual patterns</li>
+<li><strong>Automated Diagnostics</strong>: Initial problem diagnosis before human involvement</li>
+<li><strong>Alert Prioritization</strong>: Intelligent ranking of alerts by severity</li>
+<li><strong>Proactive Resolution</strong>: Automatic resolution of common issues</li>
+</ol>
+<h3 id="74-247-phone-support-with-ringcentral">7.4 24/7 Phone Support with RingCentral</h3>
+<p>The agent will provide round-the-clock phone support through RingCentral integration:</p>
+<ol>
+<li><strong>RingCentral API</strong>: Direct integration with your existing RingCentral account</li>
+<li><strong>Webhook Events</strong>: Real-time notification of incoming calls and events</li>
+<li><strong>Call Control</strong>: Programmatic management of calls including transfers and conferencing</li>
+<li><strong>RingCentral Transcription</strong>: Leveraging built-in and custom transcription services</li>
+<li><strong>Sentiment Analysis</strong>: Detection of customer frustration for potential escalation</li>
+<li><strong>Video Support</strong>: Optional escalation to video calls for complex troubleshooting</li>
+</ol>
+<h3 id="75-escalation-management">7.5 Escalation Management</h3>
+<p>The agent will manage escalations through a sophisticated system that:</p>
+<ol>
+<li><strong>Identifies Critical Issues</strong>: Recognizes problems requiring human expertise</li>
+<li><strong>Prioritizes Escalations</strong>: Ranks escalations by urgency and impact</li>
+<li><strong>Routes Appropriately</strong>: Directs issues to the right human specialists</li>
+<li><strong>Provides Context</strong>: Supplies complete issue history to human agents</li>
+<li><strong>Follows Up</strong>: Tracks resolution and follows up with customers</li>
+</ol>
+<h2 id="8-ui-navigation-capabilities">8. UI Navigation Capabilities</h2>
+<h3 id="71-ui-interaction-approach">7.1 UI Interaction Approach</h3>
+<p>The technical support agent will use a combination of techniques to navigate user interfaces:</p>
+<ol>
+<li><strong>Screen Understanding</strong>: Process screenshots to understand UI state</li>
+<li><strong>Element Recognition</strong>: Identify interactive elements (buttons, fields, etc.)</li>
+<li><strong>Action Planning</strong>: Determine sequence of actions to accomplish task</li>
+<li><strong>Execution</strong>: Perform actions through automation API</li>
+</ol>
+<h3 id="72-ui-navigation-architecture">7.2 UI Navigation Architecture</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>flowchart LR
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    subgraph agent[&quot;Support Agent&quot;]
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>        llm[&quot;LLM\n(Llama 3 8B)&quot;]
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>        planner[&quot;Action Planner&quot;]
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>        executor[&quot;Action Executor&quot;]
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    end
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    subgraph ui[&quot;UI Interaction&quot;]
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>        screen[&quot;Screen Capture&quot;]
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>        vision[&quot;Vision Module&quot;]
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>        browser[&quot;Browser Automation&quot;]
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>        validation[&quot;Action Validation&quot;]
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>    end
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>    user[&quot;User&quot;] --&gt; agent
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>    agent &lt;--&gt; ui
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>    ui --&gt; app[&quot;Target Application&quot;]
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>    classDef agent fill:#4CAF50,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>    classDef ui fill:#2196F3,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>    classDef external fill:#FF9800,stroke:#fff,stroke-width:1px,color:white
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>
+<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>    class llm,planner,executor agent
+<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>    class screen,vision,browser,validation ui
+<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>    class user,app external
+</code></pre></div>
+<h3 id="73-ui-navigation-training-data">7.3 UI Navigation Training Data</h3>
+<p>To enable effective UI navigation, we will create specialized training data:</p>
+<ol>
+<li><strong>Screen Recordings</strong>: Captured workflows of common support tasks</li>
+<li><strong>Element Annotations</strong>: Labeled UI elements with actions</li>
+<li><strong>Task Decomposition</strong>: Step-by-step breakdown of complex workflows</li>
+<li><strong>Error Recovery</strong>: Examples of handling unexpected UI states</li>
+</ol>
+<h2 id="8-implementation-phases">8. Implementation Phases</h2>
+<h3 id="81-phase-1-foundation-months-1-2">8.1 Phase 1: Foundation (Months 1-2)</h3>
+<ul>
+<li>Deploy base Llama 3 8B model with 4-bit quantization</li>
+<li>Implement basic RAG system with product documentation</li>
+<li>Develop chat interface integration with support portal</li>
+<li>Set up bare-metal servers with inference optimization</li>
+<li>Establish basic Zendesk integration for ticket viewing</li>
+</ul>
+<p><strong>Key Deliverables</strong>:
+- Functional support chat capability
+- Basic knowledge retrieval
+- Initial bare-metal deployment
+- Basic Zendesk ticket reading capability
+- Preliminary 24/7 infrastructure setup</p>
+<h3 id="82-phase-2-enhancement-months-3-4">8.2 Phase 2: Enhancement (Months 3-4)</h3>
+<ul>
+<li>Implement domain-specific fine-tuning</li>
+<li>Expand RAG with historical tickets and troubleshooting guides</li>
+<li>Develop UI navigation capabilities for common tasks</li>
+<li>Integrate email and notification systems</li>
+<li>Implement full Zendesk ticket management</li>
+<li>Deploy basic device configuration capabilities</li>
+<li>Set up system monitoring infrastructure</li>
+</ul>
+<p><strong>Key Deliverables</strong>:
+- Fine-tuned support model
+- Enhanced knowledge retrieval
+- Basic UI navigation capabilities
+- Communication integrations
+- Full Zendesk ticket management
+- Basic device configuration
+- System monitoring dashboard</p>
+<h3 id="83-phase-3-advanced-capabilities-months-5-6">8.3 Phase 3: Advanced Capabilities (Months 5-6)</h3>
+<ul>
+<li>Implement RLHF for alignment with company policies</li>
+<li>Develop advanced UI navigation for complex workflows</li>
+<li>Create specialized agents for different support domains</li>
+<li>Implement comprehensive monitoring and analytics</li>
+<li>Deploy full 24/7 phone support integration</li>
+<li>Implement IoT network monitoring</li>
+<li>Develop sophisticated escalation management</li>
+</ul>
+<p><strong>Key Deliverables</strong>:
+- Fully aligned support agents
+- Advanced UI navigation
+- Domain-specific support capabilities
+- Performance monitoring dashboard
+- Complete 24/7 phone support
+- IoT network monitoring system
+- Intelligent escalation management</p>
+<h2 id="9-performance-optimization">9. Performance Optimization</h2>
+<h3 id="91-inference-optimization-techniques">9.1 Inference Optimization Techniques</h3>
+<table>
+<thead>
+<tr>
+<th>Technique</th>
+<th>Description</th>
+<th>Performance Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>KV Cache Management</td>
+<td>Optimize context handling</td>
+<td>20-30% throughput improvement</td>
+</tr>
+<tr>
+<td>Batch Processing</td>
+<td>Handle multiple queries together</td>
+<td>40-50% throughput improvement</td>
+</tr>
+<tr>
+<td>Continuous Batching</td>
+<td>Dynamic batching of incoming requests</td>
+<td>30-40% latency reduction</td>
+</tr>
+<tr>
+<td>Attention Optimizations</td>
+<td>Flash Attention implementation</td>
+<td>20-30% speed improvement</td>
+</tr>
+<tr>
+<td>CPU Thread Optimization</td>
+<td>Optimal thread allocation</td>
+<td>10-15% throughput improvement</td>
+</tr>
+</tbody>
+</table>
+<h3 id="92-scaling-strategy">9.2 Scaling Strategy</h3>
+<p>To handle varying loads, the system will implement:</p>
+<ol>
+<li><strong>Vertical Scaling</strong>: Configure servers for maximum performance</li>
+<li><strong>Horizontal Scaling</strong>: Add additional servers during peak periods</li>
+<li><strong>Load Balancing</strong>: Distribute requests across available servers</li>
+<li><strong>Request Prioritization</strong>: Critical issues get processing priority</li>
+<li><strong>Graceful Degradation</strong>: Fallback strategies during high load</li>
+</ol>
+<h2 id="10-evaluation-and-quality-assurance">10. Evaluation and Quality Assurance</h2>
+<h3 id="101-evaluation-metrics">10.1 Evaluation Metrics</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Measurement Method</th>
+<th>Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Task Completion Rate</td>
+<td>% of support tasks completed successfully</td>
+<td>&gt;85%</td>
+</tr>
+<tr>
+<td>Time to Resolution</td>
+<td>Average time to resolve support issues</td>
+<td>&lt;15 minutes</td>
+</tr>
+<tr>
+<td>Customer Satisfaction</td>
+<td>Post-interaction survey</td>
+<td>&gt;4.5/5</td>
+</tr>
+<tr>
+<td>Accuracy</td>
+<td>Correctness of information provided</td>
+<td>&gt;95%</td>
+</tr>
+<tr>
+<td>Escalation Rate</td>
+<td>% of issues requiring human intervention</td>
+<td>&lt;25%</td>
+</tr>
+<tr>
+<td>Zendesk Ticket Quality</td>
+<td>Audit of ticket handling</td>
+<td>&gt;90% compliance</td>
+</tr>
+<tr>
+<td>Device Config Success</td>
+<td>% of successful device configurations</td>
+<td>&gt;92%</td>
+</tr>
+<tr>
+<td>Alert Response Time</td>
+<td>Time from alert to action</td>
+<td>&lt;2 minutes</td>
+</tr>
+<tr>
+<td>Phone Support Quality</td>
+<td>Call quality assessment</td>
+<td>&gt;4.3/5</td>
+</tr>
+<tr>
+<td>24/7 Availability</td>
+<td>System uptime</td>
+<td>&gt;99.95%</td>
+</tr>
+</tbody>
+</table>
+<h3 id="102-quality-assurance-process">10.2 Quality Assurance Process</h3>
+<ol>
+<li><strong>Automated Testing</strong>: Regular evaluation against test cases</li>
+<li><strong>Human Evaluation</strong>: Support specialists review agent interactions</li>
+<li><strong>A/B Testing</strong>: Compare different model versions and configurations</li>
+<li><strong>User Feedback Loop</strong>: Incorporate customer feedback into improvements</li>
+<li><strong>Continuous Monitoring</strong>: Track performance metrics in real-time</li>
+</ol>
+<h2 id="11-cost-analysis">11. Cost Analysis</h2>
+<h3 id="111-hardware-costs">11.1 Hardware Costs</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Cost per Unit</th>
+<th>Quantity</th>
+<th>Total Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AMD Ryzen 9 8945HS Servers (64GB RAM, 8TB NVMe)</td>
+<td>$1,400</td>
+<td>3</td>
+<td>$4,200</td>
+</tr>
+<tr>
+<td>Network Infrastructure</td>
+<td>$150</td>
+<td>1</td>
+<td>$150</td>
+</tr>
+<tr>
+<td><strong>Total Hardware</strong></td>
+<td></td>
+<td></td>
+<td><strong>$4,350</strong></td>
+</tr>
+</tbody>
+</table>
+<p><em>Note: RingCentral Enterprise Plan is considered an external cost and not included in the hardware costs.</em></p>
+<h3 id="112-implementation-costs">11.2 Implementation Costs</h3>
+<table>
+<thead>
+<tr>
+<th>Activity</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Knowledge Engineering</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>Technical documentation conversion</td>
+<td>$8,000</td>
+</tr>
+<tr>
+<td>Process documentation and workflow mapping</td>
+<td>$5,000</td>
+</tr>
+<tr>
+<td><strong>AI System Development</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>RAG system implementation</td>
+<td>$10,000</td>
+</tr>
+<tr>
+<td>Model optimization and deployment</td>
+<td>$6,000</td>
+</tr>
+<tr>
+<td>UI navigation capabilities</td>
+<td>$12,000</td>
+</tr>
+<tr>
+<td><strong>Integration Work</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>Zendesk integration</td>
+<td>$8,000</td>
+</tr>
+<tr>
+<td>Device configuration system</td>
+<td>$7,000</td>
+</tr>
+<tr>
+<td>Monitoring system</td>
+<td>$6,000</td>
+</tr>
+<tr>
+<td><strong>Testing and Optimization</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>Performance testing</td>
+<td>$5,000</td>
+</tr>
+<tr>
+<td>Security testing</td>
+<td>$4,000</td>
+</tr>
+<tr>
+<td>User acceptance testing</td>
+<td>$4,000</td>
+</tr>
+<tr>
+<td><strong>Total Implementation</strong></td>
+<td><strong>$75,000</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="113-operational-costs">11.3 Operational Costs</h3>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Monthly Cost</th>
+<th>Annual Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Infrastructure Maintenance</td>
+<td>$200</td>
+<td>$2,400</td>
+</tr>
+<tr>
+<td>Electricity and Cooling</td>
+<td>$100</td>
+<td>$1,200</td>
+</tr>
+<tr>
+<td>Ongoing Development and Optimization</td>
+<td>$1,500</td>
+<td>$18,000</td>
+</tr>
+<tr>
+<td>Human Oversight</td>
+<td>$500</td>
+<td>$6,000</td>
+</tr>
+<tr>
+<td><strong>Total Operational</strong></td>
+<td><strong>$2,300</strong></td>
+<td><strong>$27,600</strong></td>
+</tr>
+</tbody>
+</table>
+<p><em>Note: Zendesk and RingCentral licensing are considered external costs and not included in the operational costs.</em></p>
+<h3 id="114-roi-analysis">11.4 ROI Analysis</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Support Staff Cost Savings</td>
+<td>$400,000/year</td>
+</tr>
+<tr>
+<td>Improved Resolution Time Value</td>
+<td>$75,000/year</td>
+</tr>
+<tr>
+<td>Customer Satisfaction Impact</td>
+<td>$100,000/year</td>
+</tr>
+<tr>
+<td>Reduced System Downtime</td>
+<td>$150,000/year</td>
+</tr>
+<tr>
+<td>IoT Network Optimization</td>
+<td>$80,000/year</td>
+</tr>
+<tr>
+<td>Total Benefits</td>
+<td>$805,000/year</td>
+</tr>
+<tr>
+<td>Total Costs (Year 1)</td>
+<td>$106,950</td>
+</tr>
+<tr>
+<td>Annual Operational Costs (Year 2+)</td>
+<td>$27,600</td>
+</tr>
+<tr>
+<td><strong>ROI (Year 1)</strong></td>
+<td><strong>653%</strong></td>
+</tr>
+<tr>
+<td><strong>ROI (Year 2+)</strong></td>
+<td><strong>2,817%</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="12-conclusion-and-recommendations">12. Conclusion and Recommendations</h2>
+<h3 id="121-key-recommendations">12.1 Key Recommendations</h3>
+<ol>
+<li><strong>Model Selection</strong>: Proceed with Llama 3 8B (4-bit quantized) as the primary model</li>
+<li><strong>Deployment Strategy</strong>: Implement Kubernetes cluster on 3x AMD Ryzen 9 8945HS servers</li>
+<li><strong>RAG Implementation</strong>: Use Chroma with hybrid search and contextual reranking</li>
+<li><strong>Fine-Tuning Approach</strong>: Multi-stage fine-tuning with PEFT techniques</li>
+<li><strong>UI Navigation</strong>: Develop specialized capabilities using Playwright and vision modules</li>
+<li><strong>Zendesk Integration</strong>: Implement comprehensive ticket management with custom middleware</li>
+<li><strong>24/7 Support</strong>: Leverage Kubernetes for high availability and self-healing</li>
+<li><strong>Monitoring</strong>: Implement Prometheus-based monitoring for systems and IoT networks</li>
+<li><strong>Escalation Management</strong>: Develop intelligent escalation system with priority routing</li>
+</ol>
+<h3 id="122-critical-success-factors">12.2 Critical Success Factors</h3>
+<ol>
+<li><strong>Quality Training Data</strong>: Comprehensive support conversations and UI interactions</li>
+<li><strong>Effective Knowledge Base</strong>: Well-structured and comprehensive support documentation</li>
+<li><strong>Optimization Strategy</strong>: Proper quantization and inference optimization</li>
+<li><strong>Integration Capabilities</strong>: Seamless connection with Zendesk, monitoring systems, and telephony</li>
+<li><strong>Monitoring and Feedback</strong>: Continuous improvement based on performance data</li>
+<li><strong>24/7 Reliability</strong>: Robust infrastructure with redundancy and failover</li>
+<li><strong>Escalation Efficiency</strong>: Appropriate routing of complex issues to human agents</li>
+<li><strong>Device Configuration Accuracy</strong>: Reliable and secure remote device management</li>
+<li><strong>System Monitoring Precision</strong>: Accurate detection of issues in production and IoT systems</li>
+</ol>
+<h3 id="123-next-steps">12.3 Next Steps</h3>
+<ol>
+<li><strong>Procure Hardware</strong>: Set up enhanced bare-metal infrastructure with redundancy</li>
+<li><strong>Baseline Model</strong>: Deploy quantized Llama 3 8B and benchmark performance</li>
+<li><strong>Knowledge Base Development</strong>: Begin RAG implementation with existing documentation</li>
+<li><strong>Fine-Tuning Data Collection</strong>: Gather and prepare support conversation datasets</li>
+<li><strong>Zendesk Integration</strong>: Develop initial API connections and ticket handling capabilities</li>
+<li><strong>Monitoring Framework</strong>: Implement system and IoT monitoring infrastructure</li>
+<li><strong>Telephony Setup</strong>: Configure 24/7 phone support infrastructure</li>
+<li><strong>Device Management</strong>: Develop secure remote device configuration system</li>
+</ol>
+<p>By implementing this strategy, organizations can deploy effective technical support AI agents on bare-metal infrastructure in an office environment, providing high-quality 24/7 support through chat and phone interfaces, UI navigation, device configuration, system monitoring, and Zendesk ticket management while maintaining cost efficiency and performance.</p>
+<h2 id="appendix-a-tier-1-tech-support-agent-capacity-analysis">Appendix A: Tier 1 Tech Support Agent Capacity Analysis</h2>
+<p>This appendix provides a detailed analysis of how many Tier 1 Tech Support AI agents the specified 3-node Kubernetes cluster can support.</p>
+<h3 id="a1-hardware-resource-analysis">A.1 Hardware Resource Analysis</h3>
+<p>Each AMD Ryzen 9 8945HS node provides:
+- 8 cores / 16 threads
+- 64GB RAM
+- XDNA NPU with ~16 TOPS
+- 4TB NVMe storage</p>
+<h3 id="a2-ai-agent-resource-requirements">A.2 AI Agent Resource Requirements</h3>
+<p>Each Llama 3 8B agent instance with 4-bit quantization requires:
+- ~4GB RAM for model weights
+- ~2GB RAM for operation overhead
+- ~1-2 CPU cores for processing
+- ~0.5-1GB RAM for context window</p>
+<h3 id="a3-concurrent-agent-capacity">A.3 Concurrent Agent Capacity</h3>
+<h4 id="per-node-capacity">Per-Node Capacity</h4>
+<ul>
+<li><strong>RAM-constrained calculation</strong>: 64GB RAM / 7GB per agent ≈ 9 agents</li>
+<li><strong>CPU-constrained calculation</strong>: 16 threads / 2 threads per agent ≈ 8 agents</li>
+<li><strong>Conservative estimate</strong>: 8 agents per node</li>
+</ul>
+<h4 id="cluster-wide-capacity">Cluster-Wide Capacity</h4>
+<ul>
+<li><strong>Raw capacity</strong>: 8 agents × 3 nodes = 24 agents</li>
+<li><strong>With Kubernetes overhead</strong>: ~22 agents</li>
+<li><strong>With high availability reserve</strong>: ~18-20 agents</li>
+</ul>
+<h3 id="a4-throughput-analysis">A.4 Throughput Analysis</h3>
+<p>Considering average Tier 1 support call metrics:
+- Average call duration: 12 minutes
+- Post-call processing: 3 minutes
+- Total handling time: 15 minutes per call</p>
+<p><strong>Hourly throughput</strong>:
+- 18 agents × 4 calls per hour = 72 support calls per hour
+- Daily capacity (24 hours): ~1,700 support calls</p>
+<h3 id="a5-scaling-considerations">A.5 Scaling Considerations</h3>
+<ol>
+<li><strong>Peak Load Handling</strong>:</li>
+<li>The system can handle ~20 concurrent support sessions</li>
+<li>
+<p>For higher peaks, implement a queue system with estimated wait times</p>
+</li>
+<li>
+<p><strong>Vertical Scaling Options</strong>:</p>
+</li>
+<li>Increase RAM to 128GB per node to support ~16 agents per node</li>
+<li>
+<p>Add GPUs for inference acceleration</p>
+</li>
+<li>
+<p><strong>Horizontal Scaling</strong>:</p>
+</li>
+<li>Add more nodes to the cluster as demand grows</li>
+<li>Each additional node adds capacity for ~8 more concurrent agents</li>
+</ol>
+<h3 id="a6-conclusion">A.6 Conclusion</h3>
+<p>For a Tier 1 Tech Support operation, this 3-node cluster can effectively support:
+- <strong>18-20 concurrent AI support agents</strong>
+- <strong>~72 support calls per hour</strong>
+- <strong>~1,700 support calls per day</strong></p>
+<p>This should be sufficient for a medium-sized support operation. If higher volumes are anticipated, consider adding more nodes to the cluster or upgrading the RAM in the existing nodes.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
