@@ -23,6 +23,15 @@ This repository is the Kaigents **platform** (distinct from any future marketing
 - [`docs/research/technology/oss-components-commercially-permissible.md`](docs/research/technology/oss-components-commercially-permissible.md)
   - OSS due diligence list and licensing posture (redistribute vs integrate-only vs exclude).
 
+## Features
+
+- **Kubernetes-native**: Built on CRDs, standard RBAC, and GitOps-friendly workflows.
+- **Enterprise Identity**: Full OIDC integration with Keycloak for platform-wide SSO.
+- **Durable Execution**: Powered by Temporal for long-running, human-gateable agent workflows.
+- **Hybrid Execution**: Declarative hardware pinning (CPU/GPU/NPU) via `RoutingPolicy`.
+- **Observable**: Structured JSON logging (Loki-ready) and Prometheus metrics.
+- **Cloud-Agnostic Storage**: S3-compatible artifact storage (AWS, MinIO, Ceph).
+
 ## License and OSS posture
 
 - Kaigents is MIT-licensed.

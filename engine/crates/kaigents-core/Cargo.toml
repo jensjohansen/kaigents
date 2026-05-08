@@ -13,6 +13,7 @@ edition = "2021"
 [features]
 default = []
 rethinkdb = ["dep:unreql"]
+s3 = ["dep:aws-config", "dep:aws-sdk-s3", "dep:aws-credential-types", "dep:http"]
 
 [dependencies]
 tokio = { version = "1", features = ["full"] }
@@ -23,6 +24,12 @@ async-trait = "0.1"
 sha2 = "0.10"
 reqwest = { workspace = true }
 futures-util = "0.3"
+aws-config = { workspace = true, optional = true }
+aws-sdk-s3 = { workspace = true, optional = true }
+aws-credential-types = { workspace = true, optional = true }
+http = { workspace = true, optional = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
 kube = { version = "0.96", features = ["runtime", "derive"] }
 k8s-openapi = { version = "0.23", features = ["latest"] }
 schemars = "0.8"

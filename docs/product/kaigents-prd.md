@@ -254,9 +254,10 @@ Minimum bar (connector UX):
   - CLI download
   - UI preview
   - downstream automation
-- Artifact storage must support private buckets/object stores without requiring public read policies.
-- The platform must support a server-side signing/proxy pattern so clients do not need direct object-store credentials and do not receive broadly reusable presigned URLs.
-- The platform must preserve key HTTP response semantics needed for large artifacts (e.g., range reads) so users can preview/stream where appropriate.
+- **Artifact storage must support cloud-agnostic S3-compatible backends** (AWS S3, MinIO, Ceph RGW) via standard S3 credentials/endpoints.
+- **The platform must preserve key HTTP response semantics** (Range reads) for large artifacts.
+- **Observability must be first-class** via JSON structured logging for Loki and Prometheus metrics endpoints.
+- **Analytics readiness**: The platform must emit schema-stable event logs suitable for downstream real-time analytics (Data Lake integration).
 
 ### 6.5 Model serving integration
 

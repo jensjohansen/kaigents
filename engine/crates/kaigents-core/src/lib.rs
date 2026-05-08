@@ -8,11 +8,14 @@
 pub mod artifacts;
 pub mod dag;
 pub mod file_backed;
+pub mod logging;
 pub mod model_serving;
 #[cfg(feature = "rethinkdb")]
 pub mod rethinkdb_store;
 pub mod resources;
 pub mod run_id;
+#[cfg(feature = "s3")]
+pub mod s3_store;
 pub mod temporal_adapter;
 pub mod timeline;
 pub mod tool_plane;
@@ -27,12 +30,15 @@ pub use file_backed::{
     artifacts_root_dir, default_state_dir, parse_uuid, timeline_events_path, FileArtifactStore,
     FileTimelineStore, FileToolContractStore,
 };
+pub use logging::init_logging;
 pub use model_serving::{
     ChatChoice, ChatCompletionRequest, ChatCompletionResponse, ChatMessage, Embedding,
     EmbeddingsRequest, EmbeddingsResponse, HttpOpenAIModelClient, InMemoryModelClient,
     ModelCapabilities, ModelClient, ModelEndpoint, ModelPlane, Usage,
 };
 pub use run_id::RunId;
+#[cfg(feature = "s3")]
+pub use s3_store::{S3ArtifactStore, S3Config};
 pub use temporal_adapter::{
     StartWorkRequestRequest, TemporalAdapterClient, WorkItemDef as TemporalWorkItemDef,
     WorkRequestState as TemporalWorkRequestState,

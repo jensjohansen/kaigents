@@ -39,9 +39,9 @@ The following items are treated as “locked” unless the ITD register is updat
 - **Tool plane:** kMCP (kmcp), MCP-first
 - **Workflow substrate (Milestone 1):** embedded Rust DAG substrate with K8s offload escape hatch (ITD-08)
 - **Durable process execution engine of record:** Pending decision (ITD-16) for long-running Work Requests (human-in-loop waits, bounded rework loops, durable resumability)
-- **Stores:** Qdrant (vector), NebulaGraph (graph), RethinkDB (document/state), S3-compatible object store for artifact bytes (Ceph RGW) (ITD-13)
+- **Stores:** Qdrant (vector), NebulaGraph (graph), RethinkDB (document/state), Cloud-agnostic S3-compatible (AWS, MinIO, Ceph RGW) (ITD-13)
 - **Identity:** Keycloak (OIDC)
-- **Observability:** OpenTelemetry + Prometheus + Grafana (Langfuse optional)
+- **Observability:** Structured JSON logs (Loki), Prometheus metrics, Grafana. OTel/Langfuse optional.
 - **Languages:** Rust-first execution engine; Go for controllers/CLI; Python optional runtime lane
 
 ## 4. High-level architecture

@@ -325,18 +325,33 @@ Push checkpoint:
 
 - [ ] Push after routing policy is operator-visible and correlation is demonstrated in both timeline and telemetry.
 
-## Milestone 6: Dashboard MVP
+## Milestone 7: Hardening & Production Readiness
 
-- [x] Browse agents/teams (`/agents` and `/` overview)
-- [x] Trigger runs (CLI supported; dashboard read-only for MVP)
-- [x] View run timelines and traces (`/runs/{name}` detail view)
-- [x] View errors and retry reasons (Surfaced in run detail and overview)
-- [ ] Browse/preview artifacts (where feasible) (Deferred to v1.1)
+### 7A. Cloud-Agnostic Artifact Storage (S3)
+
+- [ ] Implement `ObjectStore` abstraction in `kaigents-core`
+- [ ] Provide S3/MinIO implementation using `aws-sdk-s3` (or `rust-s3`)
+- [ ] Configure S3 endpoints/credentials via environment/secrets
+- [ ] Support large-object range reads in artifact gateway
+
+### 7B. Observability & Structured Logging
+
+- [ ] Standardize all logs (CLI, Operator, Dashboard, Adapter) to JSON format
+- [ ] Expose Prometheus `/metrics` endpoint on all Go components
+- [ ] Implement metrics in Rust engine for Prometheus (via `prometheus` crate)
+- [ ] Provide sample Grafana dashboards for Loki and Prometheus
+
+### 7C. Analytics Readiness
+
+- [ ] Define stable JSON schema for Run Timeline events
+- [ ] Emit timeline events as structured logs for downstream ETL/Data Lake ingestion
 
 Acceptance criteria:
 
-- [x] Operators can diagnose failures via UI without needing direct DB access (Phase and messages surfaced in Dashboard).
+- [ ] Artifacts can be stored and retrieved from a local MinIO or AWS S3 bucket without changing code.
+- [ ] Logs are queryable in Loki with standard labels (agent, run_id, component).
+- [ ] Key metrics (run latency, token counts, tool errors) are visible in Grafana.
 
 Push checkpoint:
 
-- [ ] Push after dashboard can render run timelines reliably and failures are diagnosable without backdoor access.
+- [ ] Push after S3 storage and JSON logging are validated in the ai-agents-k8s-cluster.

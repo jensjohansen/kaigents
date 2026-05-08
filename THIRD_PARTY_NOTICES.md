@@ -42,6 +42,18 @@ The Rust execution engine crates depend on the following third-party components.
 - **reqwest** — HTTP client
   - **License**: Apache-2.0 OR MIT
   - **Homepage**: https://crates.io/crates/reqwest
+- **aws-sdk-s3** — AWS SDK for S3
+  - **License**: Apache-2.0
+  - **Homepage**: https://github.com/awslabs/aws-sdk-rust
+- **tracing** — application-level tracing and logging
+  - **License**: MIT
+  - **Homepage**: https://tracing.rs/
+- **kube** — Kubernetes client
+  - **License**: Apache-2.0
+  - **Homepage**: https://kube.rs/
+- **k8s-openapi** — Kubernetes API types
+  - **License**: Apache-2.0
+  - **Homepage**: https://github.com/Arnavion/k8s-openapi
 
 ### Rust crates (optional RethinkDB backend)
 

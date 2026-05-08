@@ -7,7 +7,7 @@
 
 use clap::{Parser, Subcommand};
 use kaigents_core::{
-    artifacts_root_dir, default_state_dir, parse_uuid, timeline_events_path, ArtifactId,
+    init_logging, artifacts_root_dir, default_state_dir, parse_uuid, timeline_events_path, ArtifactId,
     ArtifactKind, ChatCompletionRequest, ChatMessage, EventType,
     FileArtifactStore, FileTimelineStore, FileToolContractStore, HttpMcpClient,
     HttpOpenAIModelClient, RunId, StartWorkRequestRequest,
@@ -17,6 +17,7 @@ use std::collections::HashMap;
 use std::io;
 use std::sync::Arc;
 use std::time::Duration;
+use tracing::{info, error, warn, debug};
 
 use kaigents_core::ModelClient;
 
@@ -92,6 +93,7 @@ enum Commands {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    init_logging();
     let cli = Cli::parse();
 
     let state_dir = default_state_dir();
@@ -102,7 +104,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     match cli.command {
         Commands::Apply { file, namespace } => {
-            println!("Applying resource from: {}", file);
+            info!("Applying resource from: {}", file);
             let content = std::fs::read_to_string(&file)?;
             let yaml: serde_json::Value = serde_yaml::from_str(&content)?;
 
@@ -129,11 +131,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let params = kube::api::PatchParams::apply("kaigents-cli").force();
             
             api.patch(name, &params, &patch).await?;
-            println!("Resource {}/{} applied in namespace {}", kind, name, ns);
+            info!("Resource {}/{} applied in namespace {}", kind, name, ns);
         }
         Commands::Run { target, kind, message } => {
             let run_id = RunId::new();
-            println!("Triggering run for {}: {} (Run ID: {})", kind, target, run_id);
+            info!("Triggering run for {}: {} (Run ID: {})", kind, target, run_id);
             
             let client = kube::Client::try_default().await?;
             let ns = client.default_namespace().to_string();
@@ -319,17 +321,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     steps,
                 };
                 adapter.start_work_request(req).await?;
-                println!("WorkRequest started via Temporal adapter.");
+                info!("WorkRequest started via Temporal adapter.");
 
                 // Poll for completion (simple-first for MVP)
                 loop {
                     tokio::time::sleep(Duration::from_secs(5)).await;
                     match adapter.query_work_request(&run_id.as_uuid().to_string()).await {
                         Ok(state) => {
-                            println!("WorkRequest state: {} (Step: {})", state.phase, state.current_step.unwrap_or_default());
+                            info!("WorkRequest state: {} (Step: {})", state.phase, state.current_step.unwrap_or_default());
                             if state.phase == "Succeeded" {
                                 timeline_store.append(TimelineEvent::new(run_id.clone(), EventType::RunFinished))?;
-                                println!("Run completed successfully.");
+                                info!("Run completed successfully.");
                                 break;
                             }
                             if state.phase == "Failed" {
@@ -341,7 +343,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             }
                         }
                         Err(e) => {
-                            eprintln!("Error querying WorkRequest: {}", e);
+                            error!("Error querying WorkRequest: {}", e);
                         }
                     }
                 }
@@ -507,7 +509,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 timeline_store.append(produced)?;
                 timeline_store.append(TimelineEvent::new(run_id, EventType::RunFinished))?;
                 
-                println!("Solo Mode execution completed.");
+                info!("Solo Mode execution completed.");
                 return Ok(());
             }
 
