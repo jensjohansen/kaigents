@@ -25,6 +25,14 @@ This repository is the Kaigents **platform** (distinct from any future marketing
 - [`docs/research/technology/oss-components-commercially-permissible.md`](docs/research/technology/oss-components-commercially-permissible.md)
   - OSS due diligence list and licensing posture (redistribute vs integrate-only vs exclude).
 
+## Ecosystem Projects
+
+Kaigents is supported by a suite of specialized ecosystem projects:
+
+- **[KaiCatalog](https://github.com/jensjohansen/kaicatalog)**: A curated catalog service for MCP servers with 40+ pre-vetted tools, security posture ratings, and air-gapped mirroring support.
+- **[KaiManager](https://github.com/jensjohansen/kaimanager)**: The management layer for Kaigents, providing first-class surfaces for agent personas, quality gates, and process health monitoring.
+- **[KaiCLI](https://github.com/jensjohansen/kaicli)**: The operator interface for the Kaigents ecosystem. A unified command-line tool for managing MCP tools, personas, and platform health.
+
 ## Production Hardened
 
 Kaigents 1.0.0 is built for stability and enterprise operations:
