@@ -366,3 +366,25 @@ Acceptance criteria:
 Push checkpoint:
 
 - [x] Push after S3 storage and JSON logging are validated in the ai-agents-k8s-cluster.
+
+## Milestone 8: v1.0.0-retail Final Polish
+
+### 8A. Structured Execution Contract
+
+- [x] Define `ExecutionContract` struct in Go Operator
+- [x] Implement JSON serialization in `RunReconciler`
+- [x] Pass contract via `KAIGENTS_EXECUTION_CONTRACT` env var
+- [x] Define matching `ExecutionContract` struct in Rust Runner
+- [x] Implement JSON parsing in `kaigents-cli` runner command
+- [x] Refactor runner to use contract fields instead of individual env vars
+
+### 8B. Final Verification
+
+- [x] All `make ci` checks pass (lint/test)
+- [x] VERSION is `1.0.0-retail`
+- [x] Acceptance run (Student Research Assistant) succeeds with new contract
+
+Acceptance criteria:
+
+- [x] No more than 3 high-level env vars passed to the runner (Contract, Storage, Auth).
+- [x] System is 100% clean and ready for Kairon pilot deployment.

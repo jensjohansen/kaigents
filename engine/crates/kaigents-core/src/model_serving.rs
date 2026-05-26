@@ -5,6 +5,7 @@
 //! Copyright (c) 2026 John K Johansen
 //! License: MIT (see LICENSE)
 
+use crate::resources::ExecutionContract;
 use crate::run_id::RunId;
 use crate::timeline::{EventType, TimelineEvent, TimelineStore};
 use futures_util::StreamExt;
@@ -204,6 +205,39 @@ impl HttpOpenAIModelClient {
                 embeddings,
                 max_tokens,
                 supports_streaming,
+            },
+            provider,
+            metadata: HashMap::new(),
+        };
+
+        Ok(Self {
+            http: reqwest::Client::new(),
+            endpoints: vec![endpoint],
+            api_key,
+        })
+    }
+
+    pub fn from_contract(contract: &ExecutionContract) -> Result<Self, String> {
+        let url = contract
+            .model_endpoint_url
+            .clone()
+            .ok_or_else(|| "model_endpoint_url is missing from contract".to_string())?;
+        let name = contract
+            .model_endpoint_name
+            .clone()
+            .unwrap_or_else(|| "default".to_string());
+        let provider = "openai-compatible".to_string();
+
+        let api_key = std::env::var("KAIGENTS_MODEL_API_KEY").ok();
+
+        let endpoint = ModelEndpoint {
+            name,
+            url,
+            capabilities: ModelCapabilities {
+                chat: true,
+                embeddings: true, // assume both for transition
+                max_tokens: Some(4096),
+                supports_streaming: true,
             },
             provider,
             metadata: HashMap::new(),

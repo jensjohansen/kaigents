@@ -7,18 +7,18 @@
 
 use clap::{Parser, Subcommand};
 use kaigents_core::{
-    init_logging, init_metrics, RUNS_TOTAL, RUN_DURATION_SECONDS, TOOL_INVOCATIONS_TOTAL, MODEL_TOKENS_TOTAL, gather_metrics,
-    artifacts_root_dir, default_state_dir, parse_uuid, timeline_events_path, ArtifactId,
-    ArtifactKind, ChatCompletionRequest, ChatMessage, EventType,
-    FileArtifactStore, FileTimelineStore, FileToolContractStore, HttpMcpClient,
-    HttpOpenAIModelClient, RunId, StartWorkRequestRequest,
-    TemporalAdapterClient, TemporalWorkItemDef, TimelineEvent, ToolPlane,
+    artifacts_root_dir, default_state_dir, gather_metrics, init_logging, init_metrics, parse_uuid,
+    resources::ExecutionContract, timeline_events_path, ArtifactId, ArtifactKind,
+    ChatCompletionRequest, ChatMessage, EventType, FileArtifactStore, FileTimelineStore,
+    FileToolContractStore, HttpMcpClient, HttpOpenAIModelClient, RunId, StartWorkRequestRequest,
+    TemporalAdapterClient, TemporalWorkItemDef, TimelineEvent, ToolPlane, MODEL_TOKENS_TOTAL,
+    RUNS_TOTAL, RUN_DURATION_SECONDS, TOOL_INVOCATIONS_TOTAL,
 };
 use std::collections::HashMap;
 use std::io;
 use std::sync::Arc;
 use std::time::Duration;
-use tracing::{info, error};
+use tracing::{error, info};
 
 use kaigents_core::ModelClient;
 
@@ -77,6 +77,18 @@ enum Commands {
         /// Run ID
         run_id: String,
     },
+    /// Manage MCP tools
+    Mcp {
+        #[command(subcommand)]
+        command: McpCommands,
+    },
+    /// Manage Personas
+    Persona {
+        #[command(subcommand)]
+        command: PersonaCommands,
+    },
+    /// Show cluster status
+    Status,
     /// Fetch an artifact
     Artifact {
         /// Artifact ID
@@ -90,6 +102,31 @@ enum Commands {
 
     /// Execute a Run inside a Kubernetes Job (runner entrypoint)
     Runner,
+}
+
+#[derive(Subcommand)]
+enum McpCommands {
+    /// Search the curated tool catalog
+    Search { query: String },
+    /// Install a tool from the catalog
+    Add { name: String },
+    /// Pre-fetch catalog for air-gapped use
+    Mirror,
+}
+
+#[derive(Subcommand)]
+enum PersonaCommands {
+    /// List available personas
+    List,
+    /// Create a new persona
+    Create { file: String },
+    /// Inspect a persona version
+    Inspect {
+        name: String,
+        version: Option<String>,
+    },
+    /// Activate a specific persona version
+    Activate { name: String, version: String },
 }
 
 #[tokio::main]
@@ -111,13 +148,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let yaml: serde_json::Value = serde_yaml::from_str(&content)?;
 
             let client = kube::Client::try_default().await?;
-            let ns = namespace.unwrap_or_else(|| {
-                client.default_namespace().to_string()
-            });
+            let ns = namespace.unwrap_or_else(|| client.default_namespace().to_string());
 
-            let kind = yaml.get("kind").and_then(|v| v.as_str()).ok_or("missing kind")?;
-            let name = yaml.get("metadata").and_then(|v| v.get("name")).and_then(|v| v.as_str()).ok_or("missing name")?;
-            let api_version = yaml.get("apiVersion").and_then(|v| v.as_str()).ok_or("missing apiVersion")?;
+            let kind = yaml
+                .get("kind")
+                .and_then(|v| v.as_str())
+                .ok_or("missing kind")?;
+            let name = yaml
+                .get("metadata")
+                .and_then(|v| v.get("name"))
+                .and_then(|v| v.as_str())
+                .ok_or("missing name")?;
+            let api_version = yaml
+                .get("apiVersion")
+                .and_then(|v| v.as_str())
+                .ok_or("missing apiVersion")?;
 
             // Simple-first: use DynamicObject and patch
             let parts: Vec<&str> = api_version.split('/').collect();
@@ -127,27 +172,32 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 kube::api::GroupVersionKind::gvk("", parts[0], kind)
             };
             let ar = kube::discovery::ApiResource::from_gvk(&gvk);
-            
-            let api: kube::Api<kube::api::DynamicObject> = kube::Api::namespaced_with(client, &ns, &ar);
+
+            let api: kube::Api<kube::api::DynamicObject> =
+                kube::Api::namespaced_with(client, &ns, &ar);
             let patch = kube::api::Patch::Apply(&yaml);
             let params = kube::api::PatchParams::apply("kaigents-cli").force();
-            
+
             api.patch(name, &params, &patch).await?;
             info!("Resource {}/{} applied in namespace {}", kind, name, ns);
         }
-        Commands::Run { target, kind, message } => {
+        Commands::Run {
+            target,
+            kind,
+            message,
+        } => {
             let run_id = RunId::new();
-            info!("Triggering run for {}: {} (Run ID: {})", kind, target, run_id);
-            
+            info!(
+                "Triggering run for {}: {} (Run ID: {})",
+                kind, target, run_id
+            );
+
             let client = kube::Client::try_default().await?;
             let ns = client.default_namespace().to_string();
             let gvk = kube::api::GroupVersionKind::gvk("core.kaigents.io", "v1alpha1", "Run");
             let ar = kube::discovery::ApiResource::from_gvk(&gvk);
-            let runs: kube::Api<kube::api::DynamicObject> = kube::Api::namespaced_with(
-                client,
-                &ns,
-                &ar
-            );
+            let runs: kube::Api<kube::api::DynamicObject> =
+                kube::Api::namespaced_with(client, &ns, &ar);
 
             let run_json = serde_json::json!({
                 "apiVersion": "core.kaigents.io/v1alpha1",
@@ -166,11 +216,151 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             });
 
             let params = kube::api::PostParams::default();
-            let created = runs.create(&params, &serde_json::from_value(run_json)?).await?;
+            let created = runs
+                .create(&params, &serde_json::from_value(run_json)?)
+                .await?;
             let created_name = created.metadata.name.unwrap_or_default();
 
             println!("Run resource created: {}", created_name);
             println!("Run ID: {}", run_id);
+        }
+        Commands::Mcp { command } => {
+            let catalog_url = std::env::var("KAICATALOG_URL")
+                .unwrap_or_else(|_| "http://kaicatalog.kaicatalog.svc.cluster.local".to_string());
+            match command {
+                McpCommands::Search { query } => {
+                    let client = reqwest::Client::new();
+                    let res = client
+                        .get(format!("{}/api/v1/catalog/search", catalog_url))
+                        .query(&[("q", &query)])
+                        .send()
+                        .await?
+                        .json::<serde_json::Value>()
+                        .await?;
+                    println!("{:<20} {:<40} {:<15}", "NAME", "DESCRIPTION", "POSTURE");
+                    if let Some(entries) = res.as_array() {
+                        for entry in entries {
+                            let name = entry["metadata"]["name"].as_str().unwrap_or_default();
+                            let desc = entry["spec"]["description"].as_str().unwrap_or_default();
+                            let posture =
+                                entry["spec"]["runtimePosture"].as_str().unwrap_or_default();
+                            println!("{:<20} {:<40} {:<15}", name, desc, posture);
+                        }
+                    }
+                }
+                McpCommands::Add { name } => {
+                    let client = reqwest::Client::new();
+                    let res = client
+                        .get(format!("{}/api/v1/catalog/entries/{}", catalog_url, name))
+                        .send()
+                        .await?;
+                    if res.status().is_success() {
+                        let entry = res.json::<serde_json::Value>().await?;
+                        println!("Adding MCP tool: {}", name);
+                        if let Some(manifest) = entry["manifest"].as_str() {
+                            println!("Manifest found. Use 'kaigents apply' to install it.");
+                            println!("---");
+                            println!("{}", manifest);
+                        } else {
+                            println!("Metadata: {}", serde_json::to_string_pretty(&entry)?);
+                        }
+                    } else {
+                        error!("Tool not found in catalog: {}", name);
+                    }
+                }
+                McpCommands::Mirror => {
+                    println!("Mirroring catalog to local registry (placeholder)...");
+                }
+            }
+        }
+        Commands::Persona { command } => {
+            let manager_url = std::env::var("KAIMANAGER_URL")
+                .unwrap_or_else(|_| "http://kaimanager.kaimanager.svc.cluster.local".to_string());
+            match command {
+                PersonaCommands::List => {
+                    let client = reqwest::Client::new();
+                    let res = client
+                        .get(format!("{}/api/v1/personas", manager_url))
+                        .send()
+                        .await?
+                        .json::<serde_json::Value>()
+                        .await?;
+                    println!(
+                        "{:<20} {:<40} {:<10} {:<10}",
+                        "NAME", "DESCRIPTION", "VERSION", "PHASE"
+                    );
+                    if let Some(personas) = res.as_array() {
+                        for p in personas {
+                            let name = p["metadata"]["name"].as_str().unwrap_or_default();
+                            let desc = p["spec"]["description"].as_str().unwrap_or_default();
+                            let version = p["status"]["version"].as_str().unwrap_or_default();
+                            let phase = p["status"]["phase"].as_str().unwrap_or_default();
+                            println!("{:<20} {:<40} {:<10} {:<10}", name, desc, version, phase);
+                        }
+                    }
+                }
+                PersonaCommands::Create { file } => {
+                    let content = std::fs::read_to_string(&file)?;
+                    let persona: serde_json::Value = serde_yaml::from_str(&content)?;
+                    let client = reqwest::Client::new();
+                    let res = client
+                        .post(format!("{}/api/v1/personas", manager_url))
+                        .json(&persona)
+                        .send()
+                        .await?;
+                    if res.status().is_success() {
+                        println!("Persona created successfully.");
+                    } else {
+                        error!("Failed to create persona: {}", res.text().await?);
+                    }
+                }
+                PersonaCommands::Inspect { name, version } => {
+                    let client = reqwest::Client::new();
+                    let url = if let Some(_v) = version {
+                        format!("{}/api/v1/personas/{}/versions", manager_url, name)
+                    // Simplified, usually search version in history
+                    } else {
+                        format!("{}/api/v1/personas/{}", manager_url, name)
+                    };
+
+                    let res = client.get(url).send().await?;
+                    if res.status().is_success() {
+                        let body = res.json::<serde_json::Value>().await?;
+                        if body.is_array() {
+                            // If versions were requested, show list
+                            println!("{:<20} {:<10}", "VERSION", "PHASE");
+                            for v in body.as_array().unwrap() {
+                                println!(
+                                    "{:<20} {:<10}",
+                                    v["status"]["version"].as_str().unwrap_or_default(),
+                                    v["status"]["phase"].as_str().unwrap_or_default()
+                                );
+                            }
+                        } else {
+                            println!("{}", serde_json::to_string_pretty(&body)?);
+                        }
+                    } else {
+                        error!("Failed to inspect persona: {}", res.text().await?);
+                    }
+                }
+                PersonaCommands::Activate { name, version } => {
+                    let client = reqwest::Client::new();
+                    let payload = serde_json::json!({ "version": version });
+                    let res = client
+                        .post(format!("{}/api/v1/personas/{}/activate", manager_url, name))
+                        .json(&payload)
+                        .send()
+                        .await?;
+                    if res.status().is_success() {
+                        println!("Persona {} activated with version {}.", name, version);
+                    } else {
+                        error!("Failed to activate persona: {}", res.text().await?);
+                    }
+                }
+            }
+        }
+        Commands::Status => {
+            println!("Kaigents Cluster Status (placeholder)");
         }
         Commands::Timeline { run_id } => {
             let run_id = RunId::from_uuid(parse_uuid(&run_id)?);
@@ -248,7 +438,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
 
         Commands::Runner => {
-            let metrics_port = std::env::var("KAIGENTS_METRICS_PORT").unwrap_or_else(|_| "9090".to_string());
+            let metrics_port =
+                std::env::var("KAIGENTS_METRICS_PORT").unwrap_or_else(|_| "9090".to_string());
             let server = tiny_http::Server::http(format!("0.0.0.0:{}", metrics_port)).unwrap();
             std::thread::spawn(move || {
                 for request in server.incoming_requests() {
@@ -258,25 +449,34 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             });
 
             let run_timer = RUN_DURATION_SECONDS.start_timer();
-            let run_id_raw = std::env::var("KAIGENTS_RUN_ID")
-                .map_err(|_| "KAIGENTS_RUN_ID is required for runner mode")?;
-            let run_id = RunId::from_uuid(parse_uuid(&run_id_raw)?);
 
-            let target_kind = std::env::var("KAIGENTS_RUN_TARGET_KIND").unwrap_or_else(|_| "Agent".to_string());
-            RUNS_TOTAL.with_label_values(&[&target_kind, "started"]).inc();
-            let target_name = std::env::var("KAIGENTS_RUN_TARGET_NAME").map_err(|_| "KAIGENTS_RUN_TARGET_NAME is required")?;
-            let run_input = std::env::var("KAIGENTS_RUN_INPUT").unwrap_or_default();
+            // Load Execution Contract
+            let json_str = std::env::var("KAIGENTS_EXECUTION_CONTRACT")
+                .map_err(|_| "KAIGENTS_EXECUTION_CONTRACT is required")?;
+            let contract = serde_json::from_str::<ExecutionContract>(&json_str)
+                .map_err(|e| format!("Failed to parse KAIGENTS_EXECUTION_CONTRACT: {}", e))?;
+
+            let run_id = RunId::from_uuid(parse_uuid(&contract.run_id)?);
+            let target_kind = contract.target_kind.clone();
+            let target_name = contract.target_name.clone();
+            let run_input = contract.input.clone();
+
+            RUNS_TOTAL
+                .with_label_values(&[&target_kind, "started"])
+                .inc();
 
             let client = kube::Client::try_default().await?;
             let ns = client.default_namespace();
 
             let steps = if target_kind == "Process" {
-                let processes: kube::Api<kaigents_core::resources::Process> = kube::Api::namespaced(client.clone(), ns);
+                let processes: kube::Api<kaigents_core::resources::Process> =
+                    kube::Api::namespaced(client.clone(), ns);
                 let process = processes.get(&target_name).await?;
-                
+
                 let mut steps = Vec::new();
-                let tasks: kube::Api<kaigents_core::resources::Task> = kube::Api::namespaced(client.clone(), ns);
-                
+                let tasks: kube::Api<kaigents_core::resources::Task> =
+                    kube::Api::namespaced(client.clone(), ns);
+
                 for step_def in process.spec.steps {
                     let task = tasks.get(&step_def.task_ref).await?;
                     steps.push(TemporalWorkItemDef {
@@ -339,23 +539,40 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 // Poll for completion (simple-first for MVP)
                 loop {
                     tokio::time::sleep(Duration::from_secs(5)).await;
-                    match adapter.query_work_request(&run_id.as_uuid().to_string()).await {
+                    match adapter
+                        .query_work_request(&run_id.as_uuid().to_string())
+                        .await
+                    {
                         Ok(state) => {
-                            info!("WorkRequest state: {} (Step: {})", state.phase, state.current_step.unwrap_or_default());
+                            info!(
+                                "WorkRequest state: {} (Step: {})",
+                                state.phase,
+                                state.current_step.unwrap_or_default()
+                            );
                             if state.phase == "Succeeded" {
-                                timeline_store.append(TimelineEvent::new(run_id.clone(), EventType::RunFinished))?;
+                                timeline_store.append(TimelineEvent::new(
+                                    run_id.clone(),
+                                    EventType::RunFinished,
+                                ))?;
                                 info!("Run completed successfully.");
-                                RUNS_TOTAL.with_label_values(&[&target_kind, "succeeded"]).inc();
+                                RUNS_TOTAL
+                                    .with_label_values(&[&target_kind, "succeeded"])
+                                    .inc();
                                 run_timer.observe_duration();
                                 break;
                             }
                             if state.phase == "Failed" {
-                                let error = state.message.unwrap_or_else(|| "unknown error".to_string());
-                                RUNS_TOTAL.with_label_values(&[&target_kind, "failed"]).inc();
+                                let error =
+                                    state.message.unwrap_or_else(|| "unknown error".to_string());
+                                RUNS_TOTAL
+                                    .with_label_values(&[&target_kind, "failed"])
+                                    .inc();
                                 run_timer.observe_duration();
-                                timeline_store.append(TimelineEvent::new(run_id.clone(), EventType::RunFinished)
-                                    .with_payload("status".to_string(), "failed".to_string())
-                                    .with_payload("error".to_string(), error.clone()))?;
+                                timeline_store.append(
+                                    TimelineEvent::new(run_id.clone(), EventType::RunFinished)
+                                        .with_payload("status".to_string(), "failed".to_string())
+                                        .with_payload("error".to_string(), error.clone()),
+                                )?;
                                 return Err(other_error(error));
                             }
                         }
@@ -371,15 +588,23 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             // For now, only handles the hardcoded Research Assistant logic if kind=Agent and name contains "Research"
             if target_kind == "Agent" && target_name.contains("Research") {
                 let topic = topic_from_run_input(&run_input); // use helper to extract topic
-                let mcp_server_url = std::env::var("KAIGENTS_MCP_SERVER_URL")
-                    .map_err(|_| "KAIGENTS_MCP_SERVER_URL is required for Solo Mode research")?;
-                let mcp_server_name =
-                    std::env::var("KAIGENTS_MCP_SERVER_NAME").unwrap_or_else(|_| "mcp".to_string());
-                let search_tool_name = std::env::var("KAIGENTS_SEARCH_TOOL_NAME")
-                    .unwrap_or_else(|_| "searxng_web_search".to_string());
-                let read_tool_name = std::env::var("KAIGENTS_READ_TOOL_NAME")
-                    .unwrap_or_else(|_| "web_url_read".to_string());
-                let system_prompt = std::env::var("KAIGENTS_AGENT_SYSTEM_PROMPT").unwrap_or_else(|_| {
+                let mcp_server_url = contract
+                    .mcp_server_url
+                    .clone()
+                    .ok_or("mcp_server_url is required for Solo Mode research")?;
+                let mcp_server_name = contract
+                    .mcp_server_name
+                    .clone()
+                    .unwrap_or_else(|| "mcp".to_string());
+                let search_tool_name = contract
+                    .search_tool_name
+                    .clone()
+                    .unwrap_or_else(|| "searxng_web_search".to_string());
+                let read_tool_name = contract
+                    .read_tool_name
+                    .clone()
+                    .unwrap_or_else(|| "web_url_read".to_string());
+                let system_prompt = contract.system_prompt.clone().unwrap_or_else(|| {
                     "You are a Student Research Assistant. Given a topic, perform web searches, read sources, and synthesize a short Markdown essay with a sources section.".to_string()
                 });
 
@@ -393,7 +618,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 );
                 tool_plane.refresh_contracts().await?;
 
-                let model_client = HttpOpenAIModelClient::from_env()?;
+                let model_client = HttpOpenAIModelClient::from_contract(&contract)?;
 
                 let search_results = tool_plane
                     .invoke_tool(
@@ -403,7 +628,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         Duration::from_secs(30),
                     )
                     .await?;
-                TOOL_INVOCATIONS_TOTAL.with_label_values(&[&search_tool_name, "succeeded"]).inc();
+                TOOL_INVOCATIONS_TOTAL
+                    .with_label_values(&[&search_tool_name, "succeeded"])
+                    .inc();
 
                 let mut urls: Vec<String> = Vec::new();
                 if let Some(results) = search_results.get("results").and_then(|v| v.as_array()) {
@@ -424,7 +651,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             Duration::from_secs(30),
                         )
                         .await?;
-                    TOOL_INVOCATIONS_TOTAL.with_label_values(&[&read_tool_name, "succeeded"]).inc();
+                    TOOL_INVOCATIONS_TOTAL
+                        .with_label_values(&[&read_tool_name, "succeeded"])
+                        .inc();
                     let text = read_output
                         .get("text")
                         .and_then(|v| v.as_str())
@@ -433,10 +662,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     source_texts.push(format!("URL: {}\n{}", url, text));
                 }
 
-                let endpoint_name = std::env::var("KAIGENTS_MODEL_ENDPOINT_NAME")
-                    .unwrap_or_else(|_| "default".to_string());
-                let model_name =
-                    std::env::var("KAIGENTS_MODEL_NAME").unwrap_or_else(|_| "gpt-oss-20b".to_string());
+                let endpoint_name = contract
+                    .model_endpoint_name
+                    .clone()
+                    .unwrap_or_else(|| "default".to_string());
+                let model_name = contract
+                    .model_name
+                    .clone()
+                    .unwrap_or_else(|| "gpt-oss-20b".to_string());
 
                 let prompt = format!(
                     "{system_prompt}\n\nWrite a short markdown essay about the topic: '{topic}'.\n\nUse the following sources (may be partial):\n\n{}\n\nOutput only markdown with a title, intro, 3-5 insight paragraphs, conclusion, and a Sources section listing the URLs.",
@@ -480,8 +713,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         model_timeout,
                     )
                     .await
-                    .map_err(|e| other_error(e))?;
-                
+                    .map_err(other_error)?;
+
                 let latency_ms = model_start.elapsed().as_millis().to_string();
 
                 let mut finished = TimelineEvent::new(run_id.clone(), EventType::ModelFinished)
@@ -495,9 +728,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             usage.completion_tokens.to_string(),
                         )
                         .with_payload("total_tokens".to_string(), usage.total_tokens.to_string());
-                    
-                    MODEL_TOKENS_TOTAL.with_label_values(&[&model_name, "prompt"]).inc_by(usage.prompt_tokens as u64);
-                    MODEL_TOKENS_TOTAL.with_label_values(&[&model_name, "completion"]).inc_by(usage.completion_tokens as u64);
+
+                    MODEL_TOKENS_TOTAL
+                        .with_label_values(&[&model_name, "prompt"])
+                        .inc_by(usage.prompt_tokens as u64);
+                    MODEL_TOKENS_TOTAL
+                        .with_label_values(&[&model_name, "completion"])
+                        .inc_by(usage.completion_tokens as u64);
                 }
                 timeline_store.append(finished)?;
 
@@ -527,19 +764,23 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .with_payload("mime_type".to_string(), record.mime_type)
                 .with_payload("size_bytes".to_string(), record.size_bytes.to_string())
                 .with_payload("blob_path".to_string(), record.blob_path);
-                
+
                 timeline_store.append(produced)?;
                 timeline_store.append(TimelineEvent::new(run_id, EventType::RunFinished))?;
-                
+
                 info!("Solo Mode execution completed.");
-                RUNS_TOTAL.with_label_values(&[&target_kind, "succeeded"]).inc();
+                RUNS_TOTAL
+                    .with_label_values(&[&target_kind, "succeeded"])
+                    .inc();
                 run_timer.observe_duration();
                 return Ok(());
             }
 
-            return Err(other_error(format!("No execution path for {}/{}", target_kind, target_name)));
+            return Err(other_error(format!(
+                "No execution path for {}/{}",
+                target_kind, target_name
+            )));
         }
-
     }
     Ok(())
 }

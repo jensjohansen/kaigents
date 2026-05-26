@@ -9,6 +9,7 @@ package controllers
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"time"
@@ -179,22 +180,31 @@ func (r *RunReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 			}
 		}
 
-		jobEnv := []corev1.EnvVar{
-			{Name: "KAIGENTS_RUN_ID", Value: string(run.UID)},
-			{Name: "KAIGENTS_RUN_NAME", Value: run.Name},
-			{Name: "KAIGENTS_RUN_TARGET_KIND", Value: run.Spec.Target.Kind},
-			{Name: "KAIGENTS_RUN_TARGET_NAME", Value: run.Spec.Target.Name},
-			{Name: "KAIGENTS_RUN_INPUT", Value: run.Spec.Input},
+		contract := ExecutionContract{
+			RunID:             string(run.UID),
+			RunName:           run.Name,
+			TargetKind:        run.Spec.Target.Kind,
+			TargetName:        run.Spec.Target.Name,
+			Input:             run.Spec.Input,
+			ModelEndpointURL:  resolvedModelEndpointURL,
+			ModelName:         resolvedModelName,
+			ModelEndpointName: resolvedModelEndpointName,
+			SystemPrompt:      resolvedSystemPrompt,
+			MCPServerURL:      resolvedMCPServerURL,
+			MCPServerName:     resolvedMCPServerName,
+			SearchToolName:    resolvedSearchToolName,
+			ReadToolName:      resolvedReadToolName,
 		}
 
-		jobEnv = appendIfValue(jobEnv, "KAIGENTS_MODEL_ENDPOINT_URL", resolvedModelEndpointURL)
-		jobEnv = appendIfValue(jobEnv, "KAIGENTS_MODEL_NAME", resolvedModelName)
-		jobEnv = appendIfValue(jobEnv, "KAIGENTS_MODEL_ENDPOINT_NAME", resolvedModelEndpointName)
-		jobEnv = appendIfValue(jobEnv, "KAIGENTS_AGENT_SYSTEM_PROMPT", resolvedSystemPrompt)
-		jobEnv = appendIfValue(jobEnv, "KAIGENTS_MCP_SERVER_URL", resolvedMCPServerURL)
-		jobEnv = appendIfValue(jobEnv, "KAIGENTS_MCP_SERVER_NAME", resolvedMCPServerName)
-		jobEnv = appendIfValue(jobEnv, "KAIGENTS_SEARCH_TOOL_NAME", resolvedSearchToolName)
-		jobEnv = appendIfValue(jobEnv, "KAIGENTS_READ_TOOL_NAME", resolvedReadToolName)
+		contractJSON, err := json.Marshal(contract)
+		if err != nil {
+			_ = r.updateRunStatus(ctx, run, "Failed", "Failed to marshal execution contract: "+err.Error(), corev1alpha1.ConditionReconcileError, "True")
+			return ctrl.Result{}, err
+		}
+
+		jobEnv := []corev1.EnvVar{
+			{Name: "KAIGENTS_EXECUTION_CONTRACT", Value: string(contractJSON)},
+		}
 
 		passThroughEnvNames := []string{
 			"KAIGENTS_MODEL_API_KEY",

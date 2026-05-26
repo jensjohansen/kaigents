@@ -28,10 +28,13 @@ impl S3Config {
         Self {
             endpoint_url: std::env::var("KAIGENTS_S3_ENDPOINT").unwrap_or_default(),
             region: std::env::var("KAIGENTS_S3_REGION").unwrap_or_else(|_| "us-east-1".to_string()),
-            bucket: std::env::var("KAIGENTS_S3_BUCKET").unwrap_or_else(|_| "kaigents-artifacts".to_string()),
+            bucket: std::env::var("KAIGENTS_S3_BUCKET")
+                .unwrap_or_else(|_| "kaigents-artifacts".to_string()),
             access_key: std::env::var("KAIGENTS_S3_ACCESS_KEY").unwrap_or_default(),
             secret_key: std::env::var("KAIGENTS_S3_SECRET_KEY").unwrap_or_default(),
-            force_path_style: std::env::var("KAIGENTS_S3_FORCE_PATH_STYLE").map(|v| v == "true").unwrap_or(true),
+            force_path_style: std::env::var("KAIGENTS_S3_FORCE_PATH_STYLE")
+                .map(|v| v == "true")
+                .unwrap_or(true),
         }
     }
 }
@@ -44,10 +47,11 @@ pub struct S3ArtifactStore {
 
 impl S3ArtifactStore {
     pub async fn new(cfg: &S3Config) -> Self {
-        let region_provider = RegionProviderChain::first_try(aws_sdk_s3::config::Region::new(cfg.region.clone()));
-        
-        let mut loader = aws_config::defaults(aws_config::BehaviorVersion::latest())
-            .region(region_provider);
+        let region_provider =
+            RegionProviderChain::first_try(aws_sdk_s3::config::Region::new(cfg.region.clone()));
+
+        let mut loader =
+            aws_config::defaults(aws_config::BehaviorVersion::latest()).region(region_provider);
 
         if !cfg.endpoint_url.is_empty() {
             loader = loader.endpoint_url(cfg.endpoint_url.clone());
@@ -68,7 +72,7 @@ impl S3ArtifactStore {
         let s3_cfg = aws_sdk_s3::config::Builder::from(&aws_cfg)
             .force_path_style(cfg.force_path_style)
             .build();
-        
+
         let client = Client::from_conf(s3_cfg);
 
         Self {
@@ -80,9 +84,13 @@ impl S3ArtifactStore {
 
 #[async_trait::async_trait]
 impl ArtifactStore for S3ArtifactStore {
-    async fn store(&self, artifact: &Artifact, data: Vec<u8>) -> Result<ArtifactStorageRef, String> {
+    async fn store(
+        &self,
+        artifact: &Artifact,
+        data: Vec<u8>,
+    ) -> Result<ArtifactStorageRef, String> {
         let key = format!("{}/{}", artifact.run_id.as_uuid(), artifact.name);
-        
+
         self.client
             .put_object()
             .bucket(&self.bucket)
@@ -101,7 +109,8 @@ impl ArtifactStore for S3ArtifactStore {
 
     async fn retrieve(&self, storage_ref: &ArtifactStorageRef) -> Result<Vec<u8>, String> {
         if let ArtifactStorageRef::ObjectStore { bucket, key } = storage_ref {
-            let output = self.client
+            let output = self
+                .client
                 .get_object()
                 .bucket(bucket)
                 .key(key)
@@ -109,9 +118,12 @@ impl ArtifactStore for S3ArtifactStore {
                 .await
                 .map_err(|e| format!("S3 get_object failed: {}", e))?;
 
-            let data = output.body.collect().await
+            let data = output
+                .body
+                .collect()
+                .await
                 .map_err(|e| format!("S3 read body failed: {}", e))?;
-            
+
             Ok(data.into_bytes().to_vec())
         } else {
             Err("Unsupported storage reference for S3 store".to_string())
@@ -127,7 +139,8 @@ impl ArtifactStore for S3ArtifactStore {
             let presigning_config = PresigningConfig::expires_in(expires_in)
                 .map_err(|e| format!("Invalid expiration: {}", e))?;
 
-            let presigned = self.client
+            let presigned = self
+                .client
                 .get_object()
                 .bucket(bucket)
                 .key(key)
@@ -143,7 +156,8 @@ impl ArtifactStore for S3ArtifactStore {
 
     async fn metadata(&self, storage_ref: &ArtifactStorageRef) -> Result<ArtifactMetadata, String> {
         if let ArtifactStorageRef::ObjectStore { bucket, key } = storage_ref {
-            let output = self.client
+            let output = self
+                .client
                 .head_object()
                 .bucket(bucket)
                 .key(key)
@@ -153,7 +167,9 @@ impl ArtifactStore for S3ArtifactStore {
 
             Ok(ArtifactMetadata {
                 size_bytes: output.content_length.unwrap_or(0) as u64,
-                content_type: output.content_type.unwrap_or_else(|| "application/octet-stream".to_string()),
+                content_type: output
+                    .content_type
+                    .unwrap_or_else(|| "application/octet-stream".to_string()),
                 etag: output.e_tag,
                 last_modified: output.last_modified.map(|lm| lm.secs() as u64),
             })

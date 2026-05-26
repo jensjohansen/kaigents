@@ -2177,6 +2177,7 @@ dependencies = [
  "k8s-openapi",
  "kaigents-core",
  "kube",
+ "reqwest",
  "serde_json",
  "serde_yaml",
  "tiny_http",

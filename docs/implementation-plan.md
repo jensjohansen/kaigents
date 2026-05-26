@@ -230,3 +230,20 @@ Focus:
 - trigger executions
 - render timeline/history consistently
 
+### Milestone 7: Hardening & Production Readiness
+
+Focus:
+
+- Cloud-agnostic S3 artifact storage implementation
+- Standardized Prometheus metrics across Rust and Go
+- Integrated structured JSON logging (Loki-ready)
+- Sample Grafana dashboards for platform overview
+
+### Milestone 8: v1.0.0-retail Final Polish
+
+Focus:
+
+- **Structured Execution Contract**: Replace env-var-heavy runner handoff with a single JSON contract.
+- **Dependency Audit**: Ensure all components (Operator, Runner, Dashboard) are 100% aligned on v1.0.0-retail.
+- **Quality Gates**: Pass all `make ci` checks with zero warnings.
+

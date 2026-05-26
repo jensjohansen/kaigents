@@ -11,9 +11,9 @@ pub mod file_backed;
 pub mod logging;
 pub mod metrics;
 pub mod model_serving;
+pub mod resources;
 #[cfg(feature = "rethinkdb")]
 pub mod rethinkdb_store;
-pub mod resources;
 pub mod run_id;
 #[cfg(feature = "s3")]
 pub mod s3_store;

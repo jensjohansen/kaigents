@@ -12,29 +12,29 @@ use prometheus::{
 
 lazy_static! {
     pub static ref REGISTRY: Registry = Registry::new();
-
     pub static ref RUNS_TOTAL: IntCounterVec = register_int_counter_vec!(
         "kaigents_runs_total",
         "Total number of agent/process runs started",
         &["target_kind", "status"]
-    ).unwrap();
-
+    )
+    .unwrap();
     pub static ref RUN_DURATION_SECONDS: Histogram = register_histogram!(
         "kaigents_run_duration_seconds",
         "Duration of agent/process runs in seconds"
-    ).unwrap();
-
+    )
+    .unwrap();
     pub static ref TOOL_INVOCATIONS_TOTAL: IntCounterVec = register_int_counter_vec!(
         "kaigents_tool_invocations_total",
         "Total number of tool calls made",
         &["tool_name", "status"]
-    ).unwrap();
-
+    )
+    .unwrap();
     pub static ref MODEL_TOKENS_TOTAL: IntCounterVec = register_int_counter_vec!(
         "kaigents_model_tokens_total",
         "Total number of model tokens consumed",
         &["model", "type"]
-    ).unwrap();
+    )
+    .unwrap();
 }
 
 pub fn init_metrics() {

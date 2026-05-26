@@ -6,11 +6,16 @@
 // License: MIT (see LICENSE)
 
 use kube::CustomResource;
-use serde::{Deserialize, Serialize};
 use schemars::JsonSchema;
+use serde::{Deserialize, Serialize};
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, JsonSchema)]
-#[kube(group = "core.kaigents.io", version = "v1alpha1", kind = "Agent", namespaced)]
+#[kube(
+    group = "core.kaigents.io",
+    version = "v1alpha1",
+    kind = "Agent",
+    namespaced
+)]
 #[kube(status = "AgentStatus")]
 pub struct AgentSpec {
     pub runtime: Option<String>,
@@ -36,7 +41,12 @@ pub struct AgentStatus {
 }
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, JsonSchema)]
-#[kube(group = "core.kaigents.io", version = "v1alpha1", kind = "Task", namespaced)]
+#[kube(
+    group = "core.kaigents.io",
+    version = "v1alpha1",
+    kind = "Task",
+    namespaced
+)]
 #[kube(status = "TaskStatus")]
 pub struct TaskSpec {
     #[serde(rename = "agentName")]
@@ -53,7 +63,12 @@ pub struct TaskStatus {
 }
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, JsonSchema)]
-#[kube(group = "core.kaigents.io", version = "v1alpha1", kind = "Process", namespaced)]
+#[kube(
+    group = "core.kaigents.io",
+    version = "v1alpha1",
+    kind = "Process",
+    namespaced
+)]
 #[kube(status = "ProcessStatus")]
 pub struct ProcessSpec {
     pub steps: Vec<ProcessStep>,
@@ -72,4 +87,22 @@ pub struct ProcessStep {
 #[derive(Serialize, Deserialize, Clone, Debug, JsonSchema)]
 pub struct ProcessStatus {
     pub phase: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, JsonSchema)]
+#[serde(rename_all = "camelCase")]
+pub struct ExecutionContract {
+    pub run_id: String,
+    pub run_name: String,
+    pub target_kind: String,
+    pub target_name: String,
+    pub input: String,
+    pub model_endpoint_url: Option<String>,
+    pub model_name: Option<String>,
+    pub model_endpoint_name: Option<String>,
+    pub system_prompt: Option<String>,
+    pub mcp_server_url: Option<String>,
+    pub mcp_server_name: Option<String>,
+    pub search_tool_name: Option<String>,
+    pub read_tool_name: Option<String>,
 }

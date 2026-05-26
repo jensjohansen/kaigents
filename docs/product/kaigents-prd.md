@@ -68,8 +68,8 @@ Kaigents aims to be a “production substrate” where agents are:
   - core dependencies permissive
   - "integrate-only" optional components allowed but separated and clearly labeled
 - Support a dual-layer licensing model:
-  - **core platform**: MIT licensed and freely redistributable
-  - **managed service layer** (hosted deployments, AI team configurations, the Link-Labs.AI cluster product, and the at-risk worker platform): commercial license required; not included in the OSS distribution
+  - **core platform & management substrate**: Kaigents (execution), KaiManager (governance), and KaiCatalog (registry) are MIT licensed and freely redistributable.
+  - **managed service layer & playbooks**: Commercial playbooks (Kairon Retail), hosted deployments, and managed AI teams require a commercial license.
 
 ### 3.2 Non-Goals (initial releases)
 
