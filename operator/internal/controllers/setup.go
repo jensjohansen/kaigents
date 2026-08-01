@@ -23,6 +23,9 @@ func SetupAllReconcilers(mgr ctrl.Manager) error {
 		&ToolReconciler{Client: mgr.GetClient()},
 		&MCPServerReconciler{Client: mgr.GetClient()},
 		&ModelEndpointReconciler{Client: mgr.GetClient()},
+		&ProcessReconciler{Client: mgr.GetClient()},
+		&TaskReconciler{Client: mgr.GetClient()},
+		&MemoryPolicyReconciler{Client: mgr.GetClient()},
 	}
 
 	_ = corev1alpha1.GroupVersion

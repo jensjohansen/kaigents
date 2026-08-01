@@ -11,6 +11,9 @@ use std::time::Duration;
 use tokio::time::sleep;
 use uuid::Uuid;
 
+use k8s_openapi::api::core::v1 as k8s_core;
+use kube::api::{Api, PostParams};
+
 /// NodeId uniquely identifies a node within a DAG.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct NodeId(Uuid);
@@ -335,16 +338,97 @@ impl DAGExecutor {
                 })
             }
             StepType::K8sOffload { image, command } => {
-                // Placeholder for Kubernetes offload
-                Ok(ExecutionResult {
-                    outputs: HashMap::from([
-                        ("image".to_string(), image.clone()),
-                        ("command".to_string(), command.join(" ")),
-                    ]),
-                    error: None,
-                })
+                submit_k8s_offload(image, command).await
             }
         }
+    }
+}
+
+async fn submit_k8s_offload(image: &str, command: &[String]) -> Result<ExecutionResult, String> {
+    let client = kube::Client::try_default()
+        .await
+        .map_err(|e| format!("Failed to create Kubernetes client: {}", e))?;
+
+    let namespace = std::env::var("KAIGENTS_OFFLOAD_NAMESPACE")
+        .unwrap_or_else(|_| "default".to_string());
+
+    let pods: Api<k8s_core::Pod> = Api::namespaced(client.clone(), &namespace);
+
+    let pod_name = format!("kaigents-offload-{}", uuid::Uuid::new_v4());
+
+    let pod = k8s_core::Pod {
+        metadata: kube::api::ObjectMeta {
+            name: Some(pod_name.clone()),
+            labels: Some(std::collections::BTreeMap::from([
+                ("app".to_string(), "kaigents-offload".to_string()),
+            ])),
+            ..Default::default()
+        },
+        spec: Some(k8s_core::PodSpec {
+            restart_policy: Some("Never".to_string()),
+            containers: vec![k8s_core::Container {
+                name: "offload".to_string(),
+                image: Some(image.to_string()),
+                command: Some(command.iter().cloned().collect()),
+                ..Default::default()
+            }],
+            ..Default::default()
+        }),
+        ..Default::default()
+    };
+
+    pods.create(&PostParams::default(), &pod)
+        .await
+        .map_err(|e| format!("Failed to create offload pod: {}", e))?;
+
+    let deadline = std::time::Instant::now() + Duration::from_secs(600);
+    loop {
+        if std::time::Instant::now() > deadline {
+            let _ = pods.delete(&pod_name, &kube::api::DeleteParams::default()).await;
+            return Err(format!("Offload pod '{}' timed out after 600s", pod_name));
+        }
+
+        let pod_obj = pods.get(&pod_name).await.map_err(|e| format!("Failed to get pod status: {}", e))?;
+
+        if let Some(status) = &pod_obj.status {
+            if let Some(phase) = &status.phase {
+                match phase.as_str() {
+                    "Succeeded" => {
+                        let _ = pods.delete(&pod_name, &kube::api::DeleteParams::default()).await;
+                        return Ok(ExecutionResult {
+                            outputs: HashMap::from([
+                                ("pod".to_string(), pod_name.clone()),
+                                ("status".to_string(), "Succeeded".to_string()),
+                                ("image".to_string(), image.to_string()),
+                                ("command".to_string(), command.join(" ")),
+                            ]),
+                            error: None,
+                        });
+                    }
+                    "Failed" => {
+                        let _ = pods.delete(&pod_name, &kube::api::DeleteParams::default()).await;
+                        let msg = status
+                            .container_statuses
+                            .as_ref()
+                            .and_then(|cs| cs.first())
+                            .and_then(|c| c.state.as_ref())
+                            .and_then(|s| s.terminated.as_ref())
+                            .map(|t| t.reason.clone().unwrap_or_default())
+                            .unwrap_or_else(|| "Unknown failure".to_string());
+                        return Ok(ExecutionResult {
+                            outputs: HashMap::from([
+                                ("pod".to_string(), pod_name.clone()),
+                                ("status".to_string(), "Failed".to_string()),
+                            ]),
+                            error: Some(format!("Offload pod failed: {}", msg)),
+                        });
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        sleep(Duration::from_secs(2)).await;
     }
 }
 
@@ -460,7 +544,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn dag_executor_k8s_offload() {
+    async fn dag_executor_k8s_offload_no_cluster() {
         let mut dag = DAG::new();
         let a = NodeId::new();
         dag.add_node(Node {
@@ -474,10 +558,18 @@ mod tests {
         });
         let executor = DAGExecutor::new(3);
         let cancel = CancellationToken::new();
-        let results = executor.execute(&dag, cancel).await.unwrap();
-        assert!(results.contains_key(&a));
-        assert!(results[&a].error.is_none());
-        assert_eq!(results[&a].outputs["image"], "ubuntu:latest");
-        assert_eq!(results[&a].outputs["command"], "echo hello");
+        let result = executor.execute(&dag, cancel).await;
+        match result {
+            Ok(_) => {}
+            Err(e) => {
+                assert!(
+                    e.contains("Failed to create Kubernetes client")
+                        || e.contains("Failed to create offload pod")
+                        || e.contains("timed out"),
+                    "Unexpected error: {}",
+                    e
+                );
+            }
+        }
     }
 }

@@ -235,4 +235,45 @@ mod tests {
         let client = TemporalAdapterClient::new("http://adapter:8080/");
         assert_eq!(client.base_url, "http://adapter:8080");
     }
+
+    #[tokio::test]
+    async fn consolidation_unreachable_adapter_returns_error() {
+        let client = TemporalAdapterClient::new("http://127.0.0.1:1");
+        let req = ConsolidationRequest {
+            workspace_id: "ws-test".to_string(),
+            run_id: "run-test".to_string(),
+        };
+        let result = client.start_consolidation(req).await;
+        assert!(result.is_err());
+        assert!(result.unwrap_err().contains("unreachable"));
+    }
+
+    #[tokio::test]
+    async fn query_consolidation_unreachable_returns_error() {
+        let client = TemporalAdapterClient::new("http://127.0.0.1:1");
+        let result = client.query_consolidation("cons-123").await;
+        assert!(result.is_err());
+        assert!(result.unwrap_err().contains("unreachable"));
+    }
+
+    #[tokio::test]
+    async fn start_work_request_unreachable_returns_error() {
+        let client = TemporalAdapterClient::new("http://127.0.0.1:1");
+        let req = StartWorkRequestRequest {
+            work_request_id: "wr-test".to_string(),
+            process_name: None,
+            steps: vec![],
+        };
+        let result = client.start_work_request(req).await;
+        assert!(result.is_err());
+        assert!(result.unwrap_err().contains("unreachable"));
+    }
+
+    #[tokio::test]
+    async fn query_work_request_unreachable_returns_error() {
+        let client = TemporalAdapterClient::new("http://127.0.0.1:1");
+        let result = client.query_work_request("wr-test").await;
+        assert!(result.is_err());
+        assert!(result.unwrap_err().contains("unreachable"));
+    }
 }

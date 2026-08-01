@@ -10,7 +10,7 @@ use kaigents_core::context_manager::{ContextBudgetStrategy, ContextManager, Fitt
 use kaigents_core::model_serving::{
     ChatCompletionRequest, ChatMessage, EmbeddingsRequest, ModelClient,
 };
-use kaigents_core::nebulagraph_store::NebulaConfig;
+use kaigents_core::nebulagraph_store::{NebulaConfig, NebulaGraphStore};
 #[cfg(feature = "rethinkdb")]
 use kaigents_core::rethinkdb_store::RethinkDbConfig;
 use kaigents_core::run_id::RunId;
@@ -89,6 +89,7 @@ pub struct MemoryManager {
     embedding_model: Option<String>,
     chat_model: Option<String>,
     context_manager: ContextManager,
+    nebula: Option<Arc<NebulaGraphStore>>,
     #[cfg(feature = "rethinkdb")]
     rethinkdb_session: Option<Arc<Mutex<unreql::Session>>>,
     #[cfg(feature = "rethinkdb")]
@@ -188,6 +189,7 @@ impl MemoryManager {
             embedding_model: None,
             chat_model: None,
             context_manager: ContextManager::new(),
+            nebula: None,
             #[cfg(feature = "rethinkdb")]
             rethinkdb_session: None,
             #[cfg(feature = "rethinkdb")]
@@ -205,8 +207,17 @@ impl MemoryManager {
         self
     }
 
-    pub async fn with_nebula(self, _cfg: &NebulaConfig) -> Result<Self, String> {
-        warn!("NebulaGraph support is currently disabled in this build.");
+    pub async fn with_nebula(mut self, cfg: &NebulaConfig) -> Result<Self, String> {
+        let store = NebulaGraphStore::new(cfg.clone());
+        match store.init_schema().await {
+            Ok(()) => {
+                info!("NebulaGraph connected and schema initialized for space '{}'", cfg.space);
+                self.nebula = Some(Arc::new(store));
+            }
+            Err(e) => {
+                warn!("NebulaGraph connection failed ({}). Graph features disabled. Continuing with RethinkDB fallback.", e);
+            }
+        }
         Ok(self)
     }
 
@@ -322,6 +333,29 @@ impl MemoryManager {
                 .map_err(|e| format!("RethinkDB belief insert failed: {}", e))?;
         }
 
+        if let Some(nebula) = &self.nebula {
+            let belief_id = hypothesis.id.as_ref().unwrap();
+            let ws = &hypothesis.workspace_id;
+            let now = kaigents_core::nebulagraph_store::current_timestamp_i64();
+
+            let _ = nebula
+                .insert_entity(belief_id, &hypothesis.content, "belief", ws)
+                .await;
+
+            for assumption_id in &hypothesis.assumptions {
+                let _ = nebula
+                    .insert_temporal_edge(
+                        belief_id,
+                        assumption_id,
+                        "depends_on",
+                        now,
+                        0,
+                        now,
+                    )
+                    .await;
+            }
+        }
+
         Ok(hypothesis.id.unwrap())
     }
 
@@ -355,6 +389,40 @@ impl MemoryManager {
                 .map_err(|e| format!("RethinkDB belief update failed: {}", e))?;
 
             if outcome.status == HypothesisStatus::Falsified {
+                if let Some(nebula) = &self.nebula {
+                    let now = kaigents_core::nebulagraph_store::current_timestamp_i64();
+                    let dependents = nebula
+                        .traverse_dependents_recursive(&outcome.hypothesis_id, "depends_on")
+                        .await
+                        .unwrap_or_default();
+
+                    for dep_id in &dependents {
+                        let _ = nebula
+                            .invalidate_edge(dep_id, &outcome.hypothesis_id, "depends_on", now)
+                            .await;
+
+                        let mut update_q = r
+                            .db(db.clone())
+                            .table(DEFAULT_BELIEFS_TABLE_NAME)
+                            .get(dep_id.clone())
+                            .filter(r.row().g("status").ne("falsified"))
+                            .filter(r.row().g("workspace_id").eq(workspace_id.to_string()));
+
+                        if let Some(pkg) = scope_package_id {
+                            update_q = update_q
+                                .filter(r.row().g("origin_package_id").eq(pkg.to_string()));
+                        }
+
+                        update_q
+                            .update(r.expr(serde_json::json!({
+                                "status": "falsified",
+                                "justification": format!("Retracted via graph traversal: dependency {} falsified", outcome.hypothesis_id)
+                            })))
+                            .exec::<_, serde_json::Value>(&mut *session)
+                            .await
+                            .ok();
+                    }
+                } else {
                 let mut to_retract = vec![outcome.hypothesis_id.clone()];
                 let mut visited = std::collections::HashSet::new();
                 visited.insert(outcome.hypothesis_id.clone());
@@ -397,7 +465,20 @@ impl MemoryManager {
                         }
                     }
                 }
+                }
             }
+        }
+
+        if let Some(nebula) = &self.nebula {
+            let now = kaigents_core::nebulagraph_store::current_timestamp_i64();
+            let _ = nebula
+                .invalidate_edge(
+                    &outcome.hypothesis_id,
+                    &outcome.hypothesis_id,
+                    "depends_on",
+                    now,
+                )
+                .await;
         }
 
         Ok(format!("Experiment closed as {:?}", outcome.status))
@@ -780,6 +861,49 @@ impl MemoryManager {
         Ok(buf)
     }
 
+    #[cfg_attr(not(feature = "rethinkdb"), allow(dead_code))]
+    async fn check_semantic_duplicate(&self, workspace_id: &str, text: &str) -> bool {
+        let (client, endpoint) = match (&self.model_client, &self.embedding_endpoint) {
+            (Some(c), Some(e)) => (c, e),
+            _ => return false,
+        };
+
+        let qdrant = match &self.qdrant {
+            Some(q) => q,
+            None => return false,
+        };
+
+        let emb_req = EmbeddingsRequest {
+            model: self.embedding_model.clone().unwrap_or_else(|| "ignored".to_string()),
+            input: vec![text.to_string()],
+            encoding_format: None,
+        };
+
+        let emb_resp = match client.embeddings(endpoint, emb_req, Duration::from_secs(30)).await {
+            Ok(resp) => resp,
+            Err(_) => return false,
+        };
+
+        let vector = match emb_resp.data.first() {
+            Some(emb) => emb.embedding.clone(),
+            None => return false,
+        };
+
+        let collection_name = format!("workspace-{}", workspace_id);
+        let search_req = SearchPointsBuilder::new(collection_name, vector, 1)
+            .with_payload(false)
+            .build();
+
+        match qdrant.search_points(search_req).await {
+            Ok(resp) => resp
+                .result
+                .first()
+                .map(|r| r.score > 0.95)
+                .unwrap_or(false),
+            Err(_) => false,
+        }
+    }
+
     pub async fn import_memory(
         &self,
         workspace_id: &str,
@@ -859,7 +983,12 @@ impl MemoryManager {
             let db = self.rethinkdb_db.as_deref().unwrap_or("kaigents").to_string();
 
             for mut episode in episodes {
-                let dup: Vec<serde_json::Value> = r
+                let semantic_dup = self.check_semantic_duplicate(
+                    workspace_id,
+                    &episode.summary,
+                ).await;
+
+                let text_dup: Vec<serde_json::Value> = r
                     .db(db.clone())
                     .table(DEFAULT_EPISODES_TABLE_NAME)
                     .filter(r.row().g("workspace_id").eq(workspace_id.to_string()))
@@ -868,7 +997,7 @@ impl MemoryManager {
                     .await
                     .unwrap_or_default();
 
-                if !dup.is_empty() {
+                if semantic_dup || !text_dup.is_empty() {
                     skipped_episodes += 1;
                     continue;
                 }
@@ -887,7 +1016,12 @@ impl MemoryManager {
             }
 
             for mut belief in beliefs {
-                let dup: Vec<serde_json::Value> = r
+                let semantic_dup = self.check_semantic_duplicate(
+                    workspace_id,
+                    &belief.content,
+                ).await;
+
+                let text_dup: Vec<serde_json::Value> = r
                     .db(db.clone())
                     .table(DEFAULT_BELIEFS_TABLE_NAME)
                     .filter(r.row().g("workspace_id").eq(workspace_id.to_string()))
@@ -896,7 +1030,7 @@ impl MemoryManager {
                     .await
                     .unwrap_or_default();
 
-                if !dup.is_empty() {
+                if semantic_dup || !text_dup.is_empty() {
                     skipped_beliefs += 1;
                     continue;
                 }
@@ -1267,6 +1401,29 @@ impl MemoryManager {
                 .await
                 .map_err(|e| format!("RethinkDB insert failed: {}", e))?;
             info!("Episode persisted to RethinkDB");
+        }
+
+        if let Some(nebula) = &self.nebula {
+            let episode_id = episode.id.as_ref().unwrap();
+            let now = kaigents_core::nebulagraph_store::current_timestamp_i64();
+
+            let _ = nebula
+                .insert_entity(episode_id, &episode.summary, "episode", workspace_id)
+                .await;
+
+            for src_id in &episode.source_content_ids {
+                let _ = nebula
+                    .insert_temporal_edge(
+                        episode_id,
+                        src_id,
+                        "consolidated_from",
+                        now,
+                        0,
+                        now,
+                    )
+                    .await;
+            }
+            info!("Episode temporal edges inserted into NebulaGraph");
         }
 
         Ok(episode)

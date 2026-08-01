@@ -74,6 +74,12 @@ spec:
                       type: object
                       additionalProperties:
                         type: string
+                    contextBudgetStrategy:
+                      type: string
+                      enum: ["Summarize", "Truncate", "Error"]
+                    preferredContextWindow:
+                      type: integer
+                      format: int32
             status:
               type: object
               properties:
@@ -84,6 +90,10 @@ spec:
                   type: string
                 message:
                   type: string
+                outputs:
+                  type: object
+                  additionalProperties:
+                    type: string
                 artifacts:
                   type: array
                   description: Artifact references produced by this run.
@@ -103,4 +113,19 @@ spec:
                         type: integer
                         format: int64
                       sha256:
+                        type: string
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                      lastTransitionTime:
+                        type: string
+                      reason:
+                        type: string
+                      message:
                         type: string

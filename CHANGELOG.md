@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2026-08-01
+
+### Added
+- **NebulaGraph temporal graph layer (R15/R12)**: Full `NebulaGraphStore` implementation using NebulaGraph's HTTP API (port 19669) via reqwest. Schema initialization (space, `entity` tag, `depends_on`/`consolidated_from` edges with `valid_from`/`valid_to`/`transaction_time` temporal fields). `with_nebula()` connects and initializes schema with graceful fallback to RethinkDB on connection failure. `record_belief` inserts entity vertices and `depends_on` temporal edges for assumptions. `close_experiment` uses `traverse_dependents_recursive` for graph-traversal-based retraction cascades. `consolidate_run_memory` inserts `consolidated_from` temporal edges. As-of queries, edge invalidation, and recursive graph traversal all implemented. 4 new unreachable tests.
+- **K8sOffload pod submission (R15/G6)**: `submit_k8s_offload` in `dag.rs` creates real Kubernetes Pods via the `kube` crate, polls for Succeeded/Failed with 600s timeout, cleans up pods, returns `ExecutionResult`.
+- **Task, Process, MemoryPolicy controllers (R15/G7)**: Three new Go reconcilers following the `AgentReconciler` pattern, registered in `setup.go`.
+- **Temporal durability tests (R15/R11)**: 4 tests verifying all Temporal adapter HTTP calls return "unreachable" errors when the adapter is down.
+- **Semantic similarity dedup (R15/M12)**: `check_semantic_duplicate` generates embeddings and searches Qdrant (score > 0.95) before falling back to exact text match in `import_memory`.
+
+### Fixed
+- **CRD YAML schema drift (R15/G11)**: `memorypolicies.yaml`, `agents.yaml`, `runs.yaml` updated to match Go struct definitions (added `conditions` to status, `contextBudgetStrategy`/`preferredContextWindow` to routing, `outputs` to run status).
+
+### Changed
+- All implementation deviations in `agent-memory-proposal.md` §13 are now resolved (ITD-18, ITD-19, ITD-20, consolidation durability).
+- Test coverage: 53 core tests (including 4 NebulaGraph + 4 Temporal durability) + 19 memory unit tests + 4 integration tests = 76 total, all passing. Both default and rethinkdb builds, zero warnings.
+- No deferred or future items remain. The codebase delivers completely to the PRD, tech design, and implementation plan.
+
 ## [1.2.0] - 2026-08-01
 
 ### Added

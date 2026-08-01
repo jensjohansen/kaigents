@@ -66,7 +66,7 @@ See `docs/research/technology/itd-register.md` for the full register (ITD-01 …
 - ITD-13/14: S3-compatible artifact storage + server-side SigV4 proxy.
 - ITD-16: Temporal as durable process engine of record.
 - ITD-17: Agent memory as a first-class, opt-in subsystem (Adopted).
-- ITD-18: Temporal knowledge-graph layer built on NebulaGraph (preserve ITD-05) — **Partially Implemented** (RethinkDB fallback; NebulaGraph stub).
+- ITD-18: Temporal knowledge-graph layer built on NebulaGraph (preserve ITD-05) — **Implemented** (R15). Full `NebulaGraphStore` with HTTP API, temporal edges, as-of queries, graph traversal, edge invalidation. Graceful RethinkDB fallback.
 - ITD-19: ATMS belief revision for experiment closure (Adopted).
 - ITD-20: Context Manager — model-agnostic context budgeting + context-budget-aware model routing (Adopted; v2 implemented in R9 — Summarize/Error strategies, hierarchical demotion, RoutingPolicy).
 
@@ -87,7 +87,7 @@ These were verified this session and are load-bearing for the next session:
    - Consequence: **Graphiti cannot be adopted with its native backends.** The temporal graph-memory layer must be *built on NebulaGraph*. Graphiti is a reference pattern, not a turnkey dependency. (Graphiti is also Python, which collides with ITD-12's no-Python-in-core rule.)
    - pyannote.audio *code* is MIT, but pretrained *models* require HuggingFace conditions acceptance — verify commercial terms per model before redistribution.
 4. **The epistemic / TMS layer (Phase 3) is the differentiator** vs Claude Opus / GPT-5.2 / Gemini — no major cloud or competitor offers belief revision with retraction cascades. Built from scratch in Rust (not Epica) — `BeliefManager` with ATMS pattern.
-5. **Episodic-memory tier (Phase 2) built in Rust** — not Letta/Mem0. Episodes stored in RethinkDB `memory_episodes` table. Consolidation is in-process (not Temporal — deferred).
+5. **Episodic-memory tier (Phase 2) built in Rust** — not Letta/Mem0. Episodes stored in RethinkDB `memory_episodes` table. Consolidation supports both in-process and Temporal paths (R11); NebulaGraph temporal edges link episodes to source memories (R15).
 6. **Context management is the critical enabling capability, not a side-effect of memory.** The platform must own the context window (assemble, fit-to-budget, never overflow) and route to the right model at the right time — so any model, including small-context local ones, is viable. This is the Context Manager (proposal Section 12, ITD-20), introduced in Phase 1. It uses the Letta/MemGPT core→recall→archival self-management *pattern* (not necessarily the Python library) and Self-RAG's "decide when to retrieve." The `Model` domain entity gains a `context_window_size` field.
 
 ---
@@ -100,7 +100,7 @@ These were verified this session and are load-bearing for the next session:
 - `MemoryManager` with Qdrant 1.18 (builder API); automatic embedding-on-ingest via `ModelClient`.
 - `memory.record` MCP tool for streaming ingestion; Qdrant live upserts.
 - Context Manager v1: budget enforcement via selection/truncation (`fit_to_budget`); `context_window_size` on Model entity; included/excluded context emitted to run timeline.
-- NebulaGraph temporal edges: **deferred** (stub). See ITD-18 deviation note.
+- NebulaGraph temporal edges: **implemented** (R15). Full `NebulaGraphStore` with HTTP API. See ITD-18 resolution note.
 
 **Phase 2 (Milestone 10) — Long-term consolidation:**
 - `consolidate_run_memory`: in-process consolidation wired into run lifecycle; LLM-driven episode extraction; episodes stored in RethinkDB `memory_episodes` table.
@@ -110,7 +110,7 @@ These were verified this session and are load-bearing for the next session:
 
 **Phase 3 (Milestone 11) — Epistemic memory:**
 - `BeliefManager` with `Hypothesis` as first-class entity; `record_belief`, `close_experiment`, `reverify_hypothesis` implemented.
-- Retraction cascades via RethinkDB `filter` on `assumptions` array (not NebulaGraph graph traversals as designed).
+- Retraction cascades via NebulaGraph `traverse_dependents_recursive` (R15) with RethinkDB `filter` fallback when NebulaGraph unavailable.
 - `experiment.close` and `experiment.reverify` MCP tools registered in tool plane during runs.
 - Context Manager v3: beliefs inserted with high priority after task state in `fit_to_budget`.
 - Epistemic quality gate: `validate_approach` called in runner; falsified-hypothesis warning injected as system message.
@@ -122,11 +122,11 @@ These were verified this session and are load-bearing for the next session:
 - Export/import CLI: `kaigents-cli memory export` and `kaigents-cli memory import`.
 - Single embedding model lock: `embedding_model` field on `MemoryManager`; included in manifest; validated on import with warning on mismatch.
 - Package-scoped retraction cascades: `close_experiment` accepts `scope_package_id`; `remove_package` scopes cascade to same-package beliefs only.
-- Cross-workspace deduplication: Qdrant points use vector cosine similarity >0.95; episodes/beliefs use exact text match in RethinkDB. Skip counts in import result.
+- Cross-workspace deduplication: Qdrant points use vector cosine similarity >0.95; episodes/beliefs use semantic similarity (embeddings + Qdrant search >0.95) with exact text match fallback (R15). Skip counts in import result.
 
-**Test coverage:** 40 core tests + 19 memory unit tests + 4 integration tests = 63 total, all passing. Integration tests run against live Qdrant, RethinkDB, and Lemonade Server on the on-premise ai-agents k8s cluster.
+**Test coverage:** 53 core tests (including 4 NebulaGraph + 4 Temporal durability) + 19 memory unit tests + 4 integration tests = 76 total, all passing. Both default and rethinkdb builds, zero warnings. Integration tests run against live Qdrant, RethinkDB, and Lemonade Server on the on-premise ai-agents k8s cluster.
 
-**Known implementation deviations:** See Section 13 of `docs/architecture/agent-memory-proposal.md` for the remaining deviations (NebulaGraph stub, retraction cascades in RethinkDB). Context Manager v2 deviation (§13.3) resolved (R9). Consolidation deviation (§13.4) resolved (R11) — Temporal path implemented with in-process fallback.
+**Implementation deviations:** All deviations in Section 13 of `docs/architecture/agent-memory-proposal.md` are now resolved (R15). No deferred or future items remain.
 
 ### Stabilization bugs (all fixed)
 
