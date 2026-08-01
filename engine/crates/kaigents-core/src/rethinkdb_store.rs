@@ -492,6 +492,30 @@ fn timeline_event_to_document(event: &TimelineEvent) -> Result<serde_json::Value
                 serde_json::Value::String(artifact_id.clone()),
             );
         }
+        EventType::ContextAssembled {
+            budget,
+            total_tokens,
+            dropped_count,
+        } => {
+            payload.insert(
+                "budget".to_string(),
+                serde_json::Value::Number(serde_json::Number::from(*budget)),
+            );
+            payload.insert(
+                "total_tokens".to_string(),
+                serde_json::Value::Number(serde_json::Number::from(*total_tokens)),
+            );
+            payload.insert(
+                "dropped_count".to_string(),
+                serde_json::Value::Number(serde_json::Number::from(*dropped_count)),
+            );
+        }
+        EventType::MemoryConsolidated { episode_id } => {
+            payload.insert(
+                "episode_id".to_string(),
+                serde_json::Value::String(episode_id.clone()),
+            );
+        }
         _ => {}
     }
 
@@ -572,6 +596,8 @@ fn event_type_name(event_type: &EventType) -> String {
         EventType::ModelFinished => "ModelFinished".to_string(),
         EventType::ModelFailed { .. } => "ModelFailed".to_string(),
         EventType::ArtifactProduced { .. } => "ArtifactProduced".to_string(),
+        EventType::ContextAssembled { .. } => "ContextAssembled".to_string(),
+        EventType::MemoryConsolidated { .. } => "MemoryConsolidated".to_string(),
     }
 }
 
@@ -642,6 +668,37 @@ fn event_type_from_name(name: &str, doc: &serde_json::Value) -> Result<EventType
                 .and_then(|v| v.as_u64())
                 .unwrap_or(0) as u32;
             Ok(EventType::NodeFailed { error, retries })
+        }
+        "ContextAssembled" => {
+            let budget = doc
+                .get("payload")
+                .and_then(|p| p.get("budget"))
+                .and_then(|v| v.as_u64())
+                .unwrap_or(0) as u32;
+            let total_tokens = doc
+                .get("payload")
+                .and_then(|p| p.get("total_tokens"))
+                .and_then(|v| v.as_u64())
+                .unwrap_or(0) as u32;
+            let dropped_count = doc
+                .get("payload")
+                .and_then(|p| p.get("dropped_count"))
+                .and_then(|v| v.as_u64())
+                .unwrap_or(0) as usize;
+            Ok(EventType::ContextAssembled {
+                budget,
+                total_tokens,
+                dropped_count,
+            })
+        }
+        "MemoryConsolidated" => {
+            let episode_id = doc
+                .get("payload")
+                .and_then(|p| p.get("episode_id"))
+                .and_then(|v| v.as_str())
+                .unwrap_or_default()
+                .to_string();
+            Ok(EventType::MemoryConsolidated { episode_id })
         }
         _ => Err(format!("Unknown event_type: {name}")),
     }

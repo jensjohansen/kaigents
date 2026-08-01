@@ -21,6 +21,7 @@ Status values:
 | Identity and access | ITD-10 |
 | Operations | ITD-11, ITD-15 |
 | Development stack | ITD-12 |
+| Agent memory | ITD-17, ITD-18, ITD-19, ITD-20 |
 
 | ID | Decision area | Status |
 | --- | --- | --- |
@@ -40,6 +41,10 @@ Status values:
 | ITD-14 | Secure artifact access pattern for private buckets | Completed |
 | ITD-15 | Harbor image pull robot naming convention | Completed |
 | ITD-16 | Durable process execution engine of record | Completed |
+| ITD-17 | Agent memory subsystem | Completed |
+| ITD-18 | Temporal knowledge graph on NebulaGraph | Partially Implemented (RethinkDB fallback) |
+| ITD-19 | Belief revision (ATMS) for experiments | Completed |
+| ITD-20 | Context Manager (budget-aware routing) | Completed |
 
 ## ITDs
 
@@ -368,3 +373,60 @@ Impacts (regardless of chosen engine):
   - emits a consistent event stream to the run/work-request timeline
   - supports human-in-the-loop waits and bounded rework semantics
 - Milestone 1 embedded DAG is not invalidated; it remains a lightweight substrate for short-lived workflows, while ITD-16 governs the long-running durable execution path.
+
+### ITD-17 — Agent memory subsystem
+- Status: Completed
+- Business problem:
+  - Agents need to ingest real-time info, retain experience, and distinguish hypothesis from outcome.
+- Options considered:
+  - Three-tier memory (proposed)
+  - Static RAG only
+- Chosen option:
+  - **Three-tier agent memory** (real-time short-term, long-term, experience/epistemic).
+- Primary reason:
+  - Sovereignty is the wedge; learning is the differentiation.
+- Impacts:
+  - Memory read/write exposed as MCP tools; consolidation/experiment-closure as Temporal workflows.
+
+### ITD-18 — Temporal knowledge graph on NebulaGraph
+- Status: Partially Implemented (RethinkDB fallback)
+- Business problem:
+  - Need a commercial-safe temporal knowledge graph for memory.
+- Options considered:
+  - Graphiti pattern on NebulaGraph (Option A)
+  - Graphiti direct + second backend (Option B)
+- Chosen option:
+  - **Option A: Graphiti pattern on NebulaGraph.**
+- Primary reason:
+  - License reality: Neo4j/FalkorDB/Neptune are not commercial-safe; preserves ITD-05.
+- Impacts:
+  - Substantial build in Rust engine: LLM extraction, temporal metadata, hybrid search fusion.
+- **Deviation note (implementation reality):** The NebulaGraph store (`nebulagraph_store.rs`) is currently a stub. `with_nebula()` logs a warning and does not connect. Temporal edges (`valid_from`/`valid_to`/`transaction_time`) and as-of queries are not implemented. Episodic memory and hypothesis/belief records use RethinkDB as a fallback: episodes are stored in the `memory_episodes` table, beliefs in `memory_beliefs`, and retraction cascades use RethinkDB `filter` on the `assumptions` array rather than NebulaGraph graph traversals. This deviation preserves functional stability but does not deliver the temporal graph reasoning or bi-temporal query capability specified in the proposal. Building the full NebulaGraph temporal layer remains a future work item.
+
+### ITD-19 — Belief revision (ATMS) for experiments
+- Status: Completed
+- Business problem:
+  - Agents must avoid repeating mistakes and handle retraction cascades.
+- Options considered:
+  - ATMS for experiments
+  - Prompt-based "don't repeat mistakes"
+- Chosen option:
+  - **ATMS for the Experiment entity.**
+- Primary reason:
+  - Makes retraction and re-verification mechanical and auditable.
+- Impacts:
+  - New Belief Manager in Rust; retraction as graph traversals; Epica as candidate dependency.
+
+### ITD-20 — Context Manager (budget-aware routing)
+- Status: Completed
+- Business problem:
+  - Platform must own the context window to make small-context models viable.
+- Options considered:
+  - Context Manager (proposed)
+  - Model-managed context
+- Chosen option:
+  - **Context Manager** (assemble + fit-to-budget + budget-aware routing).
+- Primary reason:
+  - Critical enabling requirement for sovereign stacks to out-compete cloud models.
+- Impacts:
+  - New engine component; `context_window_size` on Model entity; budget enforcement in agent loop.

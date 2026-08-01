@@ -119,18 +119,43 @@ Licensing permissiveness is an explicit, valid reason to push back on or revise 
 - **License posture:** Exclude (core)
 - **Why:** Elastic License 2.0 (hosted/managed-service restriction) is not aligned with “commercial-safe OSS” for a platform.
 
-## 4) Memory products (agent state / long-term memory)
+## 4) Memory & Graph Substrates
 
-### 4.1 Zep
-- **Primary source (license):** https://github.com/getzep/zep/blob/main/LICENSE
+### 4.1 Qdrant (Vector Database)
+- **Primary source:** https://github.com/qdrant/qdrant/blob/master/LICENSE
 - **License posture:** Redistribute (bundle)
-- **Why:** Apache-2.0.
-- **Kaigents note:** likely an integration option rather than core.
+- **License:** Apache-2.0
 
-### 4.2 Letta
-- **Primary source (one repo license):** https://github.com/letta-ai/letta-code/blob/main/LICENSE
-- **License posture:** Integrate-only (until full license boundary is verified)
-- **Why:** Apache-2.0 in letta-code; verify licensing across Letta repos before reuse.
+### 4.2 NebulaGraph (Graph Database)
+- **Primary source:** https://github.com/vesoft-inc/nebula/blob/master/LICENSE
+- **License posture:** Redistribute (bundle)
+- **License:** Apache-2.0
+- **Kaigents note:** Primary substrate for the temporal knowledge graph layer (ITD-18).
+
+### 4.3 RethinkDB (Document Store)
+- **Primary source:** https://github.com/rethinkdb/rethinkdb/blob/next/LICENSE
+- **License posture:** Redistribute (bundle)
+- **License:** Apache-2.0
+- **Kaigents note:** Used for durable memory records and belief records (ITD-06).
+
+### 4.4 Letta / Mem0 / Graphiti (Patterns)
+- **Primary source:** Various (Apache-2.0)
+- **License posture:** Integrate-only / Reference pattern
+- **Why:** While Apache-2.0, these are often Python-based (colliding with ITD-12). Kaigents adopts their patterns (core/recall/archival, entity extraction) but implements core logic in Rust.
+
+### 4.5 Epica (Belief/ATMS)
+- **Primary source:** https://github.com/epica-ai/epica/blob/main/LICENSE
+- **License posture:** Redistribute (bundle)
+- **License:** MIT
+- **Kaigents note:** Candidate dependency for the Phase 3 Belief Manager (ITD-19).
+
+## 5) Models (Embeddings & Specialized)
+
+### 5.1 BGE-M3 (Default Embedding)
+- **Primary source:** https://github.com/FlagOpen/FlagEmbedding/blob/master/LICENSE
+- **License posture:** Redistribute (bundle)
+- **License:** MIT / Apache-2.0
+- **Kaigents note:** Chosen default for local embeddings via Lemonade.
 
 ## 5) Platform UI baselines
 

@@ -6,11 +6,13 @@
 //! License: MIT (see LICENSE)
 
 pub mod artifacts;
+pub mod context_manager;
 pub mod dag;
 pub mod file_backed;
 pub mod logging;
 pub mod metrics;
 pub mod model_serving;
+pub mod nebulagraph_store;
 pub mod resources;
 #[cfg(feature = "rethinkdb")]
 pub mod rethinkdb_store;
@@ -26,6 +28,7 @@ pub use artifacts::{
     Artifact, ArtifactId, ArtifactKind, ArtifactMetadata, ArtifactPlane, ArtifactStorageRef,
     ArtifactStore, InMemoryArtifactStore,
 };
+pub use context_manager::{ContextBudgetStrategy, ContextManager, FittedContext};
 pub use dag::{CancellationToken, DAGExecutor, ExecutionResult, Node, NodeId, StepType, DAG};
 pub use file_backed::{
     artifacts_root_dir, default_state_dir, parse_uuid, timeline_events_path, FileArtifactStore,
@@ -56,3 +59,5 @@ pub use tool_plane::{
 
 #[cfg(feature = "rethinkdb")]
 pub use rethinkdb_store::{RethinkDbArtifactStore, RethinkDbConfig, RethinkDbTimelineStore};
+
+pub use nebulagraph_store::{NebulaConfig, NebulaGraphStore};

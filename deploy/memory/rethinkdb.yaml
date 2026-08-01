@@ -1,0 +1,93 @@
+# File: kaigents/deploy/memory/rethinkdb.yaml
+# Purpose: Kubernetes manifest for RethinkDB (ITD-06), the document/state store
+# for Kaigents agent memory. Holds timeline events, episodic memory (episodes),
+# and hypothesis/belief records.
+# Product/business importance: RethinkDB is the long-term and epistemic memory
+# backbone. Without it, consolidation, belief tracking, and retraction cascades
+# are non-functional.
+#
+# Copyright (c) 2026 John K Johansen
+# License: MIT (see LICENSE)
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rethinkdb
+  namespace: kaigents
+  labels:
+    app.kubernetes.io/name: rethinkdb
+    app.kubernetes.io/part-of: kaigents
+spec:
+  serviceName: rethinkdb
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rethinkdb
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: rethinkdb
+        app.kubernetes.io/part-of: kaigents
+    spec:
+      containers:
+        - name: rethinkdb
+          image: rethinkdb:2.4-bookworm-slim
+          args:
+            - "rethinkdb"
+            - "--bind"
+            - "all"
+            - "--directory"
+            - "/data"
+          ports:
+            - name: driver
+              containerPort: 28015
+            - name: admin
+              containerPort: 8080
+          volumeMounts:
+            - name: rethinkdb-data
+              mountPath: /data
+          readinessProbe:
+            tcpSocket:
+              port: 28015
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 28015
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: rethinkdb-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 20Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rethinkdb
+  namespace: kaigents
+  labels:
+    app.kubernetes.io/name: rethinkdb
+    app.kubernetes.io/part-of: kaigents
+spec:
+  selector:
+    app.kubernetes.io/name: rethinkdb
+  ports:
+    - name: driver
+      port: 28015
+      targetPort: 28015
+    - name: admin
+      port: 8080
+      targetPort: 8080

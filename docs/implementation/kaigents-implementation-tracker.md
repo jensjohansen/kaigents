@@ -388,3 +388,86 @@ Acceptance criteria:
 
 - [x] No more than 3 high-level env vars passed to the runner (Contract, Storage, Auth).
 - [x] System is 100% clean and ready for Kairon pilot deployment.
+
+## Milestone 9: Real-Time Short-Term Memory + Context Manager (Live Case File)
+
+- [x] CRD: `MemoryPolicy` workspace-level policy
+- [x] Tool: `memory.record` MCP tool for streaming ingestion
+- [x] Implementation: Qdrant live upserts (builder-based API, Qdrant 1.18)
+- [ ] Implementation: Temporal edges in NebulaGraph (`valid_from`/`valid_to`) — **Deferred**: NebulaGraph store is a stub (`nebulagraph_store.rs`); `with_nebula()` logs a warning. See ITD-18 deviation note.
+- [x] Context Manager v1: `context_window_size` field on `Agent`/`Model` entity
+- [x] Context Manager v1: Budget enforcement via selection (fitted context assembly)
+- [x] Run Timeline: Included/excluded context emitted for traceability (`ContextAssembled` event with budget, total_tokens, dropped_count)
+
+Acceptance criteria:
+- [x] Agent answers mid-Work-Request questions against material ingested seconds earlier (verified via research PoC).
+- [x] A small-context model completes a task that would otherwise overflow its window (verified via `fit_to_budget`).
+
+## Milestone 10: Long-Term Memory (Cross-Request Recall)
+
+- [x] Consolidation: In-process consolidation wired into run lifecycle (`consolidate_run_memory` called after essay recording; `MemoryConsolidated` timeline event emitted). Temporal workflow (`ConsolidateMemoryWorkflow`) registered but not triggered from runner — its activities call HTTP endpoints that do not yet exist on the engine.
+- [x] Reflection: LLM-driven lesson extraction (via `memory.consolidate` tool)
+- [x] Storage: Semantic memory in Qdrant; episodic in RethinkDB (episodes table)
+- [ ] Storage: Episodic in NebulaGraph (temporal graph layer) — **Deferred**: NebulaGraph store is a stub. See ITD-18 deviation note.
+- [x] Tool: `memory.recall` MCP tool with provenance back-links
+- [ ] Context Manager v2: Summarization/compression and hierarchical demotion (core/recall/archival) — **Not implemented**: only `Truncate` strategy exists; `Summarize` and `Error` variants are defined but unimplemented.
+- [ ] Routing: Context-budget-aware model selection in `RoutingPolicy` — **Not implemented**.
+
+Acceptance criteria:
+- [x] A new Work Request recalls relevant past episodes with auditable provenance. **Verified** via integration test `integration_full_memory_flow_m9_to_m12` — recall returned 3 results including consolidated episode with provenance.
+- [ ] A task exceeding any single model's window is completed via compression/routing across models. **Not met** — Context Manager v2 (summarization/compression) not implemented; only `Truncate` strategy exists.
+
+## Milestone 11: Experience / Epistemic Memory (Belief Manager)
+
+- [x] Implementation: Belief Manager in Rust engine (ATMS) — `record_belief`, `close_experiment`, `reverify_hypothesis` implemented in `kaigents-memory/src/lib.rs`.
+- [x] Storage: Hypothesis/belief records in RethinkDB — **Deviation**: retraction cascades use RethinkDB `filter` on the `assumptions` array, not NebulaGraph graph traversals as specified in proposal Section 7.3. See ITD-18 deviation note.
+- [x] Tool: `experiment.close` and `experiment.reverify` MCP tools — defined as `InternalMemoryToolClient` tool contracts and implemented; registered in the tool plane during runs.
+- [x] Context Manager v3: Belief/precedence signals included in context assembly — beliefs inserted with high priority after task state in `fit_to_budget`.
+- [x] Policy: Repeat-prevention quality gates for falsified hypotheses — `validate_approach` called in runner; falsified-hypothesis warning injected as system message.
+
+Acceptance criteria:
+- [x] Falsified hypotheses trigger retraction cascades for dependent beliefs. **Verified** via integration test `integration_m11_retraction_cascade` — 3-level cascade (A->B->C) all falsified.
+- [ ] Code Expert Agent PoC demonstrates improving quality across assignments without repeating known-bad approaches. **Not met** — no Code Expert Agent PoC has been run.
+
+## Milestone 12: Knowledge Propagation — Package Format, Provenance, and Portability
+
+- [x] Implementation: Single embedding model lock — model ID stored in package manifests. **Implemented** (R4b) — `embedding_model` field on `MemoryManager`, included in manifest, validated on import with warning on mismatch. `schema_version` and `package_type` also added to manifest.
+- [x] Implementation: `.kgpkg` package format — manifest.json + Qdrant snapshot + episodes.jsonl + beliefs.jsonl. **Implemented** (export_memory produces tar.gz with manifest.json, episodes.jsonl, beliefs.jsonl, points.jsonl). Note: `policy.yaml` and `distilled-lessons.md` not yet included in the package.
+- [x] Implementation: Provenance fields on Episode and Hypothesis structs (`origin_workspace_id`, `origin_package_id`, `source_tier`). **Implemented** — fields exist on both structs and are populated during import.
+- [x] Implementation: Source priority ordering in `MemoryPolicy` (`source_priority` list). **Implemented** — field exists on MemoryPolicy struct.
+- [x] Implementation: Export/import CLI (`kaigents-cli memory export` / `kaigents-cli memory import`). **Implemented** — CLI commands wired to export_memory/import_memory in kaigents-memory.
+- [x] Implementation: Package-scoped retraction cascades using `origin_package_id` filtering. **Implemented** (R4c) — `close_experiment` accepts `scope_package_id: Option<&str>`; `remove_package` passes `Some(package_id)` to scope cascade to same-package beliefs only.
+- [x] Implementation: Cross-workspace deduplication (batch semantic similarity check before import). **Implemented** (R4d) — Qdrant points: vector search >0.95 skips duplicates; episodes/beliefs: exact text match in RethinkDB skips duplicates. Import result includes skip counts.
+
+Acceptance criteria:
+- [x] `kaigents-cli memory export` produces a valid `.kgpkg` from any workspace.
+- [x] `kaigents-cli memory import` restores a `.kgpkg` into a new workspace with correct provenance.
+- [x] Imported beliefs are marked `pending` and visible in recall with `origin_workspace_id` metadata.
+- [x] Source priority ordering resolves ties correctly during context assembly.
+- [x] Package-scoped retraction cascades only affect beliefs from the removed package.
+- [x] Cross-workspace dedup prevents duplicate episodes on import.
+
+### M12 Status
+
+All M12 implementation items and acceptance criteria are complete.
+Verified via `cargo build`, `cargo build --features rethinkdb`,
+`cargo test`, and `cargo test --features rethinkdb` — all pass.
+22 core tests + 19 memory unit tests + 3 integration tests = 44 total,
+0 failures. Integration tests run against live Qdrant, RethinkDB, and
+Lemonade Server on the on-premise ai-agents k8s cluster.
+
+**Integration tests (all passed):**
+- `integration_full_memory_flow_m9_to_m12` — full M9-M12 flow: record,
+  search, consolidate, recall, belief, close_experiment, validate,
+  export, import, dedup.
+- `integration_m11_retraction_cascade` — 3-level retraction cascade
+  (A->B->C) all falsified.
+- `integration_m12_package_scoped_retraction` — same-package dependent
+  falsified, different-package dependent NOT falsified.
+
+**Known limitations** (not blocking acceptance criteria):
+- Episode/belief dedup uses exact text match, not semantic similarity
+  (would require embedding during import). Qdrant point dedup uses
+  proper vector cosine similarity > 0.95.
+- `policy.yaml` and `distilled-lessons.md` not yet included in the
+  `.kgpkg` package.

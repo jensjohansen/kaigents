@@ -6,7 +6,7 @@
 
 Kaigents is a **production-ready**, Kubernetes-native platform for building, running, and operating AI agents in enterprise environments. It is optimized for low total cost of ownership (TCO) with a strong focus on AMD Ryzen AI hardware.
 
-**Current Version**: 1.0.0 (General Availability)
+**Current Version**: 1.1.0 (Memory Subsystem)
 
 This repository is the Kaigents **platform** (distinct from any future marketing/community site).
 
@@ -16,8 +16,14 @@ This repository is the Kaigents **platform** (distinct from any future marketing
   - Product goals, MVP scope, functional requirements, UX requirements (run timeline), and milestones.
 - [`docs/architecture/kaigents-architecture-and-design.md`](docs/architecture/kaigents-architecture-and-design.md)
   - Canonical system design: boundaries, data flows, and the role of tool plane, run timeline, artifacts, and RAG.
+- [`docs/architecture/agent-memory-proposal.md`](docs/architecture/agent-memory-proposal.md)
+  - Memory subsystem design: short-term, long-term, epistemic, and knowledge propagation. Documents 4 intentional deviations from design (Section 13).
+- [`docs/research/knowledge-propagation-research.md`](docs/research/knowledge-propagation-research.md)
+  - Research basis for M12 knowledge propagation: 11 challenges, dispositions, and package format design.
 - [`docs/implementation/kaigents-implementation-tracker.md`](docs/implementation/kaigents-implementation-tracker.md)
   - Milestone tracker and push/review gates (when we are allowed to push working code).
+- [`docs/implementation-plan.md`](docs/implementation-plan.md)
+  - Detailed implementation plan including recovery plan (R0-R7) for memory milestones.
 - [`docs/CODING_STANDARDS_AND_DOD.md`](docs/CODING_STANDARDS_AND_DOD.md)
   - Coding standards, CI quality gates, and definition of done.
 - [`docs/research/technology/itd-register.md`](docs/research/technology/itd-register.md)
@@ -49,6 +55,11 @@ Kaigents 1.0.0 is built for stability and enterprise operations:
 - **Hybrid Execution**: Declarative hardware pinning (CPU/GPU/NPU) via `RoutingPolicy`.
 - **Observable**: Structured JSON logging (Loki-ready) and Prometheus metrics.
 - **Cloud-Agnostic Storage**: S3-compatible artifact storage (AWS, MinIO, Ceph).
+- **Agent Memory (M9-M12)**:
+  - **Short-term memory** (M9): Real-time ingestion via Qdrant vector store; sub-second search; context budget enforcement via selection/truncation.
+  - **Long-term memory** (M10): In-process consolidation extracts episodic memory from run timelines; recall with provenance back-links across Qdrant (semantic) and RethinkDB (keyword).
+  - **Epistemic memory** (M11): Belief Manager with ATMS-style hypothesis tracking; retraction cascades for falsified hypotheses; repeat-prevention quality gates.
+  - **Knowledge propagation** (M12): `.kgpkg` package format for cross-workspace knowledge transfer; single embedding model lock; package-scoped retraction cascades; cross-workspace deduplication; export/import CLI.
 
 ## License and OSS posture
 

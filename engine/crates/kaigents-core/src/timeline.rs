@@ -45,15 +45,36 @@ pub enum EventType {
     RunFinished,
     NodeStarted,
     NodeFinished,
-    NodeFailed { error: String, retries: u32 },
+    NodeFailed {
+        error: String,
+        retries: u32,
+    },
     NodeCancelled,
-    ToolInvoked { tool_name: String },
+    ToolInvoked {
+        tool_name: String,
+    },
     ToolFinished,
-    ToolFailed { error: String },
-    ModelInvoked { endpoint: String },
+    ToolFailed {
+        error: String,
+    },
+    ModelInvoked {
+        endpoint: String,
+    },
     ModelFinished,
-    ModelFailed { error: String },
-    ArtifactProduced { artifact_id: String },
+    ModelFailed {
+        error: String,
+    },
+    ArtifactProduced {
+        artifact_id: String,
+    },
+    ContextAssembled {
+        budget: u32,
+        total_tokens: u32,
+        dropped_count: usize,
+    },
+    MemoryConsolidated {
+        episode_id: String,
+    },
 }
 
 /// TimelineEvent represents a single event in the run timeline.

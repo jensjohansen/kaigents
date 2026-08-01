@@ -74,6 +74,14 @@ spec:
                       type: object
                       additionalProperties:
                         type: string
+                    contextBudgetStrategy:
+                      type: string
+                      description: How to handle context overflow (Summarize, Truncate, Error).
+                      enum: ["Summarize", "Truncate", "Error"]
+                    preferredContextWindow:
+                      type: integer
+                      format: int32
+                      description: Target token budget for the model context.
             status:
               type: object
               properties:

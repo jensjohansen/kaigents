@@ -21,4 +21,5 @@ type ExecutionContract struct {
 	MCPServerName     string `json:"mcpServerName,omitempty"`
 	SearchToolName    string `json:"searchToolName,omitempty"`
 	ReadToolName      string `json:"readToolName,omitempty"`
+	ContextWindowSize uint32 `json:"contextWindowSize,omitempty"`
 }

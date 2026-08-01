@@ -93,8 +93,11 @@ func (r *RunReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 		resolvedSearchToolName := ""
 		resolvedReadToolName := ""
 		resolvedNodeSelector := make(map[string]string)
+		resolvedContextWindowSize := int32(0)
+		preferredWindow := int32(0)
 
 		if run.Spec.Routing != nil {
+			preferredWindow = run.Spec.Routing.PreferredContextWindow
 			for k, v := range run.Spec.Routing.NodeSelector {
 				resolvedNodeSelector[k] = v
 			}
@@ -114,13 +117,13 @@ func (r *RunReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 				resolvedSystemPrompt = agent.Spec.SystemPrompt
 
 				if agent.Spec.Routing != nil {
+					if preferredWindow == 0 {
+						preferredWindow = agent.Spec.Routing.PreferredContextWindow
+					}
 					for k, v := range agent.Spec.Routing.NodeSelector {
 						if _, exists := resolvedNodeSelector[k]; !exists {
 							resolvedNodeSelector[k] = v
 						}
-					}
-					if run.Spec.Routing == nil || run.Spec.Routing.ComputeResource == "" {
-						// ... could set resources here
 					}
 				}
 
@@ -177,7 +180,12 @@ func (r *RunReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 				resolvedModelEndpointURL = firstNonEmpty(me.Spec.URL, me.Spec.ServiceDNS)
 				resolvedModelName = firstNonEmpty(resolvedModelName, me.Spec.Model)
 				resolvedModelEndpointName = firstNonEmpty(me.Name, resolvedModelEndpointName)
+				resolvedContextWindowSize = me.Spec.ContextWindowSize
 			}
+		}
+
+		if resolvedContextWindowSize == 0 && preferredWindow != 0 {
+			resolvedContextWindowSize = preferredWindow
 		}
 
 		contract := ExecutionContract{
@@ -194,6 +202,7 @@ func (r *RunReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 			MCPServerName:     resolvedMCPServerName,
 			SearchToolName:    resolvedSearchToolName,
 			ReadToolName:      resolvedReadToolName,
+			ContextWindowSize: uint32(resolvedContextWindowSize),
 		}
 
 		contractJSON, err := json.Marshal(contract)

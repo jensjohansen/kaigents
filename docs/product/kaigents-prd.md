@@ -60,6 +60,13 @@ Kaigents aims to be a “production substrate” where agents are:
 - Enable a credible low-TCO compute story:
   - hybrid CPU/GPU/NPU usage where available
   - routing policies so workloads can be placed appropriately
+- Support agent learning and memory as a first-class capability:
+  - real-time short-term memory (live Case File)
+  - long-term episodic memory (cross-request recall)
+  - experience and belief revision (hypothesis vs outcome)
+- Enable platform-owned context management:
+  - budget-fitted context assembly (never overflow)
+  - context-aware model selection ("right model at the right time")
 - Support multiple UX modalities:
   - CRD/GitOps
   - CLI
@@ -320,6 +327,23 @@ Run timeline UX requirements:
   - role-based access control
   - audit trails for user actions
 - Solo Mode may support simpler auth, but must not block migration to Platform Mode.
+
+### 6.7 Agent memory and context management
+
+- **Real-time short-term memory (Live Case File)**:
+  - Support streaming ingestion of new information (audio, documents, messages) during a work request.
+  - Ingested material must be queryable within sub-seconds.
+- **Long-term episodic memory (Cross-request recall)**:
+  - Support consolidation of work request timelines into queryable episodic and semantic memory.
+  - Recalled memory must include provenance back-links to the original work request.
+- **Experience and belief revision (Hypothesis vs Outcome)**:
+  - Support closing the loop on experiments by recording outcomes (confirmed/falsified).
+  - Support retraction cascades where falsified hypotheses invalidate dependent beliefs.
+  - Support explicit, history-informed re-verification of failed approaches.
+- **Context Manager**:
+  - The platform must own the context window, assembling a budget-fitted context for every model call.
+  - Support summarization, compression, and hierarchical demotion to fit models with different context window sizes.
+  - Support context-aware model selection ("right model at the right time") as part of execution routing.
 
 ## 7. Quality Attributes (Non-Functional Requirements)
 

@@ -1,0 +1,31 @@
+# File: engine/crates/kaigents-memory/Cargo.toml
+# Purpose: Defines dependencies for the Kaigents memory subsystem.
+# Product/business importance: Provides the build foundation for sovereign learning and real-time context.
+#
+# Copyright (c) 2026 John K Johansen
+# License: MIT (see LICENSE)
+
+[package]
+name = "kaigents-memory"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = []
+rethinkdb = ["dep:unreql", "kaigents-core/rethinkdb"]
+
+[dependencies]
+kaigents-core = { path = "../kaigents-core" }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+async-trait = { workspace = true }
+tracing = { workspace = true }
+qdrant-client = { workspace = true }
+nebula-client = { workspace = true }
+uuid = { workspace = true }
+kube = { workspace = true }
+k8s-openapi = { workspace = true }
+unreql = { version = "0.2.1", optional = true }
+tar = { workspace = true }
+flate2 = { workspace = true }

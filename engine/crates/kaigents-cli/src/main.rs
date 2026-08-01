@@ -9,16 +9,18 @@ use clap::{Parser, Subcommand};
 use kaigents_core::{
     artifacts_root_dir, default_state_dir, gather_metrics, init_logging, init_metrics, parse_uuid,
     resources::ExecutionContract, timeline_events_path, ArtifactId, ArtifactKind,
-    ChatCompletionRequest, ChatMessage, EventType, FileArtifactStore, FileTimelineStore,
-    FileToolContractStore, HttpMcpClient, HttpOpenAIModelClient, RunId, StartWorkRequestRequest,
-    TemporalAdapterClient, TemporalWorkItemDef, TimelineEvent, ToolPlane, MODEL_TOKENS_TOTAL,
-    RUNS_TOTAL, RUN_DURATION_SECONDS, TOOL_INVOCATIONS_TOTAL,
+    ChatCompletionRequest, ChatMessage, ContextBudgetStrategy, ContextManager, EventType,
+    FileArtifactStore, FileTimelineStore, FileToolContractStore, HttpMcpClient,
+    HttpOpenAIModelClient, RunId, StartWorkRequestRequest, TemporalAdapterClient,
+    TemporalWorkItemDef, TimelineEvent, ToolPlane, MODEL_TOKENS_TOTAL, RUNS_TOTAL,
+    RUN_DURATION_SECONDS, TOOL_INVOCATIONS_TOTAL,
 };
+use kaigents_memory::MemoryManager;
 use std::collections::HashMap;
 use std::io;
 use std::sync::Arc;
 use std::time::Duration;
-use tracing::{error, info};
+use tracing::{error, info, warn};
 
 use kaigents_core::ModelClient;
 
@@ -97,6 +99,11 @@ enum Commands {
         #[arg(short, long)]
         output: Option<String>,
     },
+    /// Manage memory
+    Memory {
+        #[command(subcommand)]
+        command: MemoryCommands,
+    },
     /// Bootstrap/install (placeholder)
     Bootstrap,
 
@@ -127,6 +134,27 @@ enum PersonaCommands {
     },
     /// Activate a specific persona version
     Activate { name: String, version: String },
+}
+
+#[derive(Subcommand)]
+enum MemoryCommands {
+    /// Export memory to a package
+    Export {
+        /// Workspace ID
+        workspace: String,
+        /// Package ID
+        package: String,
+        /// Output file (.kgpkg)
+        #[arg(short, long)]
+        output: Option<String>,
+    },
+    /// Import memory from a package
+    Import {
+        /// Target workspace ID
+        workspace: String,
+        /// Package file (.kgpkg)
+        file: String,
+    },
 }
 
 #[tokio::main]
@@ -432,6 +460,41 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
             }
         }
+        Commands::Memory { command } => {
+            let qdrant_url = std::env::var("KAIGENTS_QDRANT_URL").ok();
+            let embedding_model = std::env::var("KAIGENTS_EMBEDDING_MODEL").ok();
+            let chat_model = std::env::var("KAIGENTS_MODEL_NAME").ok();
+            let mut mm = MemoryManager::new(qdrant_url, None, None, None)?;
+            if let Some(model) = embedding_model {
+                mm = mm.with_embedding_model(model);
+            }
+            if let Some(model) = chat_model {
+                mm = mm.with_chat_model(model);
+            }
+            #[cfg(feature = "rethinkdb")]
+            if store_backend == "rethinkdb" {
+                let rethink_cfg = RethinkDbConfig::from_env();
+                mm = mm.with_rethinkdb(&rethink_cfg).await?;
+            }
+
+            match command {
+                MemoryCommands::Export {
+                    workspace,
+                    package,
+                    output,
+                } => {
+                    let bytes = mm.export_memory(&workspace, &package).await?;
+                    let out_path = output.unwrap_or_else(|| format!("{}.kgpkg", package));
+                    std::fs::write(&out_path, bytes)?;
+                    println!("Memory exported to {}", out_path);
+                }
+                MemoryCommands::Import { workspace, file } => {
+                    let bytes = std::fs::read(&file)?;
+                    let res = mm.import_memory(&workspace, &bytes).await?;
+                    println!("{}", res);
+                }
+            }
+        }
         Commands::Bootstrap => {
             println!("Bootstrap/Install: placeholder");
             // Placeholder: install CRDs, set up namespace, etc.
@@ -460,6 +523,41 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let target_kind = contract.target_kind.clone();
             let target_name = contract.target_name.clone();
             let run_input = contract.input.clone();
+
+            let model_client = HttpOpenAIModelClient::from_contract(&contract)?;
+            let model_client_arc: Arc<dyn kaigents_core::ModelClient> =
+                Arc::new(model_client.clone());
+
+            let qdrant_url = std::env::var("KAIGENTS_QDRANT_URL").ok();
+            let embedding_endpoint = contract.model_endpoint_name.clone();
+            let chat_endpoint = contract.model_endpoint_name.clone();
+            let embedding_model = std::env::var("KAIGENTS_EMBEDDING_MODEL")
+                .unwrap_or_else(|_| embedding_endpoint.clone().unwrap_or_default());
+            let chat_model = contract
+                .model_name
+                .clone()
+                .unwrap_or_else(|| std::env::var("KAIGENTS_MODEL_NAME").unwrap_or_else(|_| "gpt-oss-20b".to_string()));
+            let memory_manager = {
+                #[allow(unused_mut)]
+                let mut mm = MemoryManager::new(
+                    qdrant_url,
+                    Some(model_client_arc),
+                    embedding_endpoint,
+                    chat_endpoint,
+                )?
+                .with_embedding_model(embedding_model)
+                .with_chat_model(chat_model);
+
+                #[cfg(feature = "rethinkdb")]
+                if store_backend == "rethinkdb" {
+                    let rethink_cfg = kaigents_core::rethinkdb_store::RethinkDbConfig::from_env();
+                    mm = mm.with_rethinkdb(&rethink_cfg).await?;
+                }
+                mm
+            };
+
+            let memory_manager = Arc::new(memory_manager);
+            let context_manager = ContextManager::new();
 
             RUNS_TOTAL
                 .with_label_values(&[&target_kind, "started"])
@@ -616,9 +714,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     mcp_server_name.clone(),
                     Box::new(HttpMcpClient::new(mcp_server_name.clone(), mcp_server_url)),
                 );
+                // Also register memory tool client
+                tool_plane.register_client(
+                    "kaigents-memory".to_string(),
+                    Box::new(kaigents_memory::InternalMemoryToolClient::new(
+                        memory_manager.clone(),
+                    )),
+                );
                 tool_plane.refresh_contracts().await?;
-
-                let model_client = HttpOpenAIModelClient::from_contract(&contract)?;
 
                 let search_results = tool_plane
                     .invoke_tool(
@@ -671,10 +774,81 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .clone()
                     .unwrap_or_else(|| "gpt-oss-20b".to_string());
 
-                let prompt = format!(
-                    "{system_prompt}\n\nWrite a short markdown essay about the topic: '{topic}'.\n\nUse the following sources (may be partial):\n\n{}\n\nOutput only markdown with a title, intro, 3-5 insight paragraphs, conclusion, and a Sources section listing the URLs.",
-                    source_texts.join("\n\n---\n\n")
+                let workspace_id = std::env::var("KAIGENTS_WORKSPACE_ID")
+                    .unwrap_or_else(|_| "default".to_string());
+                let historical_memories = memory_manager
+                    .recall(&workspace_id, &topic, 5)
+                    .await
+                    .unwrap_or_default();
+
+                let mut case_file_entries: Vec<String> = Vec::new();
+                let mut episodes: Vec<String> = Vec::new();
+                let mut beliefs: Vec<String> = Vec::new();
+
+                for m in historical_memories {
+                    let mem_type = m
+                        .metadata
+                        .as_ref()
+                        .and_then(|v| v.get("type"))
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("short-term");
+
+                    match mem_type {
+                        "long-term" => episodes.push(m.content),
+                        "epistemic" => beliefs.push(m.content),
+                        _ => case_file_entries.push(m.content),
+                    }
+                }
+
+                // Add current source texts to case file for budgeting
+                case_file_entries.extend(source_texts);
+
+                let task_state = format!("Writing an essay about '{}'.", topic);
+                let budget = contract.context_window_size.unwrap_or(4096);
+
+                // Epistemic Quality Gate: Check for falsified approaches matching the topic
+                let violations = memory_manager
+                    .validate_approach(&workspace_id, &topic)
+                    .await
+                    .unwrap_or_default();
+                let mut fitted = context_manager.fit_to_budget(
+                    &system_prompt,
+                    &task_state,
+                    episodes,
+                    case_file_entries,
+                    beliefs,
+                    budget,
+                    ContextBudgetStrategy::Truncate,
                 );
+
+                if !violations.is_empty() {
+                    warn!("Epistemic Quality Gate triggered: {} falsified hypotheses found for topic '{}'", violations.len(), topic);
+                    let mut warning_text = "WARNING: The following approaches have been PREVIOUSLY FALSIFIED for this topic:\n".to_string();
+                    for v in violations {
+                        warning_text
+                            .push_str(&format!("- {} (Confidence: {})\n", v.content, v.confidence));
+                    }
+                    warning_text.push_str(
+                        "DO NOT repeat these failed approaches. Pivot to a different strategy.",
+                    );
+
+                    fitted.messages.insert(
+                        1,
+                        ChatMessage {
+                            role: "system".to_string(),
+                            content: warning_text,
+                        },
+                    );
+                }
+
+                timeline_store.append(TimelineEvent::new(
+                    run_id.clone(),
+                    EventType::ContextAssembled {
+                        budget,
+                        total_tokens: fitted.total_estimated_tokens,
+                        dropped_count: fitted.dropped_entries_count,
+                    },
+                ))?;
 
                 let model_timeout_secs: u64 = std::env::var("KAIGENTS_MODEL_TIMEOUT_SECS")
                     .ok()
@@ -702,10 +876,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         &endpoint_name,
                         ChatCompletionRequest {
                             model: model_name.clone(),
-                            messages: vec![ChatMessage {
-                                role: "user".to_string(),
-                                content: prompt,
-                            }],
+                            messages: fitted.messages,
                             max_tokens: Some(1200),
                             temperature: Some(0.4),
                             stream: true,
@@ -744,6 +915,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .map(|c| c.message.content.clone())
                     .unwrap_or_else(|| "# Essay\n\n(no content)".to_string());
 
+                // Record the essay to memory
+                let memory_record = kaigents_memory::MemoryRecord {
+                    tier: kaigents_memory::MemoryTier::Short,
+                    workspace_id: workspace_id.clone(),
+                    run_id: Some(run_id.clone()),
+                    content: format!("Essay about '{}':\n{}", topic, essay),
+                    metadata: None,
+                    vector: None, // Will be generated by MemoryManager
+                };
+                if let Err(e) = memory_manager.record(memory_record).await {
+                    error!("Failed to record essay to memory: {}", e);
+                }
+
                 let (artifact, record) = artifact_store.store_bytes(
                     run_id.clone(),
                     "essay.md".to_string(),
@@ -766,6 +950,28 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .with_payload("blob_path".to_string(), record.blob_path);
 
                 timeline_store.append(produced)?;
+
+                // Consolidate short-term memories from this run into a long-term episode.
+                // This closes the Phase 2 memory loop: ingest -> consolidate -> recall.
+                match memory_manager
+                    .consolidate_run_memory(&workspace_id, &run_id)
+                    .await
+                {
+                    Ok(episode) => {
+                        let episode_id = episode.id.unwrap_or_default();
+                        info!("Consolidated run {} into episode {}", run_id, episode_id);
+                        let consolidated = TimelineEvent::new(
+                            run_id.clone(),
+                            EventType::MemoryConsolidated { episode_id },
+                        )
+                        .with_correlation(format!("consolidation-{}", run_id.as_uuid()));
+                        timeline_store.append(consolidated)?;
+                    }
+                    Err(e) => {
+                        warn!("Failed to consolidate run memory into episode: {}", e);
+                    }
+                }
+
                 timeline_store.append(TimelineEvent::new(run_id, EventType::RunFinished))?;
 
                 info!("Solo Mode execution completed.");

@@ -105,4 +105,5 @@ pub struct ExecutionContract {
     pub mcp_server_name: Option<String>,
     pub search_tool_name: Option<String>,
     pub read_tool_name: Option<String>,
+    pub context_window_size: Option<u32>,
 }

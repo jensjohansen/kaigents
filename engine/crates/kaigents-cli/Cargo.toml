@@ -5,7 +5,7 @@ edition = "2021"
 
 [features]
 default = []
-rethinkdb = ["kaigents-core/rethinkdb"]
+rethinkdb = ["kaigents-core/rethinkdb", "kaigents-memory/rethinkdb"]
 s3 = ["kaigents-core/s3"]
 
 [[bin]]
@@ -21,6 +21,7 @@ uuid = { workspace = true }
 tiny_http = { workspace = true }
 reqwest = { workspace = true }
 kaigents-core = { path = "../kaigents-core" }
+kaigents-memory = { path = "../kaigents-memory" }
 kube = { workspace = true }
 k8s-openapi = { workspace = true }
 serde_yaml = "0.9"

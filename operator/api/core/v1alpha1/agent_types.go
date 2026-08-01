@@ -34,6 +34,10 @@ type RoutingPolicy struct {
 	ComputeResource string `json:"computeResource,omitempty"`
 	// NodeSelector defines labels that must be present on the node for execution.
 	NodeSelector map[string]string `json:"nodeSelector,omitempty"`
+	// ContextBudgetStrategy defines how to handle context overflow (Summarize, Truncate, Error).
+	ContextBudgetStrategy string `json:"contextBudgetStrategy,omitempty"`
+	// PreferredContextWindow is the target token budget for the model context.
+	PreferredContextWindow int32 `json:"preferredContextWindow,omitempty"`
 }
 
 // ConditionType names for Kaigents resources.
@@ -105,7 +109,9 @@ func (in *Agent) DeepCopyObject() runtime.Object {
 	}
 	if in.Spec.Routing != nil {
 		out.Spec.Routing = &RoutingPolicy{
-			ComputeResource: in.Spec.Routing.ComputeResource,
+			ComputeResource:        in.Spec.Routing.ComputeResource,
+			ContextBudgetStrategy:  in.Spec.Routing.ContextBudgetStrategy,
+			PreferredContextWindow: in.Spec.Routing.PreferredContextWindow,
 		}
 		if in.Spec.Routing.NodeSelector != nil {
 			out.Spec.Routing.NodeSelector = make(map[string]string)

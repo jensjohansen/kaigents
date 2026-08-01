@@ -26,6 +26,8 @@ type ModelEndpointSpec struct {
 	Model        string                    `json:"model,omitempty"`
 	Provider     string                    `json:"provider,omitempty"`
 	Capabilities ModelEndpointCapabilities `json:"capabilities,omitempty"`
+	// ContextWindowSize is the maximum token budget for this model.
+	ContextWindowSize int32 `json:"contextWindowSize,omitempty"`
 }
 
 // ModelEndpointStatus defines the observed state of a model endpoint.

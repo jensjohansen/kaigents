@@ -40,6 +40,7 @@ pub struct ModelCapabilities {
     pub embeddings: bool,
     pub max_tokens: Option<u32>,
     pub supports_streaming: bool,
+    pub context_window_size: Option<u32>,
 }
 
 /// ModelClient defines the minimal interface for model serving.
@@ -97,10 +98,13 @@ pub struct ChatChoice {
     pub finish_reason: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Usage {
+    #[serde(default)]
     pub prompt_tokens: u32,
+    #[serde(default)]
     pub completion_tokens: u32,
+    #[serde(default)]
     pub total_tokens: u32,
 }
 
@@ -131,6 +135,7 @@ struct ChatCompletionDelta {
 pub struct EmbeddingsRequest {
     pub model: String,
     pub input: Vec<String>, // array of strings or array of token arrays
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub encoding_format: Option<String>,
 }
 
@@ -140,6 +145,7 @@ pub struct EmbeddingsResponse {
     pub object: String,
     pub model: String,
     pub data: Vec<Embedding>,
+    #[serde(default)]
     pub usage: Usage,
 }
 
@@ -194,6 +200,9 @@ impl HttpOpenAIModelClient {
         let max_tokens = std::env::var("KAIGENTS_MODEL_ENDPOINT_MAX_TOKENS")
             .ok()
             .and_then(|v| v.parse::<u32>().ok());
+        let context_window_size = std::env::var("KAIGENTS_MODEL_CONTEXT_WINDOW_SIZE")
+            .ok()
+            .and_then(|v| v.parse::<u32>().ok());
 
         let api_key = std::env::var("KAIGENTS_MODEL_API_KEY").ok();
 
@@ -205,6 +214,7 @@ impl HttpOpenAIModelClient {
                 embeddings,
                 max_tokens,
                 supports_streaming,
+                context_window_size,
             },
             provider,
             metadata: HashMap::new(),
@@ -238,6 +248,7 @@ impl HttpOpenAIModelClient {
                 embeddings: true, // assume both for transition
                 max_tokens: Some(4096),
                 supports_streaming: true,
+                context_window_size: Some(8192), // Default for transition
             },
             provider,
             metadata: HashMap::new(),
@@ -782,6 +793,7 @@ mod tests {
                 embeddings: true,
                 max_tokens: Some(4096),
                 supports_streaming: false,
+                context_window_size: Some(16384),
             },
             provider: "Lemonade".to_string(),
             metadata: HashMap::new(),
@@ -839,6 +851,7 @@ mod tests {
                 embeddings: true,
                 max_tokens: None,
                 supports_streaming: false,
+                context_window_size: None,
             },
             provider: "Lemonade".to_string(),
             metadata: HashMap::new(),

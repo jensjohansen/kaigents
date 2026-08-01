@@ -1,0 +1,96 @@
+# File: operator/manifests/crds/core.kaigents.io_memorypolicies.yaml
+# Purpose: Defines the MemoryPolicy CRD manifest used to govern agent memory lifecycle and PII.
+# Product/business importance: Externalizes memory management (aging, retention, and isolation) into a declarative policy.
+#
+# Copyright (c) 2026 John K Johansen
+# License: MIT (see LICENSE)
+
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: memorypolicies.core.kaigents.io
+spec:
+  group: core.kaigents.io
+  scope: Namespaced
+  names:
+    plural: memorypolicies
+    singular: memorypolicy
+    kind: MemoryPolicy
+    shortNames:
+      - kmp
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      subresources:
+        status: {}
+      schema:
+        openAPIV3Schema:
+          type: object
+          required:
+            - spec
+          properties:
+            apiVersion:
+              type: string
+            kind:
+              type: string
+            metadata:
+              type: object
+            spec:
+              type: object
+              properties:
+                retention:
+                  type: object
+                  description: Retention policies for different memory tiers.
+                  properties:
+                    shortTermTtlSeconds:
+                      type: integer
+                      format: int32
+                      description: Time-to-live for hot memory (Qdrant).
+                    longTermTtlDays:
+                      type: integer
+                      format: int32
+                      description: Retention period for consolidated episodic memory.
+                    archivalTtlDays:
+                      type: integer
+                      format: int32
+                      description: Retention for cold/archival memory.
+                capacity:
+                  type: object
+                  description: Storage limits and thresholds.
+                  properties:
+                    maxShortTermBytes:
+                      type: string
+                      description: Max storage for hot memory (e.g., "1Gi").
+                    maxEpisodes:
+                      type: integer
+                      format: int64
+                      description: Max number of episodic memory records.
+                governance:
+                  type: object
+                  description: PII and data isolation settings.
+                  properties:
+                    piiScrubbing:
+                      type: boolean
+                      description: Whether to scrub PII during ingestion.
+                    piiCategories:
+                      type: array
+                      items:
+                        type: string
+                      description: Categories of PII to scrub (e.g., "PERSON", "PHONE_NUMBER").
+                    isolationLevel:
+                      type: string
+                      enum: [ "Workspace", "Team", "Global" ]
+                      default: "Workspace"
+                      description: The level of memory isolation.
+            status:
+              type: object
+              properties:
+                observedGeneration:
+                  type: integer
+                  format: int64
+                phase:
+                  type: string
+                usageBytes:
+                  type: integer
+                  format: int64

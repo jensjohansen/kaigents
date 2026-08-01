@@ -48,6 +48,8 @@ func addKnownTypes(scheme *runtime.Scheme) error {
 		&TaskList{},
 		&Process{},
 		&ProcessList{},
+		&MemoryPolicy{},
+		&MemoryPolicyList{},
 	)
 
 	metav1.AddToGroupVersion(scheme, GroupVersion)

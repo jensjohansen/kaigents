@@ -1,0 +1,91 @@
+# File: kaigents/deploy/memory/qdrant.yaml
+# Purpose: Kubernetes manifest for Qdrant vector database (ITD-04), the short-term
+# memory store for the Kaigents agent memory subsystem.
+# Product/business importance: Qdrant holds the real-time vector embeddings that
+# enable semantic recall during a run. Without it, memory.record and memory.recall
+# are non-functional.
+#
+# Copyright (c) 2026 John K Johansen
+# License: MIT (see LICENSE)
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: qdrant
+  namespace: kaigents
+  labels:
+    app.kubernetes.io/name: qdrant
+    app.kubernetes.io/part-of: kaigents
+spec:
+  serviceName: qdrant
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: qdrant
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: qdrant
+        app.kubernetes.io/part-of: kaigents
+    spec:
+      containers:
+        - name: qdrant
+          image: qdrant/qdrant:v1.18.0
+          ports:
+            - name: http
+              containerPort: 6333
+            - name: grpc
+              containerPort: 6334
+          env:
+            - name: QDRANT__STORAGE__STORAGE_PATH
+              value: "/qdrant/storage"
+          volumeMounts:
+            - name: qdrant-data
+              mountPath: /qdrant/storage
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 6333
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 6333
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: qdrant-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qdrant
+  namespace: kaigents
+  labels:
+    app.kubernetes.io/name: qdrant
+    app.kubernetes.io/part-of: kaigents
+spec:
+  selector:
+    app.kubernetes.io/name: qdrant
+  ports:
+    - name: http
+      port: 6333
+      targetPort: 6333
+    - name: grpc
+      port: 6334
+      targetPort: 6334
