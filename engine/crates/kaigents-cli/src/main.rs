@@ -9,9 +9,9 @@ use clap::{Parser, Subcommand};
 use kaigents_core::{
     artifacts_root_dir, default_state_dir, gather_metrics, init_logging, init_metrics, parse_uuid,
     resources::ExecutionContract, timeline_events_path, ArtifactId, ArtifactKind,
-    ChatCompletionRequest, ChatMessage, ContextBudgetStrategy, ContextManager, EventType,
-    FileArtifactStore, FileTimelineStore, FileToolContractStore, HttpMcpClient,
-    HttpOpenAIModelClient, RunId, StartWorkRequestRequest, TemporalAdapterClient,
+    ChatCompletionRequest, ChatMessage, ConsolidationRequest, ContextBudgetStrategy,
+    ContextManager, EventType, FileArtifactStore, FileTimelineStore, FileToolContractStore,
+    HttpMcpClient, HttpOpenAIModelClient, RunId, StartWorkRequestRequest, TemporalAdapterClient,
     TemporalWorkItemDef, TimelineEvent, ToolPlane, MODEL_TOKENS_TOTAL, RUNS_TOTAL,
     RUN_DURATION_SECONDS, TOOL_INVOCATIONS_TOTAL,
 };
@@ -559,6 +559,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let memory_manager = Arc::new(memory_manager);
             let context_manager = ContextManager::new();
 
+            let temporal_adapter_url = std::env::var("KAIGENTS_TEMPORAL_ADAPTER_URL").ok();
+            if temporal_adapter_url.is_some() {
+                let memory_api_port = std::env::var("KAIGENTS_MEMORY_API_PORT")
+                    .unwrap_or_else(|_| "8090".to_string())
+                    .parse::<u16>()
+                    .unwrap_or(8090);
+                serve_memory_api(memory_manager.clone(), memory_api_port);
+                info!("Temporal consolidation enabled — memory API server started for workflow activities");
+            }
+
             RUNS_TOTAL
                 .with_label_values(&[&target_kind, "started"])
                 .inc();
@@ -683,13 +693,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
 
             // Fallback: Solo Mode execution (embedded logic)
-            // For now, only handles the hardcoded Research Assistant logic if kind=Agent and name contains "Research"
-            if target_kind == "Agent" && target_name.contains("Research") {
-                let topic = topic_from_run_input(&run_input); // use helper to extract topic
-                let mcp_server_url = contract
-                    .mcp_server_url
-                    .clone()
-                    .ok_or("mcp_server_url is required for Solo Mode research")?;
+            // Supports any Agent persona — tool configuration is driven by the execution contract.
+            if target_kind == "Agent" {
+                let topic = topic_from_run_input(&run_input);
+                let mcp_server_url = contract.mcp_server_url.clone();
                 let mcp_server_name = contract
                     .mcp_server_name
                     .clone()
@@ -703,18 +710,27 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .clone()
                     .unwrap_or_else(|| "web_url_read".to_string());
                 let system_prompt = contract.system_prompt.clone().unwrap_or_else(|| {
-                    "You are a Student Research Assistant. Given a topic, perform web searches, read sources, and synthesize a short Markdown essay with a sources section.".to_string()
+                    "You are a Kaigents AI Agent. Complete the task as specified in the input.".to_string()
                 });
+
+                let mcp_timeout_ms: u64 = std::env::var("KAIGENTS_MCP_TIMEOUT_MS")
+                    .ok()
+                    .and_then(|v| v.parse::<u64>().ok())
+                    .unwrap_or(30000);
+                let mcp_timeout = Duration::from_millis(mcp_timeout_ms);
 
                 let contracts_path = state_dir.join("tool_contracts.jsonl");
                 let contract_store = FileToolContractStore::new(contracts_path)?;
                 let mut tool_plane = ToolPlane::new(Arc::new(timeline_store.clone()))
                     .with_contract_sink(Arc::new(contract_store));
-                tool_plane.register_client(
-                    mcp_server_name.clone(),
-                    Box::new(HttpMcpClient::new(mcp_server_name.clone(), mcp_server_url)),
-                );
-                // Also register memory tool client
+
+                if let Some(ref mcp_url) = mcp_server_url {
+                    tool_plane.register_client(
+                        mcp_server_name.clone(),
+                        Box::new(HttpMcpClient::new(mcp_server_name.clone(), mcp_url.clone())),
+                    );
+                }
+                // Always register memory tool client
                 tool_plane.register_client(
                     "kaigents-memory".to_string(),
                     Box::new(kaigents_memory::InternalMemoryToolClient::new(
@@ -723,46 +739,49 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 );
                 tool_plane.refresh_contracts().await?;
 
-                let search_results = tool_plane
-                    .invoke_tool(
-                        run_id.clone(),
-                        &search_tool_name,
-                        serde_json::json!({"query": topic, "pageno": 1}),
-                        Duration::from_secs(30),
-                    )
-                    .await?;
-                TOOL_INVOCATIONS_TOTAL
-                    .with_label_values(&[&search_tool_name, "succeeded"])
-                    .inc();
-
-                let mut urls: Vec<String> = Vec::new();
-                if let Some(results) = search_results.get("results").and_then(|v| v.as_array()) {
-                    for item in results.iter().take(3) {
-                        if let Some(url) = item.get("url").and_then(|v| v.as_str()) {
-                            urls.push(url.to_string());
-                        }
-                    }
-                }
-
                 let mut source_texts: Vec<String> = Vec::new();
-                for url in &urls {
-                    let read_output = tool_plane
+
+                if mcp_server_url.is_some() {
+                    let search_results = tool_plane
                         .invoke_tool(
                             run_id.clone(),
-                            &read_tool_name,
-                            serde_json::json!({"url": url}),
-                            Duration::from_secs(30),
+                            &search_tool_name,
+                            serde_json::json!({"query": topic, "pageno": 1}),
+                            mcp_timeout,
                         )
                         .await?;
                     TOOL_INVOCATIONS_TOTAL
-                        .with_label_values(&[&read_tool_name, "succeeded"])
+                        .with_label_values(&[&search_tool_name, "succeeded"])
                         .inc();
-                    let text = read_output
-                        .get("text")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or("")
-                        .to_string();
-                    source_texts.push(format!("URL: {}\n{}", url, text));
+
+                    let mut urls: Vec<String> = Vec::new();
+                    if let Some(results) = search_results.get("results").and_then(|v| v.as_array()) {
+                        for item in results.iter().take(3) {
+                            if let Some(url) = item.get("url").and_then(|v| v.as_str()) {
+                                urls.push(url.to_string());
+                            }
+                        }
+                    }
+
+                    for url in &urls {
+                        let read_output = tool_plane
+                            .invoke_tool(
+                                run_id.clone(),
+                                &read_tool_name,
+                                serde_json::json!({"url": url}),
+                                mcp_timeout,
+                            )
+                            .await?;
+                        TOOL_INVOCATIONS_TOTAL
+                            .with_label_values(&[&read_tool_name, "succeeded"])
+                            .inc();
+                        let text = read_output
+                            .get("text")
+                            .and_then(|v| v.as_str())
+                            .unwrap_or("")
+                            .to_string();
+                        source_texts.push(format!("URL: {}\n{}", url, text));
+                    }
                 }
 
                 let endpoint_name = contract
@@ -952,23 +971,71 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 timeline_store.append(produced)?;
 
                 // Consolidate short-term memories from this run into a long-term episode.
-                // This closes the Phase 2 memory loop: ingest -> consolidate -> recall.
-                match memory_manager
-                    .consolidate_run_memory(&workspace_id, &run_id)
-                    .await
-                {
-                    Ok(episode) => {
-                        let episode_id = episode.id.unwrap_or_default();
-                        info!("Consolidated run {} into episode {}", run_id, episode_id);
-                        let consolidated = TimelineEvent::new(
-                            run_id.clone(),
-                            EventType::MemoryConsolidated { episode_id },
-                        )
-                        .with_correlation(format!("consolidation-{}", run_id.as_uuid()));
-                        timeline_store.append(consolidated)?;
+                // If a Temporal adapter is configured, trigger the durable consolidation workflow.
+                // Otherwise, fall back to in-process consolidation.
+                if let Some(adapter_url) = &temporal_adapter_url {
+                    let adapter = TemporalAdapterClient::new(adapter_url);
+                    let cons_req = ConsolidationRequest {
+                        workspace_id: workspace_id.clone(),
+                        run_id: run_id.as_uuid().to_string(),
+                    };
+                    match adapter.start_consolidation(cons_req).await {
+                        Ok(state) => {
+                            info!(
+                                "Temporal consolidation started: {} (phase: {})",
+                                state.consolidation_id, state.phase
+                            );
+                            let episode_id = state.episode_id.unwrap_or_default();
+                            let consolidated = TimelineEvent::new(
+                                run_id.clone(),
+                                EventType::MemoryConsolidated { episode_id },
+                            )
+                            .with_correlation(format!("consolidation-{}", run_id.as_uuid()));
+                            timeline_store.append(consolidated)?;
+                        }
+                        Err(e) => {
+                            warn!(
+                                "Temporal consolidation failed, falling back to in-process: {}",
+                                e
+                            );
+                            match memory_manager
+                                .consolidate_run_memory(&workspace_id, &run_id)
+                                .await
+                            {
+                                Ok(episode) => {
+                                    let episode_id = episode.id.unwrap_or_default();
+                                    info!("In-process consolidation succeeded: episode {}", episode_id);
+                                    let consolidated = TimelineEvent::new(
+                                        run_id.clone(),
+                                        EventType::MemoryConsolidated { episode_id },
+                                    )
+                                    .with_correlation(format!("consolidation-{}", run_id.as_uuid()));
+                                    timeline_store.append(consolidated)?;
+                                }
+                                Err(e2) => {
+                                    warn!("In-process consolidation also failed: {}", e2);
+                                }
+                            }
+                        }
                     }
-                    Err(e) => {
-                        warn!("Failed to consolidate run memory into episode: {}", e);
+                } else {
+                    match memory_manager
+                        .consolidate_run_memory(&workspace_id, &run_id)
+                        .await
+                    {
+                        Ok(episode) => {
+                            let episode_id = episode.id.unwrap_or_default();
+                            info!("Consolidated run {} into episode {}", run_id, episode_id);
+                            let consolidated = TimelineEvent::new(
+                                run_id.clone(),
+                                EventType::MemoryConsolidated { episode_id },
+                            )
+                            .with_correlation(format!("consolidation-{}", run_id.as_uuid()));
+                            timeline_store.append(consolidated)?;
+                        }
+                        Err(e) => {
+                            warn!("Failed to consolidate run memory into episode: {}", e);
+                        }
                     }
                 }
 
@@ -993,4 +1060,135 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 fn other_error(message: String) -> Box<dyn std::error::Error> {
     Box::new(io::Error::other(message))
+}
+
+fn serve_memory_api(mm: Arc<MemoryManager>, port: u16) {
+    let server = match tiny_http::Server::http(format!("0.0.0.0:{}", port)) {
+        Ok(s) => s,
+        Err(e) => {
+            error!("Failed to start memory API server on port {}: {}", port, e);
+            return;
+        }
+    };
+    info!("Memory API server listening on port {}", port);
+
+    std::thread::spawn(move || {
+        let runtime = match tokio::runtime::Runtime::new() {
+            Ok(rt) => rt,
+            Err(e) => {
+                error!("Failed to create tokio runtime for memory API: {}", e);
+                return;
+            }
+        };
+
+        for mut request in server.incoming_requests() {
+            let url = request.url().to_string();
+            let method = request.method().as_str().to_string();
+
+            if url == "/api/v1/memory/record" && method == "POST" {
+                let mut body = String::new();
+                if request.as_reader().read_to_string(&mut body).is_err() {
+                    let _ = request.respond(tiny_http::Response::from_string("Invalid body"));
+                    continue;
+                }
+
+                match serde_json::from_str::<serde_json::Value>(&body) {
+                    Ok(params) => {
+                        let workspace_id = params["workspace_id"].as_str().unwrap_or("default");
+                        let content = params["content"].as_str().unwrap_or("");
+                        let tier = params["tier"].as_str().unwrap_or("short");
+
+                        let record = kaigents_memory::MemoryRecord {
+                            tier: if tier == "long" {
+                                kaigents_memory::MemoryTier::Long
+                            } else {
+                                kaigents_memory::MemoryTier::Short
+                            },
+                            workspace_id: workspace_id.to_string(),
+                            run_id: None,
+                            content: content.to_string(),
+                            metadata: None,
+                            vector: None,
+                        };
+
+                        let mm_clone = mm.clone();
+                        let result = runtime.block_on(async move {
+                            mm_clone.record(record).await
+                        });
+
+                        match result {
+                            Ok(id) => {
+                                let _ = request.respond(tiny_http::Response::from_string(
+                                    serde_json::json!({ "id": id, "status": "recorded" }).to_string(),
+                                ).with_header(tiny_http::Header::from_bytes(
+                                    b"Content-Type", b"application/json"
+                                ).unwrap()));
+                            }
+                            Err(e) => {
+                                let _ = request.respond(tiny_http::Response::from_string(
+                                    serde_json::json!({ "error": e }).to_string(),
+                                ).with_status_code(500));
+                            }
+                        }
+                    }
+                    Err(e) => {
+                        let _ = request.respond(tiny_http::Response::from_string(
+                            serde_json::json!({ "error": format!("Invalid JSON: {}", e) }).to_string(),
+                        ).with_status_code(400));
+                    }
+                }
+            } else if url == "/api/v1/memory/query" && method == "POST" {
+                let mut body = String::new();
+                if request.as_reader().read_to_string(&mut body).is_err() {
+                    let _ = request.respond(tiny_http::Response::from_string("Invalid body"));
+                    continue;
+                }
+
+                match serde_json::from_str::<serde_json::Value>(&body) {
+                    Ok(params) => {
+                        let workspace_id = params["workspace_id"].as_str().unwrap_or("default");
+                        let query = params["query"].as_str().unwrap_or("");
+                        let limit = params["limit"].as_u64().unwrap_or(10);
+
+                        let mm_clone = mm.clone();
+                        let result = runtime.block_on(async move {
+                            mm_clone.recall(workspace_id, query, limit).await
+                        });
+
+                        match result {
+                            Ok(results) => {
+                                let json_results: Vec<serde_json::Value> = results
+                                    .iter()
+                                    .map(|r| serde_json::json!({
+                                        "content": r.content,
+                                        "score": r.score,
+                                        "run_id": r.run_id,
+                                    }))
+                                    .collect();
+                                let _ = request.respond(tiny_http::Response::from_string(
+                                    serde_json::json!({ "results": json_results }).to_string(),
+                                ).with_header(tiny_http::Header::from_bytes(
+                                    b"Content-Type", b"application/json"
+                                ).unwrap()));
+                            }
+                            Err(e) => {
+                                let _ = request.respond(tiny_http::Response::from_string(
+                                    serde_json::json!({ "error": e }).to_string(),
+                                ).with_status_code(500));
+                            }
+                        }
+                    }
+                    Err(e) => {
+                        let _ = request.respond(tiny_http::Response::from_string(
+                            serde_json::json!({ "error": format!("Invalid JSON: {}", e) }).to_string(),
+                        ).with_status_code(400));
+                    }
+                }
+            } else {
+                let _ = request.respond(tiny_http::Response::from_string(
+                    serde_json::json!({ "error": "Not found" }).to_string(),
+                ).with_status_code(404));
+            }
+        }
+    });
 }

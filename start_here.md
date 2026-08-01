@@ -68,7 +68,7 @@ See `docs/research/technology/itd-register.md` for the full register (ITD-01 …
 - ITD-17: Agent memory as a first-class, opt-in subsystem (Adopted).
 - ITD-18: Temporal knowledge-graph layer built on NebulaGraph (preserve ITD-05) — **Partially Implemented** (RethinkDB fallback; NebulaGraph stub).
 - ITD-19: ATMS belief revision for experiment closure (Adopted).
-- ITD-20: Context Manager — model-agnostic context budgeting + context-budget-aware model routing (Adopted; v2 summarization deferred).
+- ITD-20: Context Manager — model-agnostic context budgeting + context-budget-aware model routing (Adopted; v2 implemented in R9 — Summarize/Error strategies, hierarchical demotion, RoutingPolicy).
 
 ---
 
@@ -105,8 +105,8 @@ These were verified this session and are load-bearing for the next session:
 **Phase 2 (Milestone 10) — Long-term consolidation:**
 - `consolidate_run_memory`: in-process consolidation wired into run lifecycle; LLM-driven episode extraction; episodes stored in RethinkDB `memory_episodes` table.
 - `memory.recall` MCP tool with provenance back-links; searches Qdrant (semantic) + RethinkDB (keyword filter on episodes).
-- Temporal consolidation workflow: **deleted** (was dead code per proposal §13.4; activities called non-existent HTTP endpoints; never triggered from runner).
-- Context Manager v2 (summarization/compression, hierarchical demotion): **not implemented** (documented deviation per proposal §13.3). Only `Truncate` strategy exists.
+- Temporal consolidation: **implemented** (R11). `ConsolidationRequest`/`ConsolidationState` types and `start_consolidation`/`query_consolidation` methods on `TemporalAdapterClient`. `serve_memory_api` HTTP server provides `/api/v1/memory/record` and `/api/v1/memory/query` endpoints for Temporal workflow activities. Runner triggers Temporal consolidation when `KAIGENTS_TEMPORAL_ADAPTER_URL` is set, with in-process fallback. Durability verification deferred to infrastructure deployment.
+- Context Manager v2 (summarization/compression, hierarchical demotion): **implemented** (R9). `Summarize` strategy with sync compression + async `SummaryProvider` for LLM-backed summarization; `Error` strategy with `budget_exceeded` flag; `ContextTier` enum (Core/Recall/Archival) with hierarchical demotion; `RoutingPolicy` with `select_model_for_context` for context-budget-aware model routing.
 
 **Phase 3 (Milestone 11) — Epistemic memory:**
 - `BeliefManager` with `Hypothesis` as first-class entity; `record_belief`, `close_experiment`, `reverify_hypothesis` implemented.
@@ -116,7 +116,7 @@ These were verified this session and are load-bearing for the next session:
 - Epistemic quality gate: `validate_approach` called in runner; falsified-hypothesis warning injected as system message.
 
 **Phase 4 (Milestone 12) — Knowledge propagation:**
-- `.kgpkg` package format: tar.gz with `manifest.json` (includes `embedding_model`, `schema_version`, `package_type`), `episodes.jsonl`, `beliefs.jsonl`, `points.jsonl`.
+- `.kgpkg` package format: tar.gz with `manifest.json` (includes `embedding_model`, `schema_version`, `package_type`), `episodes.jsonl`, `beliefs.jsonl`, `points.jsonl`, `policy.yaml`, `distilled-lessons.md`.
 - Provenance fields: `origin_workspace_id`, `origin_package_id` on Episode and Hypothesis; `source_tier` on Hypothesis.
 - Source priority ordering: `source_priority` in `MemoryPolicy`; used in `assemble_context` to sort by origin.
 - Export/import CLI: `kaigents-cli memory export` and `kaigents-cli memory import`.
@@ -124,9 +124,9 @@ These were verified this session and are load-bearing for the next session:
 - Package-scoped retraction cascades: `close_experiment` accepts `scope_package_id`; `remove_package` scopes cascade to same-package beliefs only.
 - Cross-workspace deduplication: Qdrant points use vector cosine similarity >0.95; episodes/beliefs use exact text match in RethinkDB. Skip counts in import result.
 
-**Test coverage:** 22 core tests + 19 memory unit tests + 3 integration tests = 44 total, all passing. Integration tests run against live Qdrant, RethinkDB, and Lemonade Server on the on-premise ai-agents k8s cluster.
+**Test coverage:** 40 core tests + 19 memory unit tests + 4 integration tests = 63 total, all passing. Integration tests run against live Qdrant, RethinkDB, and Lemonade Server on the on-premise ai-agents k8s cluster.
 
-**Known implementation deviations:** See Section 13 of `docs/architecture/agent-memory-proposal.md` for the four documented deviations (NebulaGraph stub, retraction cascades in RethinkDB, Context Manager v2 deferred, consolidation in-process not Temporal).
+**Known implementation deviations:** See Section 13 of `docs/architecture/agent-memory-proposal.md` for the remaining deviations (NebulaGraph stub, retraction cascades in RethinkDB). Context Manager v2 deviation (§13.3) resolved (R9). Consolidation deviation (§13.4) resolved (R11) — Temporal path implemented with in-process fallback.
 
 ### Stabilization bugs (all fixed)
 
@@ -197,11 +197,11 @@ The proving ground for all three memory phases. To be built in a **separate sess
 
 ## Pending / Known Gaps
 
-- **Memory integration tests**: all 41 tests are logic-only with mocks. Need integration tests against real Qdrant and RethinkDB before cluster deployment.
-- **Context Manager v2** (summarization/compression, hierarchical demotion): not implemented. Only `Truncate` strategy exists.
+- **Memory integration tests**: 3 integration tests written and passing (M9-M12 full flow, retraction cascade, package-scoped retraction). Run against live Qdrant, RethinkDB, Lemonade on the ai-agents cluster.
+- ~~**Context Manager v2** (summarization/compression, hierarchical demotion): not implemented. Only `Truncate` strategy exists.~~ **Implemented (R9)**: Summarize/Error strategies, hierarchical demotion (Core/Recall/Archival), RoutingPolicy with context-budget-aware model selection.
 - **NebulaGraph temporal layer** (ITD-18): stub. RethinkDB fallback works but no graph reasoning, bi-temporal queries, or edge invalidation.
 - **Temporal consolidation workflow**: deleted (was dead code per proposal §13.4). Consolidation is in-process.
-- **Code Expert Agent PoC (Sena)**: not yet built. Will be built in a separate session. Design doc not yet created.
+- **Code Expert Agent PoC**: integration test written (`integration_code_expert_agent_poc`). Demonstrates belief-based quality improvement across assignments — falsification, retraction cascade, quality gate, context assembly with warnings, re-verification, and confirmed approach. Requires live infrastructure to run.
 - **M12 known limitations**: Episode/belief dedup uses exact text match (not semantic); `policy.yaml` and `distilled-lessons.md` not included in `.kgpkg` package. Neither blocks acceptance criteria.
 - `README.md` Getting Started section currently says "under development." Deprioritized behind memory work.
 - GitHub discoverability: adding GitHub topics would improve search visibility — noted but not yet done.

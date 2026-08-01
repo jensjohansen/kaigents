@@ -47,6 +47,26 @@ pub struct WorkRequestState {
     pub message: Option<String>,
 }
 
+/// Request body for `POST /v1/consolidate`.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ConsolidationRequest {
+    #[serde(rename = "workspaceId")]
+    pub workspace_id: String,
+    #[serde(rename = "runId")]
+    pub run_id: String,
+}
+
+/// Query response from `GET /v1/consolidate/{id}`.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ConsolidationState {
+    #[serde(rename = "consolidationId")]
+    pub consolidation_id: String,
+    pub phase: String,
+    #[serde(rename = "episodeId", skip_serializing_if = "Option::is_none")]
+    pub episode_id: Option<String>,
+    pub message: Option<String>,
+}
+
 /// Minimal HTTP client for the Kaigents temporal adapter.
 /// No Temporal SDK or concepts appear in this module.
 pub struct TemporalAdapterClient {
@@ -109,5 +129,110 @@ impl TemporalAdapterClient {
                 "temporal adapter query_work_request failed {status}: {body}"
             ))
         }
+    }
+
+    /// Start a memory consolidation workflow in the adapter.
+    /// The workflow is durable and resumable — if the adapter crashes,
+    /// Temporal resumes the workflow on restart.
+    pub async fn start_consolidation(
+        &self,
+        req: ConsolidationRequest,
+    ) -> Result<ConsolidationState, String> {
+        let url = format!("{}/v1/consolidate", self.base_url);
+        let resp = self
+            .http
+            .post(&url)
+            .json(&req)
+            .send()
+            .await
+            .map_err(|e| format!("temporal adapter unreachable: {e}"))?;
+
+        if resp.status().is_success() {
+            resp.json::<ConsolidationState>()
+                .await
+                .map_err(|e| format!("failed to parse ConsolidationState: {e}"))
+        } else {
+            let status = resp.status();
+            let body = resp.text().await.unwrap_or_default();
+            Err(format!(
+                "temporal adapter start_consolidation failed {status}: {body}"
+            ))
+        }
+    }
+
+    /// Query the state of a consolidation workflow.
+    pub async fn query_consolidation(
+        &self,
+        consolidation_id: &str,
+    ) -> Result<ConsolidationState, String> {
+        let url = format!("{}/v1/consolidate/{}", self.base_url, consolidation_id);
+        let resp = self
+            .http
+            .get(&url)
+            .send()
+            .await
+            .map_err(|e| format!("temporal adapter unreachable: {e}"))?;
+
+        if resp.status().is_success() {
+            resp.json::<ConsolidationState>()
+                .await
+                .map_err(|e| format!("failed to parse ConsolidationState: {e}"))
+        } else {
+            let status = resp.status();
+            let body = resp.text().await.unwrap_or_default();
+            Err(format!(
+                "temporal adapter query_consolidation failed {status}: {body}"
+            ))
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn consolidation_request_serializes_correctly() {
+        let req = ConsolidationRequest {
+            workspace_id: "ws-123".to_string(),
+            run_id: "run-456".to_string(),
+        };
+        let json = serde_json::to_string(&req).unwrap();
+        assert!(json.contains("\"workspaceId\":\"ws-123\""));
+        assert!(json.contains("\"runId\":\"run-456\""));
+    }
+
+    #[test]
+    fn consolidation_state_deserializes_correctly() {
+        let json = serde_json::json!({
+            "consolidationId": "cons-789",
+            "phase": "completed",
+            "episodeId": "ep-abc",
+            "message": "Consolidation successful"
+        });
+        let state: ConsolidationState = serde_json::from_value(json).unwrap();
+        assert_eq!(state.consolidation_id, "cons-789");
+        assert_eq!(state.phase, "completed");
+        assert_eq!(state.episode_id, Some("ep-abc".to_string()));
+        assert_eq!(state.message, Some("Consolidation successful".to_string()));
+    }
+
+    #[test]
+    fn consolidation_state_deserializes_without_optional_fields() {
+        let json = serde_json::json!({
+            "consolidationId": "cons-000",
+            "phase": "running"
+        });
+        let state: ConsolidationState = serde_json::from_value(json).unwrap();
+        assert_eq!(state.consolidation_id, "cons-000");
+        assert_eq!(state.phase, "running");
+        assert_eq!(state.episode_id, None);
+        assert_eq!(state.message, None);
+    }
+
+    #[test]
+    fn temporal_adapter_client_trims_trailing_slash() {
+        let client = TemporalAdapterClient::new("http://adapter:8080/");
+        assert_eq!(client.base_url, "http://adapter:8080");
     }
 }

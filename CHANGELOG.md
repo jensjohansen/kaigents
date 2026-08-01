@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2026-08-01
+
+### Added
+- **Context Manager v2 (R9)**: `Summarize` strategy with sync `simple_compress` + async `SummaryProvider` for LLM-backed summarization; `Error` strategy with `budget_exceeded` flag; `ContextTier` enum (Core/Recall/Archival) with hierarchical demotion; `RoutingPolicy` with `select_model_for_context` for context-budget-aware model routing; `fit_to_budget_tiered` for explicit tier-based context assembly. 12 new tests.
+- **Code Expert Agent PoC (R10)**: Integration test demonstrating 3 assignments with falsification, retraction cascade, quality gate, context assembly with warnings, re-verification, and confirmed approach.
+- **Temporal-based consolidation (R11)**: `ConsolidationRequest`/`ConsolidationState` types and `start_consolidation`/`query_consolidation` methods on `TemporalAdapterClient`; `serve_memory_api` HTTP server with `/api/v1/memory/record` and `/api/v1/memory/query` endpoints; runner triggers Temporal consolidation when `KAIGENTS_TEMPORAL_ADAPTER_URL` is set, with in-process fallback. 4 new tests.
+- **DAG dependency ordering (R13-G5)**: Rewrote `DAGExecutor::execute` to enforce that nodes only spawn after all dependencies complete, while preserving concurrent execution of independent nodes.
+- **Artifact retrieval (R13-G4)**: `ArtifactPlane::retrieve_artifact` implemented with in-memory index mapping `ArtifactId` to `ArtifactStorageRef`.
+- **Run status outputs (R13-G8)**: `RunStatus.Outputs` field added to Run CRD; run controller reads ConfigMap `{run-name}-outputs` and populates outputs.
+- **MCP timeout enforcement (R13-G12)**: `HttpMcpClient::call_tool` wraps JSON-RPC with `tokio::time::timeout`; configurable via `KAIGENTS_MCP_TIMEOUT_MS` env var.
+- **Package format enhancement (R14)**: `policy.yaml` and `distilled-lessons.md` now included in `.kgpkg` package.
+
+### Fixed
+- **Qdrant scroll pagination in consolidation (R13-G3)**: Added pagination loop to `consolidate_run_memory` to fetch all points, not just the first batch.
+- **Solo runner persona support (R13-G9)**: Removed hardcoded "Research" check; MCP tools and search/read steps are now optional based on contract configuration; any Agent persona can run.
+- **Model activity failure propagation (R13-G10)**: `ExecuteWorkItem` activity now returns error on model failure, allowing Temporal to retry and workflow to record the failure.
+
+### Changed
+- `agent-memory-proposal.md` §13.3 (Context Manager v2) and §13.4 (Temporal consolidation) deviations resolved.
+- Implementation plan updated with R9-R14 completion notes.
+- Test coverage: 44 core tests + 19 memory tests + 4 integration tests = 63 total, all passing.
+
 ## [1.1.0] - 2026-08-01
 
 ### Added

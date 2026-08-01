@@ -6,7 +6,7 @@
 //! License: MIT (see LICENSE)
 
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::time::Duration;
 use tokio::time::sleep;
 use uuid::Uuid;
@@ -201,6 +201,7 @@ impl DAGExecutor {
     }
 
     /// Execute the DAG to completion or failure, respecting cancellation.
+    /// Nodes are only spawned after all their dependencies have completed.
     pub async fn execute(
         &self,
         dag: &DAG,
@@ -208,21 +209,27 @@ impl DAGExecutor {
     ) -> Result<HashMap<NodeId, ExecutionResult>, String> {
         dag.validate()?;
         let order = dag.topological_sort()?;
+
         let mut results: HashMap<NodeId, ExecutionResult> = HashMap::new();
-        // Track which nodes are ready to run (dependencies satisfied)
-        let mut ready: HashMap<NodeId, Vec<NodeId>> = HashMap::new();
+        let mut completed: HashSet<NodeId> = HashSet::new();
+
+        // Map: node_id -> set of dependencies that must complete before it can run
+        let mut dependents: HashMap<NodeId, Vec<NodeId>> = HashMap::new();
+        let mut remaining_deps: HashMap<NodeId, HashSet<NodeId>> = HashMap::new();
         for node_id in &order {
             let node = dag
                 .nodes
                 .get(node_id)
                 .ok_or_else(|| "DAG internal error: node missing".to_string())?;
-            for dependency_node_id in &node.dependencies {
-                ready
-                    .entry(dependency_node_id.clone())
+            remaining_deps.insert(node_id.clone(), node.dependencies.iter().cloned().collect());
+            for dep in &node.dependencies {
+                dependents
+                    .entry(dep.clone())
                     .or_default()
                     .push(node_id.clone());
             }
         }
+
         // Initially ready nodes (no dependencies)
         let mut pending: Vec<NodeId> = order
             .iter()
@@ -234,49 +241,63 @@ impl DAGExecutor {
             })
             .cloned()
             .collect();
-        // Concurrency: spawn tasks for independent nodes
-        let mut handles = Vec::new();
-        while let Some(node_id) = pending.pop() {
+
+        while !pending.is_empty() {
             if cancel.is_cancelled() {
                 return Err("Execution cancelled".to_string());
             }
-            let node = dag
-                .nodes
-                .get(&node_id)
-                .ok_or_else(|| "DAG internal error: node missing".to_string())?
-                .clone();
-            let cancel_clone = cancel.clone();
-            let max_retries = self.max_retries;
-            let handle = tokio::spawn(async move {
-                Self::execute_node_with_retries(&node, cancel_clone, max_retries).await
-            });
-            handles.push((node_id.clone(), handle));
-            // Enqueue dependents when a node finishes
-            if let Some(dependents) = ready.remove(&node_id) {
-                for dependent_node_id in dependents {
-                    if !pending.contains(&dependent_node_id) {
-                        pending.push(dependent_node_id);
+
+            // Spawn all currently-ready nodes
+            let mut handles = Vec::new();
+            for node_id in &pending {
+                let node = dag
+                    .nodes
+                    .get(node_id)
+                    .ok_or_else(|| "DAG internal error: node missing".to_string())?
+                    .clone();
+                let cancel_clone = cancel.clone();
+                let max_retries = self.max_retries;
+                let handle = tokio::spawn(async move {
+                    Self::execute_node_with_retries(&node, cancel_clone, max_retries).await
+                });
+                handles.push((node_id.clone(), handle));
+            }
+            pending.clear();
+
+            // Await all spawned tasks before enqueuing dependents
+            for (node_id, handle) in handles {
+                if cancel.is_cancelled() {
+                    return Err("Execution cancelled".to_string());
+                }
+                match handle.await {
+                    Ok(Ok(result)) => {
+                        results.insert(node_id.clone(), result);
+                        completed.insert(node_id.clone());
+
+                        // Enqueue dependents whose dependencies are now all satisfied
+                        if let Some(deps) = dependents.get(&node_id) {
+                            for dependent_node_id in deps {
+                                if let Some(remaining) = remaining_deps.get_mut(dependent_node_id) {
+                                    remaining.remove(&node_id);
+                                    if remaining.is_empty()
+                                        && !completed.contains(dependent_node_id)
+                                    {
+                                        pending.push(dependent_node_id.clone());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    Ok(Err(e)) => {
+                        return Err(e);
+                    }
+                    Err(_) => {
+                        return Err("Task panicked".to_string());
                     }
                 }
             }
         }
-        // Await all spawned tasks
-        for (node_id, handle) in handles {
-            if cancel.is_cancelled() {
-                return Err("Execution cancelled".to_string());
-            }
-            match handle.await {
-                Ok(Ok(result)) => {
-                    results.insert(node_id, result);
-                }
-                Ok(Err(e)) => {
-                    return Err(e);
-                }
-                Err(_) => {
-                    return Err("Task panicked".to_string());
-                }
-            }
-        }
+
         Ok(results)
     }
 

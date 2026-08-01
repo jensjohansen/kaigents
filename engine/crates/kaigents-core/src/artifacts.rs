@@ -187,11 +187,16 @@ impl ArtifactStore for InMemoryArtifactStore {
 pub struct ArtifactPlane {
     store: Box<dyn ArtifactStore>,
     timeline: Arc<TimelineStore>,
+    index: Arc<Mutex<HashMap<Uuid, ArtifactStorageRef>>>,
 }
 
 impl ArtifactPlane {
     pub fn new(store: Box<dyn ArtifactStore>, timeline: Arc<TimelineStore>) -> Self {
-        Self { store, timeline }
+        Self {
+            store,
+            timeline,
+            index: Arc::new(Mutex::new(HashMap::new())),
+        }
     }
 
     /// Store an artifact and emit timeline events.
@@ -242,6 +247,11 @@ impl ArtifactPlane {
             metadata,
         };
 
+        {
+            let mut idx = self.index.lock().await;
+            idx.insert(*artifact_id.as_uuid(), storage_ref);
+        }
+
         // Emit ArtifactProduced event
         let correlation_id = format!("artifact-{}", artifact_id.as_uuid());
         let event = TimelineEvent::new(
@@ -264,12 +274,15 @@ impl ArtifactPlane {
         Ok(artifact)
     }
 
-    /// Retrieve an artifact.
-    pub async fn retrieve_artifact(&self, _artifact_id: &ArtifactId) -> Result<Vec<u8>, String> {
-        // In a real implementation, we would look up the artifact by ID from a persistent store
-        // For MVP, we assume the storage_ref is embedded in the artifact (simpl detail)
-        // This is a simplified lookup; real implementation would query a database/index
-        Err("Artifact lookup by ID not implemented in MVP".to_string())
+    /// Retrieve an artifact by ID.
+    pub async fn retrieve_artifact(&self, artifact_id: &ArtifactId) -> Result<Vec<u8>, String> {
+        let idx = self.index.lock().await;
+        let storage_ref = idx
+            .get(artifact_id.as_uuid())
+            .ok_or_else(|| format!("Artifact not found: {}", artifact_id.as_uuid()))?
+            .clone();
+        drop(idx);
+        self.store.retrieve(&storage_ref).await
     }
 
     /// Generate a signed/proxy URL for artifact access.

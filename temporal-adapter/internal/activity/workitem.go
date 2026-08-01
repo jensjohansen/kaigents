@@ -71,7 +71,7 @@ func ExecuteWorkItem(ctx context.Context, input WorkItemInput) (WorkItemResult, 
 			result.Status = "Failed"
 			result.ErrorMsg = err.Error()
 			result.FinishedAt = time.Now().UTC()
-			return result, nil
+			return result, err
 		}
 		result.Output = output
 	} else {

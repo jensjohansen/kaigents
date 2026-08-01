@@ -368,18 +368,23 @@ This section documents where the implemented system deviates from the design abo
 
 **Impact:** Functionally equivalent for simple dependency chains (one level of assumption dependency). Does not support multi-hop graph traversals or complex dependency graphs. Sufficient for the current PoC scope; must be migrated to NebulaGraph when the temporal graph layer is built.
 
-### 13.3 Context Manager v2 (ITD-20) — summarization not implemented
+### 13.3 Context Manager v2 (ITD-20) — implemented (R9)
 
 **Design:** Context Manager v2 adds summarization/compression and hierarchical demotion (core → recall → archival, the Letta/MemGPT pattern) so recalled long-term memory is fitted to budget alongside the live Case File. Also adds context-budget-aware model routing.
 
-**As built:** Only the `Truncate` budget strategy is implemented. The `Summarize` and `Error` strategy variants are defined in the enum but not implemented. Hierarchical demotion (core/recall/archival) is not implemented. Context-budget-aware model routing in `RoutingPolicy` is not implemented.
+**As built (R9):** All three budget strategies are implemented:
+- `Truncate`: drops items by tier (archival first, then recall, core preserved).
+- `Summarize`: compresses dropped items via `simple_compress` (sync) or `SummaryProvider` trait (async, LLM-backed via `fit_to_budget_with_summarization`).
+- `Error`: same as Truncate but sets `budget_exceeded` flag on `FittedContext`.
 
-**Impact:** Context fitting works via selection/truncation only. A small-context model receives the most relevant slice but does not get summarized/compressed context. This is sufficient for the current PoC scope but must be implemented to deliver the full "right model at the right time" capability.
+Hierarchical demotion is implemented via `ContextTier` enum (Core/Recall/Archival). `fit_to_budget_tiered` accepts explicit tiered items. `RoutingPolicy` with `select_model_for_context` provides context-budget-aware model routing — filters candidates by window size, prefers local models, falls back to largest-window model. 12 new tests.
 
-### 13.4 Consolidation triggering — in-process, not Temporal
+**Status:** Deviation resolved. The `Summarize` strategy's sync path uses simple text compression (prefix + suffix truncation); the async path with `SummaryProvider` enables full LLM-backed summarization when a model client is available.
+
+### 13.4 Consolidation triggering — Temporal path implemented (R11)
 
 **Design:** Consolidation is a Temporal workflow (ITD-16), long-running and resumable.
 
-**As built:** Consolidation is triggered in-process at the end of each run via `consolidate_run_memory()`. The Temporal `ConsolidateMemoryWorkflow` is registered with the worker but is not triggered from the runner. The Temporal workflow's activities call HTTP endpoints (`/api/v1/memory/query`, `/api/v1/memory/record`) that do not exist on the engine.
+**As built (R11):** The Temporal consolidation path is now implemented. `ConsolidationRequest`/`ConsolidationState` types and `start_consolidation`/`query_consolidation` methods are on `TemporalAdapterClient`. The `serve_memory_api` function in the CLI provides HTTP endpoints (`/api/v1/memory/record`, `/api/v1/memory/query`) that Temporal workflow activities call. The runner checks for `KAIGENTS_TEMPORAL_ADAPTER_URL` env var; when set, it starts the memory API server and triggers `start_consolidation` on the adapter. On adapter failure, it falls back to in-process `consolidate_run_memory`. When no adapter URL is configured, in-process consolidation is used directly.
 
-**Impact:** Consolidation works functionally (episodes are extracted and stored in RethinkDB) but is not durable/resumable. If the runner crashes during consolidation, the episode is lost. Migrating to the Temporal path requires adding the HTTP memory API endpoints to the engine and a trigger from the runner to the Temporal adapter.
+**Status:** Deviation resolved. The in-process path remains as a fallback for environments without a Temporal adapter. Durability verification (kill runner mid-consolidation, confirm Temporal workflow resumes) is deferred to infrastructure deployment phase.

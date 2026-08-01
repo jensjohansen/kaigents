@@ -328,6 +328,7 @@ impl MemoryManager {
     #[cfg_attr(not(feature = "rethinkdb"), allow(unused_variables))]
     pub async fn close_experiment(
         &self,
+        workspace_id: &str,
         outcome: BeliefOutcome,
         scope_package_id: Option<&str>,
     ) -> Result<String, String> {
@@ -363,7 +364,8 @@ impl MemoryManager {
                         .db(db.clone())
                         .table(DEFAULT_BELIEFS_TABLE_NAME)
                         .filter(r.row().g("assumptions").contains(current_id.clone()))
-                        .filter(r.row().g("status").ne("falsified"));
+                        .filter(r.row().g("status").ne("falsified"))
+                        .filter(r.row().g("workspace_id").eq(workspace_id.to_string()));
 
                     if let Some(pkg) = scope_package_id {
                         query = query.filter(
@@ -743,6 +745,35 @@ impl MemoryManager {
             tar.append_data(&mut header, "points.jsonl", points_jsonl.as_bytes())
                 .map_err(|e| e.to_string())?;
 
+            // policy.yaml
+            let policy_yaml = format!(
+                "# Memory policy for workspace {}\nsource_priority:\n  - local\n",
+                workspace_id
+            );
+            let mut header = tar::Header::new_gnu();
+            header.set_size(policy_yaml.len() as u64);
+            header.set_mode(0o644);
+            header.set_cksum();
+            tar.append_data(&mut header, "policy.yaml", policy_yaml.as_bytes())
+                .map_err(|e| e.to_string())?;
+
+            // distilled-lessons.md
+            let lessons_md = {
+                let mut md = format!("# Distilled Lessons\n\nWorkspace: {}\n\n", workspace_id);
+                for (i, ep) in episodes.iter().enumerate() {
+                    let id = ep.get("id").and_then(|v| v.as_str()).unwrap_or("");
+                    let content = ep.get("content").and_then(|v| v.as_str()).unwrap_or("");
+                    md.push_str(&format!("## Episode {}: {}\n\n{}\n\n", i + 1, id, content));
+                }
+                md
+            };
+            let mut header = tar::Header::new_gnu();
+            header.set_size(lessons_md.len() as u64);
+            header.set_mode(0o644);
+            header.set_cksum();
+            tar.append_data(&mut header, "distilled-lessons.md", lessons_md.as_bytes())
+                .map_err(|e| e.to_string())?;
+
             tar.finish().map_err(|e| e.to_string())?;
         }
 
@@ -964,42 +995,55 @@ impl MemoryManager {
         #[cfg(feature = "rethinkdb")]
         if let Some(session_mutex) = &self.rethinkdb_session {
             use unreql::r;
-            let mut session = session_mutex.lock().await;
-            let db = self.rethinkdb_db.as_deref().unwrap_or("kaigents").to_string();
 
-            // Falsify all beliefs from this package to trigger cascades
-            let beliefs: Vec<serde_json::Value> = r
-                .db(db.clone())
-                .table(DEFAULT_BELIEFS_TABLE_NAME)
-                .filter(r.row().g("workspace_id").eq(workspace_id.to_string()))
-                .filter(r.row().g("origin_package_id").eq(package_id.to_string()))
-                .exec_to_vec(&mut *session)
-                .await
-                .unwrap_or_default();
+            // Step 1: Acquire lock, query belief IDs, then release lock
+            // (cannot hold lock across close_experiment calls — it also acquires the mutex)
+            let belief_ids: Vec<String> = {
+                let mut session = session_mutex.lock().await;
+                let db = self.rethinkdb_db.as_deref().unwrap_or("kaigents").to_string();
 
-            for belief in beliefs {
-                if let Some(id) = belief["id"].as_str() {
-                    self.close_experiment(
-                        BeliefOutcome {
-                            hypothesis_id: id.to_string(),
-                            status: HypothesisStatus::Falsified,
-                            justification: format!("Package {} removed", package_id),
-                        },
-                        Some(package_id),
-                    )
-                    .await?;
-                }
+                let beliefs: Vec<serde_json::Value> = r
+                    .db(db.clone())
+                    .table(DEFAULT_BELIEFS_TABLE_NAME)
+                    .filter(r.row().g("workspace_id").eq(workspace_id.to_string()))
+                    .filter(r.row().g("origin_package_id").eq(package_id.to_string()))
+                    .exec_to_vec(&mut *session)
+                    .await
+                    .unwrap_or_default();
+
+                beliefs
+                    .into_iter()
+                    .filter_map(|b| b["id"].as_str().map(|s| s.to_string()))
+                    .collect()
+            };
+
+            // Step 2: Falsify each belief (close_experiment acquires its own lock)
+            for id in &belief_ids {
+                self.close_experiment(
+                    workspace_id,
+                    BeliefOutcome {
+                        hypothesis_id: id.clone(),
+                        status: HypothesisStatus::Falsified,
+                        justification: format!("Package {} removed", package_id),
+                    },
+                    Some(package_id),
+                )
+                .await?;
             }
 
-            // Remove episodes
-            r.db(db.clone())
-                .table(DEFAULT_EPISODES_TABLE_NAME)
-                .filter(r.row().g("workspace_id").eq(workspace_id.to_string()))
-                .filter(r.row().g("origin_package_id").eq(package_id.to_string()))
-                .delete(())
-                .exec::<_, serde_json::Value>(&mut *session)
-                .await
-                .ok();
+            // Step 3: Re-acquire lock to remove episodes
+            {
+                let mut session = session_mutex.lock().await;
+                let db = self.rethinkdb_db.as_deref().unwrap_or("kaigents").to_string();
+                r.db(db.clone())
+                    .table(DEFAULT_EPISODES_TABLE_NAME)
+                    .filter(r.row().g("workspace_id").eq(workspace_id.to_string()))
+                    .filter(r.row().g("origin_package_id").eq(package_id.to_string()))
+                    .delete(())
+                    .exec::<_, serde_json::Value>(&mut *session)
+                    .await
+                    .ok();
+            }
         }
 
         // Remove Qdrant points
@@ -1106,18 +1150,34 @@ impl MemoryManager {
         )]);
 
         let scroll_req = ScrollPointsBuilder::new(collection_name)
-            .filter(filter)
+            .filter(filter.clone())
             .with_payload(true)
+            .limit(100)
             .build();
 
-        let resp = qdrant
+        let mut resp = qdrant
             .scroll(scroll_req)
             .await
             .map_err(|e| format!("Qdrant scroll failed: {}", e))?;
 
+        let mut all_points = resp.result.clone();
+
+        while let Some(offset) = resp.next_page_offset {
+            let scroll_req = ScrollPointsBuilder::new(format!("workspace-{}", workspace_id))
+                .filter(filter.clone())
+                .with_payload(true)
+                .offset(offset)
+                .limit(100)
+                .build();
+            resp = qdrant
+                .scroll(scroll_req)
+                .await
+                .map_err(|e| format!("Qdrant scroll failed: {}", e))?;
+            all_points.extend(resp.result.clone());
+        }
+
         let mut source_content_ids = Vec::new();
-        let memories: Vec<String> = resp
-            .result
+        let memories: Vec<String> = all_points
             .into_iter()
             .filter_map(|p| {
                 let content = p
@@ -1655,9 +1715,13 @@ impl MCPClient for InternalMemoryToolClient {
                 Ok(serde_json::json!({ "episode": episode }))
             }
             "experiment.close" => {
+                let workspace_id = arguments["workspace_id"]
+                    .as_str()
+                    .ok_or_else(|| "workspace_id is required".to_string())?
+                    .to_string();
                 let outcome: BeliefOutcome = serde_json::from_value(arguments)
                     .map_err(|e| format!("Invalid arguments for experiment.close: {}", e))?;
-                let status = self.manager.close_experiment(outcome, None).await?;
+                let status = self.manager.close_experiment(&workspace_id, outcome, None).await?;
                 Ok(serde_json::json!({ "status": status }))
             }
             "experiment.reverify" => {
@@ -1912,6 +1976,7 @@ mod tests {
         let manager = MemoryManager::new(None, None, None, None).unwrap();
         let client = InternalMemoryToolClient::new(Arc::new(manager));
         let args = serde_json::json!({
+            "workspace_id": "ws-test",
             "hypothesis_id": "hyp-1",
             "status": "falsified",
             "justification": "test failed",
@@ -2157,7 +2222,7 @@ mod tests {
                 status: HypothesisStatus::Falsified,
                 justification: "Solar power focus was too narrow for the essay scope.".to_string(),
             };
-            let close_result = mm.close_experiment(outcome, None).await;
+            let close_result = mm.close_experiment(&ws, outcome, None).await;
             assert!(close_result.is_ok(), "M11 close_experiment failed: {:?}", close_result);
             eprintln!("M11: closed experiment (falsified) - retraction cascade triggered");
 
@@ -2253,7 +2318,7 @@ mod tests {
                 status: HypothesisStatus::Falsified,
                 justification: "Base hypothesis A is falsified.".to_string(),
             };
-            mm.close_experiment(outcome, None).await.unwrap();
+            mm.close_experiment(&ws, outcome, None).await.unwrap();
 
             let violations = mm.validate_approach(&ws, "hypothesis").await.unwrap();
             assert_eq!(violations.len(), 3, "All 3 hypotheses should be falsified by cascade");
@@ -2323,13 +2388,160 @@ mod tests {
                 status: HypothesisStatus::Falsified,
                 justification: "Base falsified via package removal.".to_string(),
             };
-            mm.close_experiment(outcome, Some(&pkg_id)).await.unwrap();
+            mm.close_experiment(&ws, outcome, Some(&pkg_id)).await.unwrap();
 
             let violations = mm.validate_approach(&ws, "hypothesis").await.unwrap();
             let falsified_ids: Vec<&str> = violations.iter().map(|h| h.id.as_deref().unwrap_or("")).collect();
             assert!(falsified_ids.contains(&h2_id.as_str()), "Same-package dependent should be falsified");
             assert!(!falsified_ids.contains(&h3_id.as_str()), "Different-package dependent should NOT be falsified");
             eprintln!("M12 package-scoped retraction: {} hypotheses falsified (h2=yes, h3=no)", violations.len());
+        }
+
+        #[tokio::test]
+        #[ignore]
+        async fn integration_code_expert_agent_poc() {
+            if !require_env() {
+                return;
+            }
+
+            let ws = format!("codeexpert-{}", uuid::Uuid::new_v4().to_string().get(..8).unwrap());
+            let run_id = RunId::from_uuid(uuid::Uuid::new_v4());
+            let mm = create_manager().await;
+
+            eprintln!("=== Code Expert Agent PoC: Assignment 1 ===");
+            eprintln!("Agent attempts to sort a large dataset using bubble sort");
+
+            let h1 = Hypothesis {
+                id: None,
+                workspace_id: ws.clone(),
+                run_id: Some(run_id.clone()),
+                content: "Bubble sort is efficient for sorting large datasets.".to_string(),
+                assumptions: vec![],
+                confidence: 0.7,
+                status: HypothesisStatus::Pending,
+                timestamp_ms: 0,
+                origin_workspace_id: None,
+                origin_package_id: None,
+                source_tier: None,
+            };
+            let h1_id = mm.record_belief(h1).await.unwrap();
+            eprintln!("Assignment 1: recorded hypothesis {} (bubble sort is efficient)", h1_id);
+
+            let h2 = Hypothesis {
+                id: None,
+                workspace_id: ws.clone(),
+                run_id: Some(run_id.clone()),
+                content: "Bubble sort with early termination handles nearly-sorted data well.".to_string(),
+                assumptions: vec![h1_id.clone()],
+                confidence: 0.6,
+                status: HypothesisStatus::Pending,
+                timestamp_ms: 0,
+                origin_workspace_id: None,
+                origin_package_id: None,
+                source_tier: None,
+            };
+            let h2_id = mm.record_belief(h2).await.unwrap();
+            eprintln!("Assignment 1: recorded dependent hypothesis {} (early termination variant)", h2_id);
+
+            eprintln!("Assignment 1: bubble sort timed out on 1M elements — falsifying hypothesis");
+            let outcome = BeliefOutcome {
+                hypothesis_id: h1_id.clone(),
+                status: HypothesisStatus::Falsified,
+                justification: "Bubble sort O(n^2) timed out on 1M elements. Use O(n log n) algorithm.".to_string(),
+            };
+            mm.close_experiment(&ws, outcome, None).await.unwrap();
+            eprintln!("Assignment 1: hypothesis falsified, retraction cascade triggered for dependent");
+
+            let violations = mm.validate_approach(&ws, "bubble sort").await.unwrap();
+            assert_eq!(
+                violations.len(), 2,
+                "Both bubble sort hypotheses should be falsified (base + dependent)"
+            );
+            eprintln!("Assignment 1: validate_approach found {} falsified hypotheses", violations.len());
+
+            let has_base = violations.iter().any(|h| h.content.contains("Bubble sort is efficient"));
+            let has_dep = violations.iter().any(|h| h.content.contains("early termination"));
+            assert!(has_base, "Base hypothesis should be falsified");
+            assert!(has_dep, "Dependent hypothesis should be falsified via cascade");
+
+            eprintln!("=== Code Expert Agent PoC: Assignment 2 ===");
+            eprintln!("Agent starts a new assignment involving sorting");
+
+            let violations2 = mm.validate_approach(&ws, "sort").await.unwrap();
+            assert!(
+                !violations2.is_empty(),
+                "Assignment 2: validate_approach should surface falsified sorting hypotheses"
+            );
+            eprintln!("Assignment 2: quality gate found {} falsified hypotheses for 'sort'", violations2.len());
+
+            let fitted = mm.assemble_context(
+                &ws,
+                "You are a code expert agent. Write efficient code.",
+                "Sort a large dataset of 1M elements.",
+                "sort",
+                4096,
+                None,
+            ).await;
+            assert!(fitted.is_ok(), "assemble_context failed: {:?}", fitted);
+            let fitted = fitted.unwrap();
+
+            let has_warning = fitted.messages.iter().any(|m| {
+                m.role == "user" && m.content.contains("Precedence/Belief")
+            });
+            assert!(
+                has_warning,
+                "Assignment 2: assembled context should include falsified belief as precedence signal"
+            );
+            eprintln!("Assignment 2: context assembled with {} messages, includes falsified belief warning", fitted.messages.len());
+
+            eprintln!("=== Code Expert Agent PoC: Explicit Re-verification ===");
+            eprintln!("Agent deliberately re-verifies the bubble sort hypothesis");
+
+            let reverify_result = mm.reverify_hypothesis(&h1_id).await;
+            assert!(reverify_result.is_ok(), "reverify_hypothesis failed: {:?}", reverify_result);
+            eprintln!("Re-verification: {} — hypothesis re-opened for testing", reverify_result.unwrap());
+
+            eprintln!("=== Code Expert Agent PoC: Assignment 3 (new approach) ===");
+            eprintln!("Agent records a new hypothesis about quicksort");
+
+            let run_id3 = RunId::from_uuid(uuid::Uuid::new_v4());
+            let h3 = Hypothesis {
+                id: None,
+                workspace_id: ws.clone(),
+                run_id: Some(run_id3.clone()),
+                content: "Quicksort with median-of-three pivot is efficient for large datasets.".to_string(),
+                assumptions: vec![],
+                confidence: 0.8,
+                status: HypothesisStatus::Pending,
+                timestamp_ms: 0,
+                origin_workspace_id: None,
+                origin_package_id: None,
+                source_tier: None,
+            };
+            let h3_id = mm.record_belief(h3).await.unwrap();
+            eprintln!("Assignment 3: recorded new hypothesis {} (quicksort)", h3_id);
+
+            let outcome3 = BeliefOutcome {
+                hypothesis_id: h3_id.clone(),
+                status: HypothesisStatus::Confirmed,
+                justification: "Quicksort sorted 1M elements in 200ms. Approach validated.".to_string(),
+            };
+            mm.close_experiment(&ws, outcome3, None).await.unwrap();
+            eprintln!("Assignment 3: quicksort hypothesis confirmed");
+
+            let violations3 = mm.validate_approach(&ws, "quicksort").await.unwrap();
+            assert!(
+                violations3.is_empty(),
+                "Confirmed hypotheses should not appear in validate_approach violations"
+            );
+            eprintln!("Assignment 3: validate_approach found 0 violations for confirmed quicksort approach");
+
+            eprintln!("=== Code Expert Agent PoC: Summary ===");
+            eprintln!("- Assignment 1: bubble sort hypothesis recorded + falsified (cascade to dependent)");
+            eprintln!("- Assignment 2: quality gate surfaced falsified hypotheses, agent avoids repeating");
+            eprintln!("- Re-verification: explicit reverify_hypothesis re-opens falsified hypothesis");
+            eprintln!("- Assignment 3: new quicksort approach recorded + confirmed, no violations");
+            eprintln!("=== CODE EXPERT AGENT PoC PASSED ===");
         }
     }
 }

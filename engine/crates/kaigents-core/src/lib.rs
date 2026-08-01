@@ -28,7 +28,10 @@ pub use artifacts::{
     Artifact, ArtifactId, ArtifactKind, ArtifactMetadata, ArtifactPlane, ArtifactStorageRef,
     ArtifactStore, InMemoryArtifactStore,
 };
-pub use context_manager::{ContextBudgetStrategy, ContextManager, FittedContext};
+pub use context_manager::{
+    ContextBudgetStrategy, ContextItem, ContextManager, ContextTier, FittedContext,
+    ModelCandidate, RoutingPolicy, SummaryProvider,
+};
 pub use dag::{CancellationToken, DAGExecutor, ExecutionResult, Node, NodeId, StepType, DAG};
 pub use file_backed::{
     artifacts_root_dir, default_state_dir, parse_uuid, timeline_events_path, FileArtifactStore,
@@ -48,8 +51,8 @@ pub use run_id::RunId;
 #[cfg(feature = "s3")]
 pub use s3_store::{S3ArtifactStore, S3Config};
 pub use temporal_adapter::{
-    StartWorkRequestRequest, TemporalAdapterClient, WorkItemDef as TemporalWorkItemDef,
-    WorkRequestState as TemporalWorkRequestState,
+    ConsolidationRequest, ConsolidationState, StartWorkRequestRequest, TemporalAdapterClient,
+    WorkItemDef as TemporalWorkItemDef, WorkRequestState as TemporalWorkRequestState,
 };
 pub use timeline::{EventId, EventType, TimelineEvent, TimelineStore};
 pub use tool_plane::{

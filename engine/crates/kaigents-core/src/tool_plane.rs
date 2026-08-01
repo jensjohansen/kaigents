@@ -281,18 +281,23 @@ impl MCPClient for HttpMcpClient {
         &self,
         tool_name: &str,
         arguments: serde_json::Value,
-        _timeout: Duration,
+        timeout: Duration,
     ) -> Result<serde_json::Value, String> {
-        let result = self
-            .jsonrpc(
-                "tools/call",
-                serde_json::json!({
-                    "name": tool_name,
-                    "arguments": arguments,
-                }),
-            )
-            .await?;
-        Ok(result)
+        let fut = self.jsonrpc(
+            "tools/call",
+            serde_json::json!({
+                "name": tool_name,
+                "arguments": arguments,
+            }),
+        );
+        match tokio::time::timeout(timeout, fut).await {
+            Ok(result) => Ok(result?),
+            Err(_) => Err(format!(
+                "Tool '{}' timed out after {}ms",
+                tool_name,
+                timeout.as_millis()
+            )),
+        }
     }
 }
 

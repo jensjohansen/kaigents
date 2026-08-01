@@ -225,7 +225,8 @@ func (r *RunReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 			"KAIGENTS_RETHINKDB_USER",
 			"KAIGENTS_RETHINKDB_PASSWORD",
 			"KAIGENTS_MODEL_TIMEOUT_SECS",
-			"KAIGENTS_TEMPORAL_ADAPTER_URL",
+		"KAIGENTS_MCP_TIMEOUT_MS",
+		"KAIGENTS_TEMPORAL_ADAPTER_URL",
 		}
 		for _, name := range passThroughEnvNames {
 			if value := os.Getenv(name); value != "" {
@@ -278,6 +279,15 @@ func (r *RunReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 
 	phase, message := phaseFromJob(job)
 	conditionType, conditionStatus := conditionForPhase(phase)
+
+	if phase == "Succeeded" {
+		outputsCM := &corev1.ConfigMap{}
+		cmKey := types.NamespacedName{Name: req.Name + "-outputs", Namespace: req.Namespace}
+		if err := r.Client.Get(ctx, cmKey, outputsCM); err == nil {
+			run.Status.Outputs = outputsCM.Data
+		}
+	}
+
 	if err := r.updateRunStatus(ctx, run, phase, message, conditionType, conditionStatus); err != nil {
 		return ctrl.Result{}, err
 	}

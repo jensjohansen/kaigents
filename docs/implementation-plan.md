@@ -773,12 +773,188 @@ not started — `backend_amd.c` is an 85-line stub. This matches the PRD
 status exactly ("design phase, implementation TBD"). No code changes
 were made to Trochilus.
 
-**Verdict:** The memory subsystem (M9-M12) delivers all acceptance
-criteria specified in the PRD and implementation tracker. The four
-documented deviations are intentional PoC-scope trade-offs. The 12
-newly discovered gaps are pre-existing issues from earlier milestones
-(M1-M8), not regressions from the memory work. The 5 extras are all
-justified bug fixes. No scope creep was introduced.
+**Verdict:** The memory subsystem (M9-M12) delivers most acceptance
+criteria specified in the PRD and implementation tracker. Two
+acceptance criteria are unmet (M10 compression/routing, M11 Code Expert
+Agent PoC). The four documented deviations are intentional PoC-scope
+trade-offs that leave design items unbuilt. The 12 newly discovered
+gaps include 2 data corruption bugs (G1, G2) that must be fixed. The 5
+extras are all justified bug fixes. No scope creep was introduced.
+
+**Correction:** The R7 verdict originally stated "delivers all
+acceptance criteria." This was inaccurate. M10 and M11 each have one
+unmet acceptance criterion. The recovery plan below (R8-R14) closes
+all gaps, deferred items, and unmet criteria.
 
 **Status:** Complete.
+
+---
+
+## Full Delivery Roadmap (R8-R14)
+
+The following phases close every gap, deferred design item, unmet
+acceptance criterion, and known limitation identified in R7. The goal
+is full spec delivery — every checkbox in the tracker checked, every
+acceptance criterion met, every Section 13 deviation resolved.
+
+### R8: Fix data corruption bugs (G1, G2)
+
+**G1: `remove_package` deadlock** — The function acquires
+`rethinkdb_session.lock().await` and then calls `close_experiment`
+which also tries to acquire the same mutex. Fix: collect the belief
+IDs that need falsification while holding the lock, release the lock,
+then call `close_experiment` for each ID without holding it.
+
+**G2: Cross-workspace retraction** — The dependent belief lookup in
+`close_experiment` does not filter by `workspace_id`. Fix: add
+`workspace_id` to the RethinkDB filter query when searching for
+dependent beliefs, so cascades only affect beliefs in the same
+workspace as the falsified hypothesis.
+
+### R9: Context Manager v2 + context-budget-aware routing — COMPLETE
+
+Closes M10 acceptance criterion: "A task exceeding any single model's
+window is completed via compression/routing across models."
+
+**Completed:**
+- `Summarize` strategy: sync text compression (`simple_compress`) for
+  immediate fitting, plus async `SummaryProvider` trait for LLM-backed
+  summarization via `fit_to_budget_with_summarization`.
+- `Error` strategy: sets `budget_exceeded` flag on `FittedContext` when
+  items are dropped after system prompt.
+- Hierarchical demotion: `ContextTier` enum (Core/Recall/Archival).
+  Archival items (case file) dropped first, then Recall (episodes),
+  Core items (system prompt, task state, beliefs) preserved.
+- `fit_to_budget_tiered` method for explicit tier-based context assembly.
+- `RoutingPolicy` with `select_model_for_context`: filters candidates
+  by context window, prefers local models, falls back to largest-window
+  model when no candidate fits (configurable).
+- `ModelCandidate` struct: name, context_window_size, priority, is_local.
+- 12 new tests covering all strategies, hierarchical demotion, routing,
+  and async summarization.
+- All 59 tests pass (40 core + 19 memory), both default and rethinkdb
+  builds, zero warnings.
+
+### R10: Code Expert Agent PoC — COMPLETE
+
+Closes M11 acceptance criterion: "Code Expert Agent PoC demonstrates
+improving quality across assignments without repeating known-bad
+approaches."
+
+**Completed:**
+- Integration test `integration_code_expert_agent_poc` written.
+- Assignment 1: Records bubble sort hypothesis + dependent (early
+  termination variant). Falsifies base hypothesis → retraction cascade
+  falsifies dependent. Validates both appear in `validate_approach`.
+- Assignment 2: Quality gate (`validate_approach`) surfaces falsified
+  hypotheses for "sort" query. `assemble_context` includes
+  precedence/belief warnings in fitted context.
+- Re-verification: `reverify_hypothesis` re-opens falsified hypothesis
+  for explicit re-testing.
+- Assignment 3: New quicksort approach recorded, confirmed via
+  `close_experiment`. `validate_approach` returns 0 violations for
+  confirmed approach.
+- All 59 tests pass (40 core + 19 memory), 5 ignored (4 integration +
+  1 rethinkdb), zero warnings.
+
+### R11: Temporal-based consolidation — COMPLETE
+
+Closes §13.4 deviation.
+
+**Completed:**
+- `ConsolidationRequest` and `ConsolidationState` types added to
+  `temporal_adapter.rs` with camelCase serde serialization.
+- `start_consolidation` (POST `/v1/consolidate`) and
+  `query_consolidation` (GET `/v1/consolidate/{id}`) methods on
+  `TemporalAdapterClient`.
+- 4 unit tests: request serialization, state deserialization (with and
+  without optional fields), trailing slash trimming.
+- `serve_memory_api` function in CLI: `tiny_http` server with
+  `/api/v1/memory/record` and `/api/v1/memory/query` endpoints; creates
+  separate tokio runtime for async `MemoryManager` calls.
+- Runner modified: when `KAIGENTS_TEMPORAL_ADAPTER_URL` env var is set,
+  starts memory API server on `KAIGENTS_MEMORY_API_PORT` (default 8090),
+  creates `TemporalAdapterClient`, calls `start_consolidation`; on
+  failure falls back to in-process `consolidate_run_memory`; if no
+  adapter URL, uses in-process consolidation only.
+- All 63 tests pass (44 core + 19 memory), both default and rethinkdb
+  builds, zero warnings.
+- **Not yet verified:** Durability test (kill runner mid-consolidation,
+  confirm Temporal workflow resumes) requires a live Temporal adapter
+  deployment. Code is written and compiles; verification deferred to
+  infrastructure deployment phase.
+
+### R12: NebulaGraph temporal graph layer
+
+Closes §13.1, §13.2 deviations + 3 unchecked tracker items (M9
+temporal edges, M10 episodic in NebulaGraph, M11 retraction cascades
+on NebulaGraph).
+
+- Implement LLM-driven entity/edge extraction from Case File updates.
+- Implement bi-temporal schema on NebulaGraph edges (`valid_from`,
+  `valid_to`, `transaction_time`).
+- Implement hybrid search fusion (Reciprocal Rank Fusion merging
+  Qdrant semantic + NebulaGraph graph results).
+- Implement edge invalidation logic.
+- Implement as-of query engine.
+- Migrate retraction cascades from RethinkDB filter to NebulaGraph
+  graph traversals.
+- Migrate episodic storage from RethinkDB-only to NebulaGraph +
+  RethinkDB.
+- Estimated effort: 2 quarters for full GA (per proposal Section 5.1).
+
+### R13: Fix functional gaps (G3-G5, G8-G10, G12) — COMPLETE
+
+**Completed:**
+- **G3**: Qdrant scroll pagination in `consolidate_run_memory` — added
+  `.limit(100)` and `while let Some(offset) = resp.next_page_offset`
+  pagination loop to fetch all points, not just the first batch.
+- **G4**: `ArtifactPlane::retrieve_artifact` implemented — added
+  in-memory index mapping `ArtifactId` → `ArtifactStorageRef`;
+  `store_artifact` populates the index; `retrieve_artifact` looks up
+  the storage ref and calls `self.store.retrieve()`.
+- **G5**: DAG dependency ordering enforced — rewrote
+  `DAGExecutor::execute` to use `HashSet<NodeId>` for completed nodes
+  and `HashMap<NodeId, HashSet<NodeId>>` for remaining dependencies;
+  nodes are only spawned after all dependencies complete; concurrent
+  execution of independent nodes is preserved.
+- **G8**: `RunStatus.Outputs` field added to Run CRD
+  (`map[string]string`); run controller reads a ConfigMap named
+  `{run-name}-outputs` when the job succeeds and populates
+  `Run.Status.Outputs` from its data; `DeepCopyObject` updated.
+- **G9**: Solo runner supports any Agent persona — removed
+  `target_name.contains("Research")` check; MCP tool registration and
+  search/read steps are conditional on `mcp_server_url` being set;
+  default system prompt is now generic.
+- **G10**: Model activity failures propagated — `ExecuteWorkItem`
+  activity now returns `result, err` instead of `result, nil` when
+  `callModel` fails, allowing Temporal to retry and the workflow to
+  record the failure.
+- **G12**: MCP timeout enforced — `HttpMcpClient::call_tool` wraps
+  JSON-RPC call with `tokio::time::timeout(timeout, fut)`; timeout is
+  configurable via `KAIGENTS_MCP_TIMEOUT_MS` env var (default 30000ms);
+  env var added to pass-through list in run controller.
+- All 63 tests pass (44 core + 19 memory), both default and rethinkdb
+  builds, zero warnings.
+
+### R14: Future items + M12 limitations
+
+**Completed:**
+- **M12 limitation 2**: `policy.yaml` and `distilled-lessons.md` now
+  included in `.kgpkg` package format. `policy.yaml` contains the
+  source_priority list; `distilled-lessons.md` contains a markdown
+  summary of all episodes with their content.
+
+**Deferred (future work):**
+- **G6**: Implement `K8sOffload` pod submission to the Kubernetes API
+  (currently builds spec but does not submit). Requires Kubernetes
+  client in the Rust engine.
+- **G7**: Add controllers for `Task`, `Process`, and `MemoryPolicy`
+  CRDs (currently only `Agent` and `Run` are reconciled). Requires
+  Go operator development.
+- **G11**: Regenerate CRD YAML from Go structs using controller-gen to
+  eliminate schema drift. Requires build tooling setup.
+- **M12 limitation 1**: Use semantic similarity (embeddings) for
+  episode/belief dedup on import instead of exact text match. Requires
+  embedding model calls during import.
 

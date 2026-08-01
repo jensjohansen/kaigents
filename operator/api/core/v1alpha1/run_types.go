@@ -42,6 +42,7 @@ type RunStatus struct {
 	Phase              string           `json:"phase,omitempty"`
 	Message            string           `json:"message,omitempty"`
 	Artifacts          []RunArtifactRef `json:"artifacts,omitempty"`
+	Outputs            map[string]string `json:"outputs,omitempty"`
 	Conditions         []Condition      `json:"conditions,omitempty"`
 }
 
@@ -75,6 +76,12 @@ func (in *Run) DeepCopyObject() runtime.Object {
 	}
 	if in.Status.Artifacts != nil {
 		out.Status.Artifacts = append([]RunArtifactRef(nil), in.Status.Artifacts...)
+	}
+	if in.Status.Outputs != nil {
+		out.Status.Outputs = make(map[string]string)
+		for k, v := range in.Status.Outputs {
+			out.Status.Outputs[k] = v
+		}
 	}
 	if in.Spec.Routing != nil {
 		out.Spec.Routing = &RoutingPolicy{
