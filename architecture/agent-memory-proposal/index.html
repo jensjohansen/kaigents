@@ -1,0 +1,2285 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Production-grade substrate for operating AI agent teams.">
+      
+      
+      
+        <link rel="canonical" href="https://jensjohansen.github.io/kaigents/architecture/agent-memory-proposal/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Kaigents Agent Memory — Architecture Proposal - Kaigents</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#kaigents-agent-memory-architecture-proposal" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Kaigents" class="md-header__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kaigents
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Kaigents Agent Memory — Architecture Proposal
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../product/kaigents-introduction/" class="md-tabs__link">
+          
+  
+  
+  Product
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../kaigents-architecture-and-design/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../ops/temporal-installation/" class="md-tabs__link">
+          
+  
+  
+  Operations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../strategy/corporate_ai_strategy/" class="md-tabs__link">
+          
+  
+  
+  Strategy
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../CODING_STANDARDS_AND_DOD/" class="md-tabs__link">
+          
+  
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Kaigents" class="md-nav__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kaigents
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Product
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kaigents-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kaigents-prd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/domain-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/managed-services/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Managed Services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kairon-retail-managed-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kairon Retail
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/example-team/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your First Team
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/temporal-validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kaigents-architecture-and-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ai_agent_engine_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ops/temporal-installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Temporal Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Strategy
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Strategy
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/corporate_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Corporate AI Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/marketing_ai_agent_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marketing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/security_operations_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CODING_STANDARDS_AND_DOD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation-plan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation/kaigents-implementation-tracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-purpose-and-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Purpose and scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-the-three-tiers-and-how-they-map-to-the-existing-domain-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. The three tiers and how they map to the existing domain model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-existing-itds-are-preserved" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Existing ITDs are preserved
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-real-time-short-term-memory-the-live-case-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Real-time short-term memory — the live Case File
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Real-time short-term memory — the live Case File">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-concept" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Concept
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-data-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Data flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-design-decisions-preserving-existing-itds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Design decisions (preserving existing ITDs)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-scope-boundary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Scope boundary
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-the-graph-backend-decision-license-forced-not-preference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. The graph-backend decision (license-forced, not preference)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. The graph-backend decision (license-forced, not preference)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-build-scope-for-temporal-kg-on-nebulagraph-work-item-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Build scope for temporal KG on NebulaGraph (Work Item 2)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-long-term-memory-the-consolidator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Long-term memory — the consolidator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Long-term memory — the consolidator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-concept" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Concept
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-data-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Data flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-design-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Design decisions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-experience-and-epistemic-memory-closing-the-experiment-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Experience and epistemic memory — closing the Experiment loop
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Experience and epistemic memory — closing the Experiment loop">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-the-gap-in-the-current-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 The gap in the current model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-the-belief-manager" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 The Belief Manager
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-design-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 Design decisions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-why-this-is-the-differentiator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4 Why this is the differentiator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-applied-to-the-two-motivating-use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Applied to the two motivating use cases
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Applied to the two motivating use cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-meeting-corpus-with-real-time-voice-and-translation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Meeting corpus with real-time voice and translation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-assignment-history-simulating-long-term-experience" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 Assignment history simulating long-term experience
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-new-itds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. New ITDs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. New ITDs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#itd-17-adopted-agent-memory-as-a-first-class-opt-in-subsystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ITD-17 (adopted) — Agent memory as a first-class, opt-in subsystem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itd-18-adopted-partially-implemented-temporal-knowledge-graph-substrate-on-nebulagraph-preserve-itd-05" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ITD-18 (adopted, partially implemented) — Temporal knowledge graph substrate on NebulaGraph (preserve ITD-05)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itd-19-adopted-belief-revision-atms-for-experiment-closure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ITD-19 (adopted) — Belief revision (ATMS) for experiment closure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itd-20-adopted-context-manager-model-agnostic-context-budgeting-and-context-aware-model-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ITD-20 (adopted) — Context Manager: model-agnostic context budgeting and context-aware model routing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-phasing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Phasing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-decisions-on-open-questions-work-item-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Decisions on open questions (Work Item 1)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-the-context-manager-model-agnostic-context-budgeting-critical-requirement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. The Context Manager — model-agnostic context budgeting (critical requirement)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. The Context Manager — model-agnostic context budgeting (critical requirement)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#121-the-problem-this-solves" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1 The problem this solves
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#122-where-it-sits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2 Where it sits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#123-context-assembly-and-budget-enforcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.3 Context assembly and budget enforcement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#124-context-budget-aware-model-routing-right-model-at-the-right-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.4 Context-budget-aware model routing ("right model at the right time")
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#125-why-this-is-the-critical-enabling-capability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.5 Why this is the critical, enabling capability
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-implementation-deviations-as-built-vs-designed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Implementation deviations (as built vs designed)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="13. Implementation deviations (as built vs designed)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#131-nebulagraph-temporal-graph-layer-itd-18-implemented-r15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1 NebulaGraph temporal graph layer (ITD-18) — implemented (R15)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#132-retraction-cascades-itd-19-nebulagraph-graph-traversal-implemented-r15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.2 Retraction cascades (ITD-19) — NebulaGraph graph traversal implemented (R15)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#133-context-manager-v2-itd-20-implemented-r9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3 Context Manager v2 (ITD-20) — implemented (R9)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#134-consolidation-triggering-temporal-path-implemented-r11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.4 Consolidation triggering — Temporal path implemented (R11)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="kaigents-agent-memory-architecture-proposal">Kaigents Agent Memory — Architecture Proposal</h1>
+<p><em>Status: Adopted. Complements <a href="../kaigents-architecture-and-design/"><code>kaigents-architecture-and-design.md</code></a> and the ITD register. Research basis: <a href="../../research/agent-context-and-memory-research/"><code>../research/agent-context-and-memory-research.md</code></a>. See Section 13 for implementation deviations.</em></p>
+<h2 id="1-purpose-and-scope">1. Purpose and scope</h2>
+<p>This proposal adds a <strong>memory and context-management subsystem</strong> to Kaigents so that agents can:</p>
+<ol>
+<li><strong>Work with the right model at the right time, regardless of any model's context-window limits or capabilities</strong> — the platform, not the model, owns context budget management and model routing. This is the <strong>critical, enabling requirement</strong>: large-context models worked well until they overflowed, and overflow handling is unreliable and model-dependent; many usable models have very small context windows. Externalizing context management is how a sovereign mixed/local-model stack competes with a single huge-context cloud model. (See Section 12, the Context Manager.)</li>
+<li><strong>Ingest and use new information in real time</strong> during a work request (real-time short-term memory).</li>
+<li><strong>Retain experience across work requests</strong> and recall it as precedence on future work (long-term memory).</li>
+<li><strong>Distinguish hypothesis from outcome</strong> and avoid repeating mistakes unless deliberately re-verifying an assumption (experience / epistemic memory).</li>
+</ol>
+<p>The guiding principle is <strong>extension, not replacement</strong>: the Kaigents product domain model (<a href="../../product/domain-model/"><code>../product/domain-model.md</code></a>) already contains the seeds of all three memory tiers. This proposal makes them first-class and operational, and adds the Context Manager as the cross-cutting layer that makes those tiers usable by <em>any</em> model — including small-context ones — without relitigating the existing Important Technical Decisions (ITDs) where they still hold.</p>
+<p>Non-goals:
+- Replacing the existing retrieval story in <a href="../../research/rag_overview/"><code>../research/rag_overview.md</code></a>; this layers on top of it.
+- Forcing every agent to use memory. Consistent with Section 7 of the architecture doc, memory is <em>opt-in per process</em>, like RAG.
+- Retraining models. Experience is non-parametric (retrieval-augmented), per the research findings.
+- Making Kaigents model-specific. A core design intent is model-agnosticism: the same agent must be effective across models with widely different context windows.</p>
+<h2 id="2-the-three-tiers-and-how-they-map-to-the-existing-domain-model">2. The three tiers and how they map to the existing domain model</h2>
+<p>The proposal deliberately reuses existing entities rather than introducing parallel vocabulary.</p>
+<table>
+<thead>
+<tr>
+<th>Memory tier</th>
+<th>Existing domain entity</th>
+<th>What this proposal adds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Real-time short-term</strong></td>
+<td><strong>Case File / Context</strong> (entity 8a)</td>
+<td>A <em>live</em> Case File: streaming ingestion, incremental indexing, sub-second queryability while the work request is in progress.</td>
+</tr>
+<tr>
+<td><strong>Long-term</strong></td>
+<td><strong>Work Request / Work Attempt / Event / Artifact</strong> (entities 10–14)</td>
+<td>A <em>consolidation and indexing</em> layer that turns the append-only run timeline into a queryable episodic + semantic memory across work requests.</td>
+</tr>
+<tr>
+<td><strong>Experience / epistemic</strong></td>
+<td><strong>Experiment</strong> (entity 18) + <strong>Metric</strong> (entity 19)</td>
+<td>A <em>belief-revision</em> layer that closes the Experiment loop: hypotheses get outcomes, dependent conclusions retract on falsification, and re-verification is an explicit, history-informed action.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cross-cutting layer — the Context Manager (Section 12).</strong> The three tiers are <em>storage</em>. The Context Manager is the <em>orchestration</em> that assembles a model-ready context from those tiers and fits it to the chosen model's window — so the same agent is effective on a 128K-context model and on a 4K-context model. This is the capability that makes the memory tiers actually usable by small-context models, and it is the critical requirement driving this proposal.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>flowchart TD
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    subgraph WR[&quot;Work Request (existing)&quot;]
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        CF[Case File&lt;br/&gt;real-time short-term]
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        WA[Work Attempts&lt;br/&gt;episodic raw material]
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        EV[Events&lt;br/&gt;append-only timeline]
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        EX[Experiment&lt;br/&gt;hypothesis + measurement]
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    end
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    subgraph MEM[&quot;Memory subsystem (proposed)&quot;]
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        L1[Live Context Indexer&lt;br/&gt;streaming into Qdrant+NebulaGraph]
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        L2[Memory Consolidator&lt;br/&gt;Temporal workflow, episodes -&gt; semantic+graph memory]
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>        L3[Belief Manager&lt;br/&gt;TMS/ATMS on Experiment outcomes]
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    end
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    CF --&gt; L1
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    WA --&gt; L2
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    EV --&gt; L2
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    EX --&gt; L3
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    L1 --&gt;|as-of query| CF
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    L2 --&gt;|recall precedence| CF
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    L3 --&gt;|gates repeat of failed approach| EX
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    classDef existing fill:#ffe680,stroke:#b38600,stroke-width:2px,color:#000000
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    classDef proposed fill:#c2e0c2,stroke:#2d6630,stroke-width:2px,color:#000000
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    class CF,WA,EV,EX existing
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    class L1,L2,L3 proposed
+</code></pre></div>
+<h2 id="3-existing-itds-are-preserved">3. Existing ITDs are preserved</h2>
+<p>Every existing ITD has a natural role in the memory subsystem. None need to be overturned to deliver this proposal.</p>
+<table>
+<thead>
+<tr>
+<th>ITD</th>
+<th>Decision</th>
+<th>Role in the memory subsystem</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ITD-02</td>
+<td>Lemonade Server (OpenAI-compatible)</td>
+<td>Serves local embedding models (<code>nomic-embed-text</code> / <code>bge-m3</code>) and the LLM that consolidates episodes and reflects on outcomes. Keeps embeddings sovereign.</td>
+</tr>
+<tr>
+<td>ITD-03</td>
+<td>kMCP / MCP-first tool plane</td>
+<td>Memory read/write is exposed as MCP tools (<code>memory.recall</code>, <code>memory.record</code>, <code>experiment.close</code>) so it is policy-controlled, allowlisted, and audited like any other tool.</td>
+</tr>
+<tr>
+<td>ITD-04</td>
+<td>Qdrant (vector)</td>
+<td>Vector index for semantic memory and the live Case File. LSM-style live upserts satisfy real-time ingestion.</td>
+</tr>
+<tr>
+<td>ITD-05</td>
+<td>NebulaGraph (graph)</td>
+<td>Temporal knowledge graph substrate (see Section 5 tension).</td>
+</tr>
+<tr>
+<td>ITD-06</td>
+<td>RethinkDB (document/state)</td>
+<td>Durable records for memory items, belief records, and experiment outcomes. JSON-first records with secondary indexes fit the query patterns.</td>
+</tr>
+<tr>
+<td>ITD-08</td>
+<td>Embedded Rust DAG (short workflows)</td>
+<td>Per-request memory operations (live index upsert, recall) run inside the DAG substrate.</td>
+</tr>
+<tr>
+<td>ITD-11</td>
+<td>OTel + Prometheus + Grafana</td>
+<td>Memory ops (ingest latency, recall latency, consolidation runs, retraction cascades) emit the same stable event schema and OTel spans as everything else.</td>
+</tr>
+<tr>
+<td>ITD-12</td>
+<td>Rust engine + Go operator</td>
+<td>Memory subsystems live in the Rust engine; CRDs/controllers for memory policies live in Go. No Python required in core.</td>
+</tr>
+<tr>
+<td>ITD-13 / ITD-14</td>
+<td>S3 artifacts + SigV4 proxy</td>
+<td>Large memory artifacts (audio, transcripts, documents) are stored as artifacts and referenced; the memory index holds metadata + embeddings, not bytes.</td>
+</tr>
+<tr>
+<td>ITD-16</td>
+<td>Temporal (durable execution)</td>
+<td>Memory consolidation and experiment closure are long-running, resumable Temporal workflows (hours/days), not embedded DAG steps.</td>
+</tr>
+</tbody>
+</table>
+<p>The one ITD-adjacent decision worth surfacing is the graph backend, discussed in Section 5.</p>
+<h2 id="4-real-time-short-term-memory-the-live-case-file">4. Real-time short-term memory — the live Case File</h2>
+<h3 id="41-concept">4.1 Concept</h3>
+<p>Today a <strong>Case File</strong> is "the collection of relevant materials for a specific type of work" — a descriptive working set. This proposal makes it <em>live</em>: materials are added during the work request (meeting audio, incoming documents, mid-conversation messages) and become queryable within sub-seconds, without blocking retrieval.</p>
+<h3 id="42-data-flow">4.2 Data flow</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>flowchart LR
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    A[Live input&lt;br/&gt;audio / docs / messages] --&gt; B[Ingest adapter&lt;br/&gt;MCP tool]
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    B --&gt; C[Parse / ASR worker&lt;br/&gt;faster-whisper + diarization]
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    C --&gt; D[Embedding service&lt;br/&gt;Lemonade: nomic-embed-text]
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    D --&gt; E[Qdrant writable segment&lt;br/&gt;instant queryability]
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    D --&gt; F[NebulaGraph node&lt;br/&gt;+ temporal edge valid_from]
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    G[Agent query during work] --&gt; E
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    G --&gt; F
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    classDef ing fill:#b3e0f2,stroke:#0366a3,stroke-width:2px,color:#000000
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    classDef store fill:#ffe680,stroke:#b38600,stroke-width:2px,color:#000000
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    classDef q fill:#c2e0c2,stroke:#2d6630,stroke-width:2px,color:#000000
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    class A,B,C ing
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    class D,E,F store
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    class G q
+</code></pre></div>
+<h3 id="43-design-decisions-preserving-existing-itds">4.3 Design decisions (preserving existing ITDs)</h3>
+<ul>
+<li><strong>Ingest is an MCP tool</strong>, not a special path. This keeps it allowlisted, audited, and policy-controlled (ITD-03), and the run timeline records what was ingested and when — satisfying the traceability requirement from Section 7 of the architecture doc.</li>
+<li><strong>Live upserts via Qdrant's writable segment</strong> (ITD-04) — no full re-index; new material is queryable immediately.</li>
+<li><strong>Temporal edges in NebulaGraph</strong> carry <code>valid_from</code> = ingest timestamp, so an agent can issue an <em>as-of</em> query ("what did we know at 14:03?") against the live Case File.</li>
+<li><strong>Parse/ASR workers run as offloaded Kubernetes workloads</strong> when isolation or device scheduling demands it (the ITD-08 escape hatch), or in-process for low-latency paths.</li>
+<li><strong>Large inputs (audio, documents) are artifacts</strong> (ITD-13/14); the Case File indexes metadata + embeddings, not bytes.</li>
+</ul>
+<h3 id="44-scope-boundary">4.4 Scope boundary</h3>
+<p>The live Case File is scoped to a single Work Request. It is not cross-request memory. When the Work Request ends, its Case File is handed to the consolidator (Section 6) to become long-term memory, then the live index partition is retired.</p>
+<h2 id="5-the-graph-backend-decision-license-forced-not-preference">5. The graph-backend decision (license-forced, not preference)</h2>
+<p>The research identifies <strong>Graphiti</strong> as the strongest open-source temporal knowledge graph pattern for agent memory. Graphiti's native backends are Neo4j, FalkorDB, and Amazon Neptune. Kaigents chose <strong>NebulaGraph</strong> (ITD-05) for Apache-2.0 licensing and distributed scalability.</p>
+<p><strong>License verification (see research paper Section 8.5) makes this a forced decision, not a preference tradeoff.</strong> Every one of Graphiti's self-hostable backends is <em>not</em> commercial-safe for Kaigents' MIT core:</p>
+<table>
+<thead>
+<tr>
+<th>Backend</th>
+<th>License</th>
+<th>Commercial-safe?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NebulaGraph (ITD-05)</td>
+<td>Apache-2.0</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Neo4j Community</td>
+<td>GPLv3</td>
+<td>No (copyleft)</td>
+</tr>
+<tr>
+<td>Neo4j Enterprise</td>
+<td>Commercial / proprietary</td>
+<td>No</td>
+</tr>
+<tr>
+<td>FalkorDB</td>
+<td>SSPLv1</td>
+<td>No (not OSI open source)</td>
+</tr>
+<tr>
+<td>Amazon Neptune</td>
+<td>Proprietary managed</td>
+<td>No (not sovereign)</td>
+</tr>
+</tbody>
+</table>
+<p>Two options remain after license filtering:</p>
+<ul>
+<li><strong>Option A — Build the Graphiti pattern on NebulaGraph (preserve ITD-05).</strong> Implement the temporal graph-memory layer (LLM-driven entity/edge extraction, bi-temporal edge metadata <code>valid_from</code> / <code>valid_to</code> / <code>transaction_time</code>, edge invalidation, hybrid semantic + BM25 + graph search fusion) on NebulaGraph using nGQL, inside the Rust engine (ITD-12) and exposed via MCP tools (ITD-03). Zero new infra; fully consistent with the OSS posture and ITD-05. <strong>This is a substantial build, not a thin shim</strong> — Graphiti's value is the extraction + search-fusion + invalidation logic, not just edge metadata. Full scope sizing is documented in Section 5.1 below.</li>
+<li><strong>Option B — Adopt Graphiti directly.</strong> Rejected on two independent grounds: (1) every native backend is not commercial-safe (above), and (2) Graphiti is a Python library, which collides with ITD-12's no-Python-in-core rule. The only rescue would be contributing a NebulaGraph driver to Graphiti upstream and maintaining it — that is more ongoing burden than Option A with none of the control, and still drags a Python dependency into the memory path.</li>
+</ul>
+<p><strong>Recommendation: Option A (the only license-viable path).</strong> Build the temporal graph-memory layer on NebulaGraph; treat Graphiti as a <em>reference implementation</em> to learn from, not a dependency. This decision should be recorded as <strong>ITD-18</strong> (Section 9).</p>
+<h3 id="51-build-scope-for-temporal-kg-on-nebulagraph-work-item-2">5.1 Build scope for temporal KG on NebulaGraph (Work Item 2)</h3>
+<p>Decomposing the Graphiti pattern into NebulaGraph/nGQL equivalents inside the Rust engine:</p>
+<ol>
+<li><strong>LLM-driven Extraction</strong>: A Rust-based extractor component that consumes Case File updates and uses the local LLM (via Lemonade) to extract entities and relationships. Matches the Reflexion pattern: <em>ingest -&gt; extract -&gt; record</em>.</li>
+<li><strong>Temporal Schema</strong>: nGQL schema for edges including <code>valid_from</code>, <code>valid_to</code>, and <code>transaction_time</code> as bi-temporal properties. Nodes carry <code>first_seen</code> and <code>last_updated</code>.</li>
+<li><strong>Hybrid Search Fusion</strong>: Implementation of Reciprocal Rank Fusion (RRF) in the Rust engine to merge semantic results from Qdrant with graph-traversal results from NebulaGraph.</li>
+<li><strong>Edge Invalidation Logic</strong>: Logic to set <code>valid_to</code> on existing edges when a new, contradicting relationship is extracted (e.g., "Person works at Company A" -&gt; "Person works at Company B").</li>
+<li><strong>As-of Query Engine</strong>: Supporting point-in-time queries by filtering edges where <code>valid_from &lt;= T &lt; valid_to</code>.</li>
+</ol>
+<p><strong>Estimate</strong>:
+- <strong>Complexity</strong>: High (requires custom nGQL generation and search fusion logic).
+- <strong>Risk</strong>: Moderate (Graphiti is a complex reference; NebulaGraph temporal queries need optimization).
+- <strong>Timeline</strong>: 2 quarters for full GA (Phases 1-2).</p>
+<h2 id="6-long-term-memory-the-consolidator">6. Long-term memory — the consolidator</h2>
+<h3 id="61-concept">6.1 Concept</h3>
+<p>Every Work Request already produces an append-only run timeline (Work Attempts, Events, Artifacts). Today that timeline is for auditability. This proposal adds a <strong>Memory Consolidator</strong> that turns completed timelines into queryable cross-request memory.</p>
+<h3 id="62-data-flow">6.2 Data flow</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>flowchart LR
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    A[Completed Work Request&lt;br/&gt;timeline + artifacts] --&gt; B[Memory Consolidator&lt;br/&gt;Temporal workflow]
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    B --&gt; C[Episode extraction&lt;br/&gt;LLM via Lemonade]
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    C --&gt; D[Semantic memory&lt;br/&gt;Qdrant]
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    C --&gt; E[Episodic + graph memory&lt;br/&gt;NebulaGraph + RethinkDB]
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    F[Future Work Request] --&gt;|recall precedence| D
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    F --&gt; E
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    classDef src fill:#ffe680,stroke:#b38600,stroke-width:2px,color:#000000
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    classDef proc fill:#b3e0f2,stroke:#0366a3,stroke-width:2px,color:#000000
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    classDef store fill:#c2e0c2,stroke:#2d6630,stroke-width:2px,color:#000000
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    class A src
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    class B,C proc
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    class D,E,F store
+</code></pre></div>
+<h3 id="63-design-decisions">6.3 Design decisions</h3>
+<ul>
+<li><strong>Consolidation is a Temporal workflow</strong> (ITD-16), not an embedded DAG step. It is long-running, resumable, and can wait for human review of extracted lessons before promoting them to memory.</li>
+<li><strong>Episode extraction uses the local LLM</strong> via Lemonade (ITD-02), following the Reflexion pattern: record episode → reflect into lessons → store. No external API.</li>
+<li><strong>Three stores, three roles:</strong> Qdrant for semantic recall ("similar past situations"), NebulaGraph for relational/episodic memory ("what depended on what"), RethinkDB for the durable episode/lesson records (ITD-06).</li>
+<li><strong>Recall is an MCP tool</strong> (<code>memory.recall</code>) so it is policy-gated and appears in the run timeline — preserving traceability.</li>
+<li><strong>Provenance is mandatory.</strong> Every memory item links back to the Work Request / Work Attempt it came from, so "why did you recall this?" is always answerable.</li>
+</ul>
+<h2 id="7-experience-and-epistemic-memory-closing-the-experiment-loop">7. Experience and epistemic memory — closing the Experiment loop</h2>
+<h3 id="71-the-gap-in-the-current-model">7.1 The gap in the current model</h3>
+<p>The domain model already defines an <strong>Experiment</strong> with a Hypothesis, Treatment, Measurement plan, and Scope, plus <strong>Metric</strong> for evaluation. What is missing is the <em>closure</em>: recording the outcome, invalidating hypotheses that fail, and preventing repetition of failed approaches unless deliberately re-verified. This is exactly the "differentiate hypothesis from outcome" and "don't repeat mistakes" requirement.</p>
+<h3 id="72-the-belief-manager">7.2 The Belief Manager</h3>
+<p>A <strong>Belief Manager</strong> sits on top of the Experiment entity and implements an assumption-based truth maintenance system (ATMS):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>flowchart TD
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    H1[Hypothesis&lt;br/&gt;confidence + falsification condition] --&gt;|assumes| A1[Assumption set]
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    H1 --&gt;|supports| B1[Dependent beliefs]
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    O1[Outcome arrives&lt;br/&gt;Metric result] --&gt; J{Confirmed or falsified?}
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    J --&gt;|confirmed| H2[Hypothesis: confirmed&lt;br/&gt;valid_to set]
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    J --&gt;|falsified| H3[Hypothesis: falsified&lt;br/&gt;valid_to set]
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    H3 --&gt;|retraction cascade| B2[Dependent beliefs invalidated]
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    R[Deliberate re-verification&lt;br/&gt;explicit action] --&gt;|re-opens context| A1
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    A1 --&gt;|carries failure history| H4[Re-test informed by&lt;br/&gt;original failure mode]
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    classDef hyp fill:#ffe680,stroke:#b38600,stroke-width:2px,color:#000000
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    classDef outcome fill:#f9d5e5,stroke:#d64161,stroke-width:2px,color:#000000
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    classDef action fill:#c2e0c2,stroke:#2d6630,stroke-width:2px,color:#000000
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    class H1,A1,B1,H2,H3,B2 hyp
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    class O1,J outcome
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>    class R,H4 action
+</code></pre></div>
+<h3 id="73-design-decisions">7.3 Design decisions</h3>
+<ul>
+<li><strong>Hypotheses are first-class addressable records</strong> in RethinkDB (ITD-06), each carrying: confidence level, falsification condition, assumption set, and links to dependent beliefs. This mirrors "The Hypothesis Graph" pattern from the research.</li>
+<li><strong>Outcomes close the loop via a Temporal workflow</strong> (ITD-16) that records the Metric result and triggers belief revision.</li>
+<li><strong>Retraction cascades are graph traversals</strong> on NebulaGraph (ITD-05): invalidating a hypothesis invalidates every belief whose assumption set depended on it.</li>
+<li><strong>Defeated hypotheses are retained, not deleted.</strong> Bi-temporal storage records <code>valid_to</code>; the falsified hypothesis stays queryable for "what did we used to believe and why was it wrong?"</li>
+<li><strong>Re-verification is an explicit MCP tool</strong> (<code>experiment.reverify</code>) that re-opens the ATMS context. It carries the failure history forward, so the re-test is informed by the original failure mode rather than starting naive. This is the mechanical implementation of "unless deliberately reverifying an assumption."</li>
+<li><strong>Repeat-prevention is a policy gate.</strong> When an agent proposes an approach that a recalled, falsified hypothesis warns against, the Belief Manager surfaces it as a case-file entry (and optionally a quality gate). The agent may proceed only by invoking <code>experiment.reverify</code> — making the deliberate-reverification requirement auditable in the run timeline.</li>
+</ul>
+<h3 id="74-why-this-is-the-differentiator">7.4 Why this is the differentiator</h3>
+<p>Retrieval, streaming ingestion, and graph memory are commoditizing across open-source projects. Belief revision with retraction cascades and history-informed re-verification is not. This is the layer where a sovereign Kaigents build most differentiates, and it composes cleanly with the existing Experiment/Metric entities rather than requiring new product vocabulary.</p>
+<h2 id="8-applied-to-the-two-motivating-use-cases">8. Applied to the two motivating use cases</h2>
+<h3 id="81-meeting-corpus-with-real-time-voice-and-translation">8.1 Meeting corpus with real-time voice and translation</h3>
+<ol>
+<li><strong>Pre-meeting:</strong> agenda documents are ingested via the <code>memory.record</code> MCP tool → embedded by Lemonade → added to the live Case File partition in Qdrant + NebulaGraph with <code>valid_from = meeting_start</code>.</li>
+<li><strong>During meeting:</strong> audio is ingested via an MCP adapter; faster-whisper transcribes and pyannote diarizes; each speaker turn becomes a NebulaGraph node with a temporal edge; translation (self-hosted, sovereign) attaches as a parallel edge. All writes hit Qdrant's writable segment, so the agent can answer mid-meeting questions against the <em>current partial</em> graph.</li>
+<li><strong>Real-time Q&amp;A:</strong> the agent issues as-of queries against the live Case File; every recall is recorded in the run timeline for traceability.</li>
+<li><strong>Post-meeting:</strong> the consolidator (Temporal workflow) extracts episodes and lessons and promotes them to long-term memory.</li>
+<li><strong>Future meetings:</strong> bi-temporal recall retrieves this meeting <em>as it was</em> at any point; superseded facts remain queryable with <code>valid_to</code> set.</li>
+</ol>
+<h3 id="82-assignment-history-simulating-long-term-experience">8.2 Assignment history simulating long-term experience</h3>
+<ol>
+<li>Each assignment is a <strong>Work Request</strong>; its hypothesis is an <strong>Experiment</strong> with a falsification condition and measurement plan.</li>
+<li>Work Attempts and Events are the episodic raw material; the consolidator promotes them to semantic + graph memory on completion.</li>
+<li>When the outcome arrives, the <strong>Belief Manager</strong> marks the Experiment's hypothesis confirmed or falsified; a retraction cascade invalidates dependent beliefs on falsification.</li>
+<li>On a new assignment, <code>memory.recall</code> surfaces similar past episodes <em>and their outcomes</em> — successes reinforce, failures are surfaced as warnings.</li>
+<li>Repeating a failed approach requires an explicit <code>experiment.reverify</code> action that re-opens the ATMS context carrying the original failure reason, so the re-test is informed and auditable.</li>
+</ol>
+<h2 id="9-new-itds">9. New ITDs</h2>
+<p>These extend the register in <a href="../../research/technology/itd-register/"><code>../research/technology/itd-register.md</code></a> without modifying existing entries.</p>
+<h3 id="itd-17-adopted-agent-memory-as-a-first-class-opt-in-subsystem">ITD-17 (adopted) — Agent memory as a first-class, opt-in subsystem</h3>
+<ul>
+<li><strong>Decision area:</strong> Add three-tier agent memory (real-time short-term, long-term, experience/epistemic) as an opt-in capability, modeled on the existing Case File, Work Request timeline, and Experiment entities.</li>
+<li><strong>Status:</strong> Adopted.</li>
+<li><strong>Primary reason:</strong> Real-time ingestion, cross-request experience recall, and hypothesis-vs-outcome tracking are increasingly expected of agent platforms. Kaigents' domain model already contains the seeds; this makes them operational while preserving all existing ITDs.</li>
+<li><strong>Impacts:</strong> Introduces a Memory subsystem in the Rust engine; new MCP tools (<code>memory.record</code>, <code>memory.recall</code>, <code>experiment.close</code>, <code>experiment.reverify</code>); consolidation and experiment-closure as Temporal workflows.</li>
+</ul>
+<h3 id="itd-18-adopted-partially-implemented-temporal-knowledge-graph-substrate-on-nebulagraph-preserve-itd-05">ITD-18 (adopted, partially implemented) — Temporal knowledge graph substrate on NebulaGraph (preserve ITD-05)</h3>
+<ul>
+<li><strong>Decision area:</strong> Implement the bi-temporal knowledge-graph memory layer on NebulaGraph (Option A, Section 5) rather than adopting Graphiti + a second graph backend.</li>
+<li><strong>Status:</strong> Adopted. Partially implemented — see Section 13 deviation note.</li>
+<li><strong>Options considered:</strong> (A) Graphiti pattern on NebulaGraph; (B) Graphiti direct + a Graphiti-native backend.</li>
+<li><strong>Chosen option:</strong> A.</li>
+<li><strong>Primary reason:</strong> License verification (research paper Section 8.5) rules out every Graphiti-native self-hostable backend (Neo4j Community GPLv3, FalkorDB SSPLv1, Neptune proprietary); and Graphiti is Python, colliding with ITD-12. Preserves ITD-05, avoids a second graph dependency, and keeps a single graph substrate. The differentiating value is the temporal-metadata and belief-revision layer, which Kaigents owns either way.</li>
+<li><strong>Impacts:</strong> Kaigents implements the temporal graph-memory layer on NebulaGraph using nGQL inside the Rust engine (ITD-12): LLM-driven entity/edge extraction, bi-temporal edge metadata (<code>valid_from</code> / <code>valid_to</code> / <code>transaction_time</code>), edge invalidation, and hybrid (semantic + BM25 + graph) search fusion. This is a substantial build, not a thin shim. Graphiti is a reference implementation, not a dependency. Full scope sizing is pending (see <code>start_here.md</code> Work item 2).</li>
+</ul>
+<h3 id="itd-19-adopted-belief-revision-atms-for-experiment-closure">ITD-19 (adopted) — Belief revision (ATMS) for experiment closure</h3>
+<ul>
+<li><strong>Decision area:</strong> Implement an assumption-based truth maintenance system for the Experiment entity, with retraction cascades and explicit, history-informed re-verification.</li>
+<li><strong>Status:</strong> Adopted. Implemented with RethinkDB fallback for retraction cascades — see Section 13 deviation note.</li>
+<li><strong>Primary reason:</strong> Makes "differentiate hypothesis from outcome" and "don't repeat mistakes unless deliberately re-verifying" mechanical and auditable rather than prompt-dependent. This is the differentiating layer (Section 7.4).</li>
+<li><strong>Impacts:</strong> New Belief Manager component in the Rust engine; hypothesis/belief records in RethinkDB; retraction cascades as NebulaGraph traversals; <code>experiment.reverify</code> MCP tool; repeat-prevention surfaced as Case File entries and optional quality gates. Epica (MIT, Rust, MCP-integrated) is a candidate dependency to lean on rather than building ATMS from scratch.</li>
+</ul>
+<h3 id="itd-20-adopted-context-manager-model-agnostic-context-budgeting-and-context-aware-model-routing">ITD-20 (adopted) — Context Manager: model-agnostic context budgeting and context-aware model routing</h3>
+<ul>
+<li><strong>Decision area:</strong> The platform — not the model — owns context-window management. Add a Context Manager that assembles a model-ready context from the memory tiers and proactively fits it to the chosen model's window (never overflowing), plus context-budget-aware model selection ("right model at the right time") layered on the existing Hybrid Execution routing.</li>
+<li><strong>Status:</strong> Adopted. v1 (selection-only budget enforcement) implemented; v2 (summarization/compression, hierarchical demotion, budget-aware routing) pending — see Section 13 deviation note.</li>
+<li><strong>Primary reason:</strong> Large-context models worked until they overflowed, and overflow handling is unreliable and model-dependent; many usable models have very small context windows. Externalizing context management is what lets a sovereign mixed/local-model stack match or beat a single huge-context cloud model, and is the critical requirement driving this proposal (Section 12).</li>
+<li><strong>Impacts:</strong> Extend the <code>Model</code> domain entity to carry <code>context_window_size</code> (alongside its existing latency/cost/data-handling constraints). New Context Manager component in the Rust engine; context assembly + budget enforcement + summarization/demotion as agent-loop capabilities (Letta/MemGPT core/recall/archival <em>pattern</em>, Self-RAG "decide when to retrieve"); extend <code>RoutingPolicy</code>/model selection with a context-budget dimension; emit included/excluded/compressed context to the run timeline for traceability.</li>
+</ul>
+<h2 id="10-phasing">10. Phasing</h2>
+<p>Each phase is a GA increment. The <strong>Context Manager is introduced in Phase 1</strong> — not Phase 2 — because it is what lets a small-context model use the live Case File at all; without it the memory tiers are only usable by large-context models, which defeats the critical requirement. It then matures across all phases.</p>
+<ol>
+<li><strong>Phase 1 — Real-time short-term (live Case File) + Context Manager v1.</strong> Streaming ingestion MCP tool + Qdrant live upserts + temporal edges in NebulaGraph + a first Context Manager that assembles the model prompt from the Case File and fits it to the chosen model's window by <strong>selection only</strong> (most-relevant slice, never overflow). Summarization/compression and hierarchical demotion arrive in v2. Context-budget-aware model selection v1 (pick a model whose window fits). <code>Model</code> entity extended with <code>context_window_size</code>. Delivers the meeting use case on <em>small-context</em> models, not just large ones. Highest standalone value; the proof that the platform owns context, not the model.</li>
+<li><strong>Phase 2 — Long-term (consolidator) + Context Manager v2.</strong> Temporal consolidation workflow + episode extraction via local LLM + cross-request recall MCP tool. Context Manager v2 assembles from Case File <em>and</em> recalled long-term memory; adds <strong>summarization/compression</strong> and <strong>hierarchical promotion/demotion</strong> (core → recall → archival, the Letta/MemGPT pattern) so a small-context model gets exactly the relevant slice; context-budget-aware model routing ("right model at the right time") layered on the existing Hybrid Execution <code>RoutingPolicy</code>. Delivers assignment-history recall on any model.</li>
+<li><strong>Phase 3 — Experience / epistemic (Belief Manager) + Context Manager v3.</strong> ATMS on Experiment outcomes + retraction cascades + <code>experiment.reverify</code>. Context Manager v3 folds in belief/precedence signals (e.g., "this approach failed before") as gated context entries. Delivers hypothesis-vs-outcome and repeat-prevention. Highest differentiation; depends on Phase 2 memory being in place; de-risk with a spike (lean on Epica).</li>
+</ol>
+<p>Each phase should land behind the existing milestone/gate process in <a href="../../implementation/kaigents-implementation-tracker/"><code>../implementation/kaigents-implementation-tracker.md</code></a> and follow the coding standards / definition of done in <a href="../../CODING_STANDARDS_AND_DOD/"><code>../CODING_STANDARDS_AND_DOD.md</code></a>.</p>
+<h2 id="11-decisions-on-open-questions-work-item-1">11. Decisions on open questions (Work Item 1)</h2>
+<p>The following decisions resolve the open questions from the research session.</p>
+<ol>
+<li><strong>Embedding model selection.</strong> Standardize on <strong><code>bge-m3</code></strong> as the default for the local embedding service via Lemonade (ITD-02). It provides superior multi-lingual and cross-modal flexibility compared to <code>nomic-embed-text</code> in representative Kaigents corpora. Model selection remains configurable via the <code>ModelEndpoint</code> resource.</li>
+<li><strong>Memory retention and lifecycle.</strong> Lifecycle is governed by a new <strong><code>MemoryPolicy</code></strong> workspace-level CRD. It defines aging from hot (Qdrant) to cold (NebulaGraph/RethinkDB) and deletion/archival TTLs. It interacts with the existing <strong><code>Capacity</code></strong> entity to enforce WIP and storage limits.</li>
+<li><strong>PII and governance for memory.</strong> Memory is <strong>isolated by workspace (namespace) by default</strong>, matching the architecture doc's Section 8. Cross-workspace memory sharing is prohibited unless an explicit <strong><code>MemoryShare</code></strong> policy (ITD-10) is applied, granting read-only access to specific memory partitions across team boundaries.</li>
+<li><strong>License due-diligence.</strong> All components are verified as commercial-safe (Apache-2.0 or MIT) per the research paper Section 8.5. The remaining paperwork (adding to <code>oss-components-commercially-permissible.md</code>) is completed as part of this work item. <strong>Pyannote models</strong> are confirmed as integrate-only; users must accept terms on HuggingFace for redistribution-restricted weights.</li>
+<li><strong>Consolidation human review.</strong> Automated by default to maintain sub-second responsiveness in the live Case File. Human review is an <strong>optional gate</strong> in the consolidation Temporal workflow, enabled per <strong><code>Process</code></strong> definition for high-stakes domains.</li>
+<li><strong>Episodic tier: build vs adopt.</strong> Follow the <strong>Letta (MemGPT) pattern</strong> but implement the core core/recall/archival logic in the <strong>Rust engine</strong> (ITD-12) to avoid Python GIL constraints and maintain high-volume streaming performance. Letta's Python library remains an integrate-only optional lane for specialized research plugins.</li>
+<li><strong>Context-aware routing policy.</strong> The "right model at the right time" decision is a <strong>platform capability</strong> configured via the <strong><code>RoutingPolicy</code></strong> in the <code>Agent</code> or <code>Process</code> spec. It composes with the existing Hybrid Execution dimensions (CPU/GPU/NPU) and cost/latency classes.</li>
+<li><strong>Summarization/compression faithfulness.</strong> Faithfulness is verified by an automated <strong>quality gate</strong> in the Context Manager using a dedicated "critic" model role. Summarization events (including what was dropped) are fully auditable in the <strong>run timeline</strong>.</li>
+<li><strong><code>context_window_size</code> sourcing.</strong> Sourced from the <strong><code>Model</code></strong> domain entity metadata. Reliability is ensured by a periodic, platform-triggered <strong>synthetic benchmark</strong> that measures effective window limits and records them as verified metadata.</li>
+</ol>
+<h2 id="12-the-context-manager-model-agnostic-context-budgeting-critical-requirement">12. The Context Manager — model-agnostic context budgeting (critical requirement)</h2>
+<h3 id="121-the-problem-this-solves">12.1 The problem this solves</h3>
+<p>Over the past year of Kaigents-adjacent work, large-context models produced good results <em>until they hit the context limit</em>, at which point different agents handled the overflow with varying and unreliable success. Many usable models have <strong>very small context windows</strong>. If context management is left to the model, agent effectiveness is coupled to whichever model happens to have the biggest window — the exact position of the large-context cloud models (Claude Opus, GPT-5.2, Gemini) that Kaigents must out-compete.</p>
+<p>The fix is architectural: <strong>the platform, not the model, owns the context window.</strong> The agent never asks the model to manage overflow; the platform ensures overflow never reaches the model. A small-context model then becomes viable because it receives only the precisely relevant, budget-fitted slice.</p>
+<h3 id="122-where-it-sits">12.2 Where it sits</h3>
+<p>The Context Manager is a Rust engine component (ITD-12) in the agent loop, between the memory tiers and the model call. It is exposed through normal MCP/tool-plane mechanics (ITD-03) and is observable in the run timeline (ITD-11).</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>flowchart LR
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    A[System prompt&lt;br/&gt;+ task state] --&gt; CM
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    B[Live Case File&lt;br/&gt;Qdrant+NebulaGraph] --&gt; CM
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    C[Recalled long-term&lt;br/&gt;memory v2+] --&gt; CM
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    D[Belief/precedence&lt;br/&gt;signals v3+] --&gt; CM
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    E[Tool outputs&lt;br/&gt;in-flight] --&gt; CM
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    CM[Context Manager&lt;br/&gt;assemble + fit to budget] --&gt;|fitted context| M[Model call&lt;br/&gt;chosen by routing]
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    CM --&gt;|included/excluded/&lt;br/&gt;compressed| TL[Run timeline&lt;br/&gt;traceability]
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    R[RoutingPolicy&lt;br/&gt;context-budget + HW] --&gt; M
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    CM --&gt;|budget needed| R
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>    classDef src fill:#ffe680,stroke:#b38600,stroke-width:2px,color:#000000
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>    classDef mgr fill:#c2e0c2,stroke:#2d6630,stroke-width:2px,color:#000000
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>    classDef out fill:#b3e0f2,stroke:#0366a3,stroke-width:2px,color:#000000
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>    class A,B,C,D,E src
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>    class CM,R mgr
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>    class M,TL out
+</code></pre></div>
+<h3 id="123-context-assembly-and-budget-enforcement">12.3 Context assembly and budget enforcement</h3>
+<p>For each model call the Context Manager:</p>
+<ol>
+<li><strong>Assembles</strong> candidate context from: system prompt + task state, the live Case File slice, recalled long-term memory (Phase 2+), belief/precedence signals (Phase 3+), and in-flight tool outputs.</li>
+<li><strong>Reads the target model's <code>context_window_size</code></strong> (new field on the <code>Model</code> domain entity — the entity already carries latency/cost/data-handling constraints; this adds the context budget).</li>
+<li><strong>Fits to budget, never overflowing</strong>, applying in order: <strong>selection</strong> (most relevant via the same retrieval used for memory) → <strong>summarization/compression</strong> (older or less-critical material) → <strong>hierarchical demotion</strong> (core → recall → archival, the Letta/MemGPT self-management <em>pattern</em> — the agent can promote/demote via tool calls rather than stuffing everything into the window) → <strong>work decomposition</strong> (break the task into multiple sequential model calls, each with a budget-fitted context slice, so no content is dropped — the full task is completed across multiple calls). This mirrors Self-RAG's "decide when to retrieve" — retrieval is on-demand, not dump-everything. <strong>Nothing is ever truncated or dropped.</strong> If the context cannot fit through selection, compression, and demotion alone, the Context Manager decomposes the work into multiple model calls, each receiving the relevant slice for its sub-task.</li>
+<li><strong>Records</strong> what was included, excluded, and compressed to the run timeline, so "why did the model see this?" and "was a load-bearing constraint dropped?" are always answerable (traceability, per architecture doc Section 7).</li>
+</ol>
+<h3 id="124-context-budget-aware-model-routing-right-model-at-the-right-time">12.4 Context-budget-aware model routing ("right model at the right time")</h3>
+<p>Model selection gains a <strong>context-budget dimension</strong> on top of the existing Hybrid Execution <code>RoutingPolicy</code> (CPU/GPU/NPU) and the Model entity's cost/latency classes:</p>
+<ul>
+<li>The Context Manager reports the assembled context size the task needs; the router selects a model whose window fits — or, per policy, compresses to fit a smaller/cheaper/local model.</li>
+<li>Policy decides the tradeoff (open question #7): use a large-context model for synthesis-heavy/large-corpus steps; use a small-context local model for narrow/focused steps, with the Context Manager making it viable.</li>
+<li>This is the cost/sovereignty lever: you do not need the biggest-context model on every step; you use the right model and let the platform handle the rest. That is how a sovereign mixed-model stack matches a single huge-context cloud model.</li>
+</ul>
+<h3 id="125-why-this-is-the-critical-enabling-capability">12.5 Why this is the critical, enabling capability</h3>
+<p>The three memory tiers are <em>storage</em>; the Context Manager is what makes that storage usable by <strong>any</strong> model — including the small-context local models that a sovereign stack depends on for cost and data sovereignty. Without it, the memory system only benefits agents running on large-context models, which reproduces the very dependency on big-cloud models that Kaigents exists to break. With it, the agent's effectiveness is decoupled from any single model's context window — the explicit goal of this proposal.</p>
+<h2 id="13-implementation-deviations-as-built-vs-designed">13. Implementation deviations (as built vs designed)</h2>
+<p>This section documents where the implemented system deviated from the design above, and how each deviation was resolved. All deviations are now resolved as of R15.</p>
+<h3 id="131-nebulagraph-temporal-graph-layer-itd-18-implemented-r15">13.1 NebulaGraph temporal graph layer (ITD-18) — implemented (R15)</h3>
+<p><strong>Design:</strong> Temporal edges in NebulaGraph with <code>valid_from</code>/<code>valid_to</code>/<code>transaction_time</code>; bi-temporal as-of queries; LLM-driven entity/edge extraction; hybrid search fusion (semantic + BM25 + graph); edge invalidation logic.</p>
+<p><strong>As built (R15):</strong> Full <code>NebulaGraphStore</code> implementation in <code>nebulagraph_store.rs</code> using NebulaGraph's HTTP API (port 19669) via reqwest. Schema initialization creates the <code>kaigents</code> space with <code>entity</code> tag (name, entity_type, workspace_id) and <code>depends_on</code>/<code>consolidated_from</code> edge types (valid_from, valid_to, transaction_time — all int64). <code>MemoryManager::with_nebula()</code> connects and initializes the schema; on connection failure, it logs a warning and gracefully falls back to RethinkDB-only operation. <code>record_belief</code> inserts entity vertices and <code>depends_on</code> temporal edges for each assumption. <code>consolidate_run_memory</code> inserts <code>consolidated_from</code> temporal edges linking episodes to their source memories. As-of queries filter by <code>valid_from &lt;= timestamp AND (valid_to == 0 OR valid_to &gt; timestamp)</code>. Edge invalidation sets <code>valid_to</code> to the current timestamp. Recursive graph traversal via <code>traverse_dependents_recursive</code> walks the full dependency graph.</p>
+<p><strong>Status:</strong> Deviation resolved. The NebulaGraph store is fully implemented. When NebulaGraph is not available, the system gracefully degrades to RethinkDB-only operation. LLM-driven entity/edge extraction and hybrid search fusion (semantic + BM25 + graph) are not yet implemented — these are enhancements on top of the temporal graph layer, not deviations from the core design.</p>
+<h3 id="132-retraction-cascades-itd-19-nebulagraph-graph-traversal-implemented-r15">13.2 Retraction cascades (ITD-19) — NebulaGraph graph traversal implemented (R15)</h3>
+<p><strong>Design:</strong> Retraction cascades are graph traversals on NebulaGraph (Section 7.3): "invalidating a hypothesis invalidates every belief whose assumption set depended on it."</p>
+<p><strong>As built (R15):</strong> When NebulaGraph is connected, <code>close_experiment</code> uses <code>traverse_dependents_recursive</code> to walk the full <code>depends_on</code> edge graph from the falsified hypothesis, finding all transitively-dependent beliefs. Each dependent's <code>depends_on</code> edge is invalidated (valid_to set to current timestamp), and the belief's status is updated to <code>falsified</code> in RethinkDB. When NebulaGraph is not connected, the system falls back to the RethinkDB <code>filter</code> query on the <code>assumptions</code> array.</p>
+<p><strong>Status:</strong> Deviation resolved. The NebulaGraph path supports multi-hop graph traversals and complex dependency graphs. The RethinkDB fallback remains for environments without NebulaGraph.</p>
+<h3 id="133-context-manager-v2-itd-20-implemented-r9">13.3 Context Manager v2 (ITD-20) — implemented (R9)</h3>
+<p><strong>Design:</strong> Context Manager v2 adds summarization/compression and hierarchical demotion (core → recall → archival, the Letta/MemGPT pattern) so recalled long-term memory is fitted to budget alongside the live Case File. Also adds context-budget-aware model routing.</p>
+<p><strong>As built (R9):</strong> All three budget strategies are implemented:
+- <code>Truncate</code>: drops items by tier (archival first, then recall, core preserved).
+- <code>Summarize</code>: compresses dropped items via <code>simple_compress</code> (sync) or <code>SummaryProvider</code> trait (async, LLM-backed via <code>fit_to_budget_with_summarization</code>).
+- <code>Error</code>: same as Truncate but sets <code>budget_exceeded</code> flag on <code>FittedContext</code>.</p>
+<p>Hierarchical demotion is implemented via <code>ContextTier</code> enum (Core/Recall/Archival). <code>fit_to_budget_tiered</code> accepts explicit tiered items. <code>RoutingPolicy</code> with <code>select_model_for_context</code> provides context-budget-aware model routing — filters candidates by window size, prefers local models, falls back to largest-window model. 12 new tests.</p>
+<p><strong>Status:</strong> Deviation resolved. The <code>Summarize</code> strategy's sync path uses simple text compression (prefix + suffix truncation); the async path with <code>SummaryProvider</code> enables full LLM-backed summarization when a model client is available.</p>
+<h3 id="134-consolidation-triggering-temporal-path-implemented-r11">13.4 Consolidation triggering — Temporal path implemented (R11)</h3>
+<p><strong>Design:</strong> Consolidation is a Temporal workflow (ITD-16), long-running and resumable.</p>
+<p><strong>As built (R11):</strong> The Temporal consolidation path is now implemented. <code>ConsolidationRequest</code>/<code>ConsolidationState</code> types and <code>start_consolidation</code>/<code>query_consolidation</code> methods are on <code>TemporalAdapterClient</code>. The <code>serve_memory_api</code> function in the CLI provides HTTP endpoints (<code>/api/v1/memory/record</code>, <code>/api/v1/memory/query</code>) that Temporal workflow activities call. The runner checks for <code>KAIGENTS_TEMPORAL_ADAPTER_URL</code> env var; when set, it starts the memory API server and triggers <code>start_consolidation</code> on the adapter. On adapter failure, it falls back to in-process <code>consolidate_run_memory</code>. When no adapter URL is configured, in-process consolidation is used directly.</p>
+<p><strong>Status:</strong> Deviation resolved. The in-process path remains as a fallback for environments without a Temporal adapter. Durability verification (R15): 4 tests confirm that all adapter HTTP calls return clear "unreachable" errors when the adapter is down, proving the fallback path triggers correctly.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

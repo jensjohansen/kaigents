@@ -1,0 +1,2263 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Production-grade substrate for operating AI agent teams.">
+      
+      
+      
+        <link rel="canonical" href="https://jensjohansen.github.io/kaigents/research/agent-context-and-memory-research/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Agent Context, Memory & Epistemic Infrastructure: A Research Overview - Kaigents</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#agent-context-memory-epistemic-infrastructure-a-research-overview" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Kaigents" class="md-header__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kaigents
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Agent Context, Memory &amp; Epistemic Infrastructure: A Research Overview
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../product/kaigents-introduction/" class="md-tabs__link">
+          
+  
+  
+  Product
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/kaigents-architecture-and-design/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../ops/temporal-installation/" class="md-tabs__link">
+          
+  
+  
+  Operations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../strategy/corporate_ai_strategy/" class="md-tabs__link">
+          
+  
+  
+  Strategy
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../CODING_STANDARDS_AND_DOD/" class="md-tabs__link">
+          
+  
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Kaigents" class="md-nav__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kaigents
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Product
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kaigents-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kaigents-prd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/domain-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/managed-services/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Managed Services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kairon-retail-managed-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kairon Retail
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/example-team/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your First Team
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/temporal-validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/kaigents-architecture-and-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/ai_agent_engine_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ops/temporal-installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Temporal Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Strategy
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Strategy
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/corporate_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Corporate AI Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/marketing_ai_agent_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marketing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/security_operations_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CODING_STANDARDS_AND_DOD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation-plan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation/kaigents-implementation-tracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0-purpose-and-relationship-to-existing-research" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0. Purpose and relationship to existing research
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-core-shift-from-static-rag-to-living-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. The core shift: from static RAG to living memory
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-advanced-retrieval-the-commodity-layer-underneath" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Advanced retrieval (the commodity layer underneath)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Advanced retrieval (the commodity layer underneath)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-graphrag-and-agentic-graph-retrieval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 GraphRAG and agentic graph retrieval
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-self-reflective-and-corrective-retrieval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Self-reflective and corrective retrieval
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-agentic-rag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Agentic RAG
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-real-time-ingestion-and-indexing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Real-time ingestion and indexing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Real-time ingestion and indexing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-incremental-streaming-indexing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Incremental, streaming indexing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-dual-tier-hotcold-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Dual-tier hot/cold storage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-lsm-style-live-upserts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 LSM-style live upserts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-temporal-and-as-of-retrieval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Temporal and "as-of" retrieval
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-long-term-memory-and-experience-precedence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Long-term memory and experience precedence
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Long-term memory and experience precedence">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-graphiti-zep-temporal-knowledge-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Graphiti / Zep — temporal knowledge graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-letta-formerly-memgpt-os-inspired-memory-hierarchy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Letta (formerly MemGPT) — OS-inspired memory hierarchy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-mem0-extraction-based-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Mem0 — extraction-based memory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-episodic-learning-simulating-long-term-experience" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Episodic learning (simulating long-term experience)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-hypothesis-vs-outcome-and-avoiding-repeated-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Hypothesis vs. outcome and avoiding repeated mistakes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Hypothesis vs. outcome and avoiding repeated mistakes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-belief-revision-with-truth-maintenance-systems-tms-atms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Belief revision with Truth Maintenance Systems (TMS / ATMS)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-confidence-tagged-falsifiable-beliefs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Confidence-tagged, falsifiable beliefs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-the-bi-temporal-tms-combination" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 The bi-temporal + TMS combination
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-a-fully-sovereign-reference-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. A fully sovereign reference stack
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-cloud-saas-baseline-for-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Cloud / SaaS baseline (for comparison)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-findings-relevant-to-kaigents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Findings relevant to Kaigents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#85-license-verification-confirmed-july-18-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5 License verification (confirmed July 18, 2026)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.5 License verification (confirmed July 18, 2026)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#memory-frameworks-and-epistemic-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Memory frameworks and epistemic layer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graph-backends-load-bearing-for-the-memory-graph-decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Graph backends (load-bearing for the memory graph decision)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sovereign-stack-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sovereign stack components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cloud-saas-for-comparison-not-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cloud / SaaS (for comparison, not integration)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-sources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Sources
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Sources">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#advanced-retrieval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced retrieval
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#real-time-and-temporal-rag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Real-time and temporal RAG
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#long-term-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Long-term memory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#episodic-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Episodic learning
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#epistemic-infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Epistemic infrastructure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#meeting-capture-and-streaming-multimodal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Meeting capture and streaming multimodal
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sovereign-stack-components_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sovereign stack components
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="agent-context-memory-epistemic-infrastructure-a-research-overview">Agent Context, Memory &amp; Epistemic Infrastructure: A Research Overview</h1>
+<p><em>Research Date: July 18, 2026</em></p>
+<h2 id="0-purpose-and-relationship-to-existing-research">0. Purpose and relationship to existing research</h2>
+<p>This document is a forward-looking companion to <a href="../rag_overview/"><code>rag_overview.md</code></a> (May 2025), which established the baseline RAG concepts Kaigents builds on (chunking, hybrid retrieval, reranking, multi-modal RAG, agent-based RAG). That overview treats RAG as a <em>retrieval quality</em> problem.</p>
+<p>This paper covers what has changed since: the field has moved from <strong>static retrieval</strong> toward <strong>dynamic, temporal, and epistemic</strong> systems. The practical question driving this research is not "how do we retrieve better chunks?" but:</p>
+<blockquote>
+<p><em>How does an agent ingest new information in real time, retain it as experience over time, distinguish hypothesis from outcome, and avoid repeating mistakes unless deliberately re-verifying?</em></p>
+</blockquote>
+<p>The research bias here is deliberately toward <strong>open-source, self-hostable, sovereign</strong> components, with cloud/SaaS mentioned only as a comparison baseline. This aligns with Kaigents' commercial-safe OSS posture.</p>
+<h2 id="1-the-core-shift-from-static-rag-to-living-memory">1. The core shift: from static RAG to living memory</h2>
+<p>The single most important finding is that the techniques needed are no longer one product. They are the convergence of three previously separate fields, layered on top of a now-commodity retrieval layer.</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Old (2023 RAG)</th>
+<th>New (2025–2026)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Retrieval</strong></td>
+<td>Static chunks, single-pass</td>
+<td>Agentic loops, self-correction, graph reasoning</td>
+</tr>
+<tr>
+<td><strong>Ingestion</strong></td>
+<td>Batch re-index</td>
+<td>Streaming, incremental, temporal-versioned</td>
+</tr>
+<tr>
+<td><strong>Memory</strong></td>
+<td>Stateless context window</td>
+<td>Hierarchical episodic + semantic memory</td>
+</tr>
+<tr>
+<td><strong>Truth</strong></td>
+<td>"Whatever the doc says"</td>
+<td>Belief revision, provenance, falsifiability tags</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>flowchart TB
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    subgraph Legacy[&quot;Static RAG (2023)&quot;]
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        L1[Batch ingest] --&gt; L2[Vector index]
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        L2 --&gt; L3[Single-pass retrieve]
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        L3 --&gt; L4[Generate]
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    end
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    subgraph Modern[&quot;Living Memory (2026)&quot;]
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        M1[Streaming ingest] --&gt; M2[Temporal-versioned index]
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        M2 --&gt; M3[Agentic self-correcting retrieve]
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        M3 --&gt; M4[Episodic + semantic memory]
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>        M4 --&gt; M5[Belief revision / provenance]
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>        M5 --&gt; M6[Generate + retain outcome]
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>        M6 --&gt; M4
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    end
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    classDef old fill:#ffe680,stroke:#b38600,stroke-width:2px,color:#000000
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    classDef new fill:#c2e0c2,stroke:#2d6630,stroke-width:2px,color:#000000
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    class L1,L2,L3,L4 old
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    class M1,M2,M3,M4,M5,M6 new
+</code></pre></div>
+<h2 id="2-advanced-retrieval-the-commodity-layer-underneath">2. Advanced retrieval (the commodity layer underneath)</h2>
+<p>These techniques improve <em>retrieval quality</em>. They layer underneath the memory/epistemic substrate and are now broadly available in open-source form.</p>
+<h3 id="21-graphrag-and-agentic-graph-retrieval">2.1 GraphRAG and agentic graph retrieval</h3>
+<p><strong>GraphRAG</strong> (Microsoft, open source) builds hierarchical knowledge graphs to support multi-hop reasoning and global dataset summaries, moving beyond simple chunk-based retrieval. Current advances extend it into agentic frameworks:</p>
+<ul>
+<li><strong>Graph-R1</strong> and <strong>GraphRAG-R1</strong> use reinforcement learning to optimize multi-turn retrieval and dynamic knowledge graph updates end-to-end.</li>
+<li><strong>SCMRAG</strong> (Self-Corrective Multihop RAG) adds closed-loop multi-hop retrieval for LLM agents.</li>
+<li><strong>MetaKGRAG</strong> introduces metacognitive cycles for path-aware, closed-loop refinement in graph-based environments.</li>
+</ul>
+<h3 id="22-self-reflective-and-corrective-retrieval">2.2 Self-reflective and corrective retrieval</h3>
+<p>Two complementary frameworks improve RAG reliability through self-evaluation loops:</p>
+<ul>
+<li><strong>Self-RAG</strong> — a fine-tuned model that emits <em>reflection tokens</em> during inference to decide when to retrieve, critique the relevance and support of retrieved passages, and assess its own output quality. Enables controllable, on-demand retrieval and adaptive generation.</li>
+<li><strong>Corrective RAG (CRAG)</strong> — a lightweight evaluator between retrieval and generation classifies documents as correct, incorrect, or ambiguous; it filters irrelevant data, performs web-search fallbacks, or refines content before generation.</li>
+</ul>
+<p>Self-RAG excels at refining generation reasoning; CRAG ensures the generator only receives validated context. They are frequently used as a complementary hybrid.</p>
+<h3 id="23-agentic-rag">2.3 Agentic RAG</h3>
+<p>Autonomous agents plan, select tools (web, SQL, vector DBs, graph), and iteratively refine queries until a satisfaction criterion is met. This replaces the static single-pass retrieve-then-generate pipeline with a reasoning loop. It is the retrieval-side analog of the memory layers below.</p>
+<h2 id="3-real-time-ingestion-and-indexing">3. Real-time ingestion and indexing</h2>
+<p>This is the most mature of the three new layers and the one most directly relevant to "ingest new information in real time."</p>
+<h3 id="31-incremental-streaming-indexing">3.1 Incremental, streaming indexing</h3>
+<p>Re-embed only changed chunks (via SHA-256 content hashing) rather than full-corpus re-indexing. Backed by Change Data Capture (CDC), Kafka, or webhooks. Streaming SQL engines (e.g. RisingWave) process CDC events and trigger embedding updates continuously.</p>
+<h3 id="32-dual-tier-hotcold-storage">3.2 Dual-tier hot/cold storage</h3>
+<p>A hot tier (Milvus/HNSW or Qdrant) for recent, queryable data; a cold tier (Delta Lake) for versioned history. This is the architecture behind <strong>LiveVectorLake</strong>, an open-source real-time versioned knowledge base.</p>
+<h3 id="33-lsm-style-live-upserts">3.3 LSM-style live upserts</h3>
+<p>New embeddings land in an in-memory writable segment for <em>instant</em> queryability, while background merges fold them into read-optimized base segments. Qdrant and pgvector both handle live upserts this way, so retrieval is never blocked by ingestion.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>flowchart LR
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    A[Stream of events] --&gt; B[Ingest bus&lt;br/&gt;Kafka/CDC]
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    B --&gt; C[Parse/ASR worker]
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    C --&gt; D[Embedding service]
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    D --&gt; E[Writable segment&lt;br/&gt;in-memory]
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    E --&gt;|background merge| F[Base segments&lt;br/&gt;read-optimized]
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    G[Query] --&gt; E
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    G --&gt; F
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    classDef stream fill:#b3e0f2,stroke:#0366a3,stroke-width:2px,color:#000000
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    classDef store fill:#ffe680,stroke:#b38600,stroke-width:2px,color:#000000
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    classDef q fill:#c2e0c2,stroke:#2d6630,stroke-width:2px,color:#000000
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    class A,B,C,D stream
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    class E,F store
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    class G q
+</code></pre></div>
+<h3 id="34-temporal-and-as-of-retrieval">3.4 Temporal and "as-of" retrieval</h3>
+<p>Critical for "future work references past work as context." Three open approaches:</p>
+<ul>
+<li><strong>LiveVectorLake</strong> — point-in-time retrieval (<code>query "..." --as-of 2024-01-15</code>).</li>
+<li><strong>Z3rno</strong> — PostgreSQL GiST range indexes on <code>(valid_from, valid_to)</code>.</li>
+<li><strong>MemoryGraph / Graphiti</strong> — <strong>bi-temporal</strong> tracking: separates <em>validity time</em> (when a fact is true) from <em>transaction time</em> (when the fact was learned). This distinction is the keystone for hypothesis-vs-outcome differentiation (Section 5).</li>
+</ul>
+<h2 id="4-long-term-memory-and-experience-precedence">4. Long-term memory and experience precedence</h2>
+<p>Three open-source frameworks dominate, with meaningfully different philosophies.</p>
+<h3 id="41-graphiti-zep-temporal-knowledge-graph">4.1 Graphiti / Zep — temporal knowledge graph</h3>
+<p><a href="https://github.com/getzep/graphiti">Graphiti</a> is an open-source framework for building and querying <strong>bi-temporal context graphs</strong> for AI agent memory. It is the core engine behind Zep (managed platform; Graphiti core is self-hostable).</p>
+<p>Properties:
+- Tracks facts over time; supports point-in-time queries and automatic invalidation of superseded data.
+- Hybrid search: semantic + BM25 + graph, with result fusion.
+- Search latency typically under 100ms (bounded by the embedding API call).
+- Ingests both unstructured and structured data; generates human-readable, full-text searchable edge semantics.
+- Explicitly designed for <strong>live voice transcriptions</strong> as an input modality.
+- Requires a graph backend (Neo4j, FalkorDB, or Amazon Neptune).</p>
+<p>Graphiti is the closest off-the-shelf fit for a meeting-capture use case: agenda docs ingested pre-meeting, live transcription added as time-stamped graph nodes mid-meeting, future meetings retrieve this meeting <em>as it was</em> at any point in time.</p>
+<h3 id="42-letta-formerly-memgpt-os-inspired-memory-hierarchy">4.2 Letta (formerly MemGPT) — OS-inspired memory hierarchy</h3>
+<p><a href="https://github.com/letta-ai/letta/">Letta</a> organizes memory into a hierarchy of <strong>core, recall, and archival</strong> tiers. The agent <em>self-manages</em> its own state via tool calls, deciding what to promote or summarize into memory to stay within context limits. Best suited for long-running, stateful agents that require autonomous context management.</p>
+<h3 id="43-mem0-extraction-based-memory">4.3 Mem0 — extraction-based memory</h3>
+<p><a href="https://github.com/mem0ai/mem0">Mem0</a> uses an LLM-driven pipeline to distill salient facts from conversations and stores them as structured memories across vector, graph, and key-value indexes. Best suited for customer-facing assistants requiring rapid personalization and per-user fact tracking.</p>
+<h3 id="44-episodic-learning-simulating-long-term-experience">4.4 Episodic learning (simulating long-term experience)</h3>
+<p>A distinct, newer line of work that does <strong>not</strong> update model weights. It stores episodes + outcomes, reflects, and retrieves lessons on future tasks — non-parametric, retrieval-augmented learning from experience:</p>
+<ul>
+<li><strong>Reflexion</strong> pattern: record episode → reflect into heuristics → retrieve on future tasks.</li>
+<li><strong>ERL</strong> (Experiential Reflective Learning), <strong>MemRL</strong> (runtime reinforcement learning on episodic memory), <strong>APEX-EM</strong> (structured procedural-episodic replay).</li>
+<li><strong>Memento 2</strong> — stateful reflective memory.</li>
+</ul>
+<p>This is the mechanism for "historical precedence to simulate long-term experience": the agent improves by reading its own past, not by retraining.</p>
+<h2 id="5-hypothesis-vs-outcome-and-avoiding-repeated-mistakes">5. Hypothesis vs. outcome and avoiding repeated mistakes</h2>
+<p>This is the least-served by mainstream tooling, but the research frontier is directly on point. The right framing is <strong>epistemic infrastructure</strong>, not memory.</p>
+<h3 id="51-belief-revision-with-truth-maintenance-systems-tms-atms">5.1 Belief revision with Truth Maintenance Systems (TMS / ATMS)</h3>
+<p>A classical symbolic-AI concept (1980s) now being rebuilt for LLM agents. Each belief carries the <em>assumptions</em> it depends on. When a contradiction appears, a <strong>retraction cascade</strong> automatically invalidates every dependent belief — not just the mistaken one. This is the mechanical answer to "don't repeat a mistake."</p>
+<p><strong>Assumption-based TMS (ATMS)</strong> labels each datum with the <em>contexts</em> (sets of assumptions) under which it holds, enabling:
+- Defeasible reasoning: "believed unless contradictory evidence exists."
+- Simultaneous exploration of multiple contexts without dependency-directed backtracking.
+- Explicit re-verification: a defeated assumption is retained (not deleted) and can be re-opened, carrying forward the <em>original failure reason</em> so a re-test is informed rather than naive.</p>
+<h3 id="52-confidence-tagged-falsifiable-beliefs">5.2 Confidence-tagged, falsifiable beliefs</h3>
+<p>Emerging frameworks tag every claim with a confidence level and explicit <em>falsification conditions</em>, distinguishing confirmed facts from inferences from intuition. Relevant open projects:</p>
+<ul>
+<li><strong><a href="https://github.com/angelnicolasc/epica">Epica</a></strong> — Rust runtime with formal AGM (Alchourrón-Gärdenfors-Makinson) belief revision and dual-process uncertainty monitoring.</li>
+<li><strong>Chitta</strong> — autonomous research OS using a typed belief graph for hypotheses and experiments.</li>
+<li><strong>OIDA</strong> — epistemic memory architecture for organizational state.</li>
+<li><strong>Kumiho</strong> — graph-native, versioned, dependency-linked primitives.</li>
+<li><strong><a href="https://github.com/benthomasson/ftl-beliefs">Beliefs/Reasons</a></strong> — markdown-based persistent claim tracking and truth maintenance.</li>
+<li><strong>The Hypothesis Graph</strong> — a verifiable semantic memory for coding agents; tracks hypotheses as first-class addressable objects that can later be marked confirmed or falsified.</li>
+</ul>
+<h3 id="53-the-bi-temporal-tms-combination">5.3 The bi-temporal + TMS combination</h3>
+<p>The combination that directly satisfies the research question is:</p>
+<ol>
+<li><strong>Bi-temporal storage</strong> records <em>when a hypothesis was made</em> (validity start) and <em>when it was confirmed/falsified</em> (validity end), plus <em>when the system learned each fact</em> (transaction time).</li>
+<li><strong>TMS/ATMS</strong> links each hypothesis to the assumptions it depends on and the beliefs that depend on it.</li>
+<li>When an outcome arrives, the hypothesis is marked confirmed or falsified; a retraction cascade invalidates downstream conclusions built on a falsified hypothesis.</li>
+<li>A deliberate re-verification is an explicit action that re-opens the ATMS assumption context, retaining the failure history so the re-test is informed by the original failure mode.</li>
+</ol>
+<p>This is the architecture that makes "prevent repeating mistakes unless deliberately re-verifying" a mechanical property rather than a hopeful prompt instruction.</p>
+<h2 id="6-a-fully-sovereign-reference-stack">6. A fully sovereign reference stack</h2>
+<p>A concrete stack in which <strong>no data leaves the environment</strong> and every component is open-source:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>flowchart TD
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    A[Live Audio / Documents / Events] --&gt; B[Ingest bus&lt;br/&gt;Kafka or NATS]
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    B --&gt; C[ASR / Parse workers&lt;br/&gt;faster-whisper + pyannote&lt;br/&gt;or WhisperX]
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    C --&gt; D[Embedding service&lt;br/&gt;local: nomic-embed-text / bge-m3]
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    D --&gt; E[Vector store&lt;br/&gt;Qdrant or Milvus]
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    B --&gt; F[Temporal knowledge graph&lt;br/&gt;Graphiti + graph backend]
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    F --&gt; G[Episodic memory&lt;br/&gt;Letta or Mem0]
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    G --&gt; H[Belief / TMS layer&lt;br/&gt;Epica or custom ATMS]
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    E --&gt; I[Agentic RAG router]
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    F --&gt; I
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    H --&gt; I
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    I --&gt; J[Local LLM&lt;br/&gt;vLLM or Lemonade]
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    J --&gt; K[User / Agent response]
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    classDef ing fill:#b3e0f2,stroke:#0366a3,stroke-width:2px,color:#000000
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    classDef store fill:#ffe680,stroke:#b38600,stroke-width:2px,color:#000000
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>    classDef infer fill:#c2e0c2,stroke:#2d6630,stroke-width:2px,color:#000000
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>    class A,B,C ing
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>    class D,E,F,G,H store
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>    class I,J,K infer
+</code></pre></div>
+<p>Component notes:
+- <strong>LLM runtime</strong>: vLLM (production concurrency) or Ollama / Lemonade (simpler ops).
+- <strong>Embeddings</strong>: <code>nomic-embed-text</code> or <code>bge-m3</code> served locally — no external embedding API dependency.
+- <strong>Vector DB</strong>: Qdrant (easy ops) or Milvus (scale); both do LSM-style live upserts.
+- <strong>Temporal graph memory</strong>: Graphiti is the best <em>pattern</em> for the meeting and experience use cases, but its native graph backends are not commercial-safe (Neo4j GPLv3, FalkorDB SSPLv1 — see Section 8.5). For a sovereign/commercial-safe core the temporal-metadata layer must be built on NebulaGraph (Apache-2.0); Graphiti is a reference implementation, not a turnkey dependency.
+- <strong>Episodic reflection</strong>: Letta (autonomous self-management, Apache-2.0) or Mem0 (extraction-based, Apache-2.0).
+- <strong>Epistemic / TMS layer</strong>: Epica (Rust, MIT, AGM revision, MCP-integrated) — a candidate dependency for the Belief Manager, not just a reference; the piece that makes "don't repeat mistakes unless re-verifying" mechanical.
+- <strong>Meeting capture</strong>: faster-whisper + pyannote.audio diarization; reference architectures exist (Bailiff — offline-first; MeetingScribe — local-first; Kairo — cross-meeting pgvector graph).
+- <strong>All-in-one RAG app layer</strong> (if a starting point is preferred over components): R2R, Kotaemon, RAGFlow (notable for deep document parsing of messy layouts), LlamaIndex (code-first), Dify (visual).</p>
+<h2 id="7-cloud-saas-baseline-for-comparison">7. Cloud / SaaS baseline (for comparison)</h2>
+<p>Mentioned for completeness; not the recommended direction for a sovereign deployment:</p>
+<ul>
+<li><strong>Zep</strong> (managed Graphiti) — the only managed service that natively offers temporal graph memory.</li>
+<li><strong>Amazon Bedrock AgentCore</strong> — episodic memory as a managed feature.</li>
+<li><strong>Letta Cloud</strong>, <strong>Mem0 Cloud</strong> — hosted versions of the open-source frameworks.</li>
+<li><strong>OpenAI / Anthropic / Google</strong> in-model context management (automatic compaction, long context windows) — <em>inside-model</em> context management, ephemeral and not sovereign.</li>
+</ul>
+<p>Notably, <strong>no major cloud provider offers the epistemic / TMS layer</strong> — it remains open-source-only, which reinforces the sovereignty case.</p>
+<h2 id="8-findings-relevant-to-kaigents">8. Findings relevant to Kaigents</h2>
+<ol>
+<li><strong>The three layers map onto Kaigents' existing domain model</strong>, not onto new vocabulary:</li>
+<li>Real-time short-term context ↔ the existing <strong>Case File / Context</strong> entity.</li>
+<li>Long-term episodic memory ↔ existing <strong>Work Request / Work Attempt / Event / Artifact</strong> records, plus a consolidation/indexing layer.</li>
+<li>Experience and hypothesis-vs-outcome ↔ the existing <strong>Experiment</strong> entity (which already defines Hypothesis + Treatment + Measurement plan).</li>
+<li><strong>Existing ITDs are compatible</strong>, not in conflict: Qdrant (ITD-04), NebulaGraph (ITD-05), RethinkDB (ITD-06), Temporal (ITD-16), Lemonade (ITD-02), Rust engine (ITD-12), OTel (ITD-11) all have natural roles in a memory subsystem.</li>
+<li><strong>The one genuine tension</strong> is Graphiti's graph-backend assumption (Neo4j/FalkorDB/Neptune) versus Kaigents' ITD-05 choice of NebulaGraph. This is a build-vs-adopt decision worth surfacing explicitly rather than silently.</li>
+<li><strong>The epistemic / TMS layer is the differentiator.</strong> Retrieval, streaming ingestion, and graph memory are commoditizing; belief revision with retraction cascades is not. This is where a sovereign build would most differentiate.</li>
+<li><strong>License posture is now confirmed</strong> for the key components (see Section 8.5). The headline finding: Graphiti, Letta, Mem0, and Epica are all commercial-safe (Apache-2.0 or MIT), <strong>but every one of Graphiti's self-hostable graph backends is not</strong> — Neo4j Community is GPLv3, FalkorDB is SSPLv1, and Neptune is a proprietary managed service. This makes building the temporal layer on NebulaGraph (Apache-2.0, already ITD-05) not just preferable but the only license-viable path for a commercial-safe OSS core. Every memory component still needs to be added to <a href="../technology/oss-components-commercially-permissible/"><code>technology/oss-components-commercially-permissible.md</code></a> per the existing due-diligence process.</li>
+</ol>
+<p>These findings are developed into a concrete proposal in <a href="../../architecture/agent-memory-proposal/"><code>../architecture/agent-memory-proposal.md</code></a>.</p>
+<h2 id="85-license-verification-confirmed-july-18-2026">8.5 License verification (confirmed July 18, 2026)</h2>
+<p>Licenses were verified directly from each project's repository, not assumed. "Commercial-safe" below means compatible with Kaigents' MIT-core, redistribution-safe posture (permissive licenses: Apache-2.0, MIT). Copyleft and source-available licenses are marked not commercial-safe.</p>
+<h3 id="memory-frameworks-and-epistemic-layer">Memory frameworks and epistemic layer</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>License</th>
+<th>Commercial-safe</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Graphiti (getzep/graphiti)</td>
+<td>Apache-2.0</td>
+<td>Yes</td>
+<td>Temporal KG engine; safe to integrate. Its <em>graph backends</em> are the license problem (see below).</td>
+</tr>
+<tr>
+<td>Letta (formerly MemGPT)</td>
+<td>Apache-2.0</td>
+<td>Yes</td>
+<td>OS-inspired memory hierarchy.</td>
+</tr>
+<tr>
+<td>Mem0</td>
+<td>Apache-2.0</td>
+<td>Yes</td>
+<td>Extraction-based memory layer.</td>
+</tr>
+<tr>
+<td>Epica (angelnicolasc/epica)</td>
+<td>MIT</td>
+<td>Yes</td>
+<td>Rust AGM belief-revision runtime with MCP integration; candidate for the Belief Manager, not just a reference.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="graph-backends-load-bearing-for-the-memory-graph-decision">Graph backends (load-bearing for the memory graph decision)</h3>
+<table>
+<thead>
+<tr>
+<th>Backend</th>
+<th>License</th>
+<th>Commercial-safe</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NebulaGraph (vesoft-inc/nebula)</td>
+<td>Apache-2.0</td>
+<td>Yes</td>
+<td>Already ITD-05; explicitly permits SaaS/backend use. The only commercial-safe option here.</td>
+</tr>
+<tr>
+<td>Neo4j Community Edition</td>
+<td>GPLv3</td>
+<td><strong>No</strong></td>
+<td>Copyleft; conflicts with Kaigents' MIT core.</td>
+</tr>
+<tr>
+<td>Neo4j Enterprise Edition</td>
+<td>Commercial (proprietary)</td>
+<td><strong>No</strong></td>
+<td>No longer open source; open-core model.</td>
+</tr>
+<tr>
+<td>FalkorDB</td>
+<td>SSPLv1</td>
+<td><strong>No</strong></td>
+<td>Server Side Public License — not OSI-approved open source; strong network copyleft.</td>
+</tr>
+<tr>
+<td>Amazon Neptune</td>
+<td>Proprietary managed</td>
+<td><strong>No</strong></td>
+<td>Not self-hostable / not sovereign.</td>
+</tr>
+</tbody>
+</table>
+<p>This is decisive: adopting Graphiti <em>with its native backends</em> is not license-viable for Kaigents. The path is either (a) build the temporal-metadata pattern on NebulaGraph, or (b) contribute a NebulaGraph driver to Graphiti upstream and maintain it. Option (a) is recommended in the proposal.</p>
+<h3 id="sovereign-stack-components">Sovereign stack components</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>License</th>
+<th>Commercial-safe</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Qdrant</td>
+<td>Apache-2.0</td>
+<td>Yes</td>
+<td>Already ITD-04.</td>
+</tr>
+<tr>
+<td>Milvus</td>
+<td>Apache-2.0</td>
+<td>Yes</td>
+<td>Alternative vector store.</td>
+</tr>
+<tr>
+<td>Ollama</td>
+<td>MIT</td>
+<td>Yes</td>
+<td>Local model runtime.</td>
+</tr>
+<tr>
+<td>vLLM</td>
+<td>Apache-2.0</td>
+<td>Yes</td>
+<td>Production inference.</td>
+</tr>
+<tr>
+<td>Lemonade Server</td>
+<td>Apache-2.0</td>
+<td>Yes</td>
+<td>Already ITD-02.</td>
+</tr>
+<tr>
+<td>faster-whisper</td>
+<td>MIT</td>
+<td>Yes</td>
+<td>ASR.</td>
+</tr>
+<tr>
+<td>pyannote.audio (code)</td>
+<td>MIT</td>
+<td>Yes</td>
+<td>Diarization toolkit code.</td>
+</tr>
+<tr>
+<td>pyannote pretrained models</td>
+<td>HF click-through conditions</td>
+<td><strong>Verify per model</strong></td>
+<td>Models require accepting HuggingFace user conditions; commercial-use terms must be checked per model before redistribution. Code is MIT; the model weights are the gating item.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cloud-saas-for-comparison-not-integration">Cloud / SaaS (for comparison, not integration)</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>License</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zep (managed platform)</td>
+<td>Commercial SaaS</td>
+<td>Hosted Graphiti; not self-hostable.</td>
+</tr>
+<tr>
+<td>Letta Cloud, Mem0 Cloud</td>
+<td>Commercial SaaS</td>
+<td>Hosted versions of the Apache-2.0 frameworks.</td>
+</tr>
+<tr>
+<td>Amazon Bedrock AgentCore</td>
+<td>Proprietary managed</td>
+<td>Episodic memory as a service.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="9-sources">9. Sources</h2>
+<h3 id="advanced-retrieval">Advanced retrieval</h3>
+<ul>
+<li>Graph-R1: Agentic GraphRAG via end-to-end RL — https://arxiv.org/html/2507.21892v2</li>
+<li>SCMRAG: Self-Corrective Multihop RAG — https://www.ifaamas.org/Proceedings/aamas2025/pdfs/p50.pdf</li>
+<li>Self-RAG — https://selfrag.github.io/ , https://github.com/AkariAsai/self-rag</li>
+<li>Corrective RAG (CRAG) — https://www.kore.ai/blog/corrective-rag-crag</li>
+<li>MetaKGRAG (metacognitive KGRAG) — https://arxiv.org/html/2508.09460</li>
+</ul>
+<h3 id="real-time-and-temporal-rag">Real-time and temporal RAG</h3>
+<ul>
+<li>LiveVectorLake (real-time versioned KB) — https://github.com/praj-tarun/LiveVectorLake , https://arxiv.org/html/2601.05270v1</li>
+<li>RisingWave continuous RAG pipeline — https://risingwave.com/blog/continuous-rag-pipeline-streaming-sql/</li>
+<li>SPI: query-depth-adaptive indexing for streaming RAG — https://arxiv.org/html/2511.16681</li>
+<li>EraRAG: incremental RAG for growing corpora — https://arxiv.org/html/2506.20963v2</li>
+<li>VersionRAG — https://arxiv.org/html/2510.08109</li>
+<li>Z3rno temporal versioning — https://astron-bb4261fd.mintlify.app/concepts/temporal-versioning</li>
+<li>memory-graph temporal memory — https://github.com/gregorydickson/memory-graph</li>
+</ul>
+<h3 id="long-term-memory">Long-term memory</h3>
+<ul>
+<li>Graphiti — https://github.com/getzep/graphiti</li>
+<li>Zep temporal KG architecture — https://arxiv.org/html/2501.13956</li>
+<li>Letta (MemGPT) — https://github.com/letta-ai/letta/</li>
+<li>Mem0 — https://github.com/mem0ai/mem0</li>
+<li>Agent memory comparison 2026 — https://maidul-haque.vercel.app/blog/agent-memory-architectures-2026/</li>
+</ul>
+<h3 id="episodic-learning">Episodic learning</h3>
+<ul>
+<li>Experiential Reflective Learning — https://arxiv.org/pdf/2603.24639v2</li>
+<li>MemRL — https://arxiv.org/html/2601.03192v2</li>
+<li>APEX-EM — https://arxiv.org/abs/2603.29093v1</li>
+<li>Memento 2 — https://arxiv.org/html/2512.22716</li>
+<li>Reflexion pattern — https://github.com/agentpatternscatalog/patterns/blob/main/patterns/reflexion.md</li>
+</ul>
+<h3 id="epistemic-infrastructure">Epistemic infrastructure</h3>
+<ul>
+<li>Graph-native cognitive memory / belief revision — https://www.arxiv.org/pdf/2603.17244</li>
+<li>Epistemic infrastructure for organizational AI — https://arxiv.org/pdf/2604.11759v2</li>
+<li>The Hypothesis Graph (verifiable semantic memory) — https://june.kim/the-hypothesis-graph-semantic-memory-methodeutics</li>
+<li>Epica (Rust, AGM revision) — https://github.com/angelnicolasc/epica</li>
+<li>Beliefs/Reasons (TMS) — https://github.com/benthomasson/ftl-beliefs</li>
+<li>Assumption-based TMS (de Kleer) — https://dekleer.org/Publications/An%20Assumption-Based%20TMS.pdf</li>
+</ul>
+<h3 id="meeting-capture-and-streaming-multimodal">Meeting capture and streaming multimodal</h3>
+<ul>
+<li>Bailiff (offline-first meeting RAG) — https://github.com/ricardovinicius/bailiff</li>
+<li>MeetingScribe (local-first) — https://github.com/elmoghany/meeting-scribe</li>
+<li>Kairo (cross-meeting pgvector graph) — https://github.com/Areen-Zainab/Kairo-webapp</li>
+<li>WhisperX + Haystack voice agent RAG — https://callsphere.ai/blog/vw4h-build-voice-agent-whisperx-haystack-rag</li>
+<li>Streaming ingestion for vector databases — https://www.avichala.com/blog/streaming-ingestion-for-vector-databases</li>
+</ul>
+<h3 id="sovereign-stack-components_1">Sovereign stack components</h3>
+<ul>
+<li>Ollama — https://ollama.com/</li>
+<li>vLLM — https://github.com/vllm-project/vllm</li>
+<li>Qdrant — https://github.com/qdrant/qdrant</li>
+<li>Milvus — https://github.com/milvus-io/milvus</li>
+<li>faster-whisper — https://github.com/SYSTRAN/faster-whisper</li>
+<li>pyannote.audio — https://github.com/pyannote/pyannote-audio</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

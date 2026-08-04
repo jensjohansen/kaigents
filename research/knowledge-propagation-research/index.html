@@ -1,0 +1,2080 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Production-grade substrate for operating AI agent teams.">
+      
+      
+      
+        <link rel="canonical" href="https://jensjohansen.github.io/kaigents/research/knowledge-propagation-research/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Knowledge Propagation Between Kaigents Agents: Porting Experience Without Re-Computing Ingestion - Kaigents</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#knowledge-propagation-between-kaigents-agents-porting-experience-without-re-computing-ingestion" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Kaigents" class="md-header__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kaigents
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Knowledge Propagation Between Kaigents Agents: Porting Experience Without Re-Computing Ingestion
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../product/kaigents-introduction/" class="md-tabs__link">
+          
+  
+  
+  Product
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/kaigents-architecture-and-design/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../ops/temporal-installation/" class="md-tabs__link">
+          
+  
+  
+  Operations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../strategy/corporate_ai_strategy/" class="md-tabs__link">
+          
+  
+  
+  Strategy
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../CODING_STANDARDS_AND_DOD/" class="md-tabs__link">
+          
+  
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Kaigents" class="md-nav__button md-logo" aria-label="Kaigents" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kaigents
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jensjohansen/kaigents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Product
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kaigents-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kaigents-prd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/domain-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/managed-services/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Managed Services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/kairon-retail-managed-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kairon Retail
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/example-team/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your First Team
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/temporal-validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/kaigents-architecture-and-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/ai_agent_engine_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ops/temporal-installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Temporal Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Strategy
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Strategy
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/corporate_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Corporate AI Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/marketing_ai_agent_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marketing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategy/security_operations_ai_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CODING_STANDARDS_AND_DOD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation-plan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation/kaigents-implementation-tracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0-purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0. Purpose
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-what-constitutes-experience-in-kaigents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. What constitutes "experience" in Kaigents
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. What constitutes &#34;experience&#34; in Kaigents">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-short-term-memory-qdrant-vectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Short-term memory (Qdrant vectors)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-long-term-memory-rethinkdb-episodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Long-term memory (RethinkDB episodes)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-epistemic-memory-rethinkdb-beliefs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 Epistemic memory (RethinkDB beliefs)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-configuration-and-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4 Configuration and policy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-transfer-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Transfer scenarios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Transfer scenarios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scenario-a-clone-for-a-new-customer-same-domain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scenario A: Clone for a new customer (same domain)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-b-cross-domain-structural-transfer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scenario B: Cross-domain structural transfer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-c-team-level-collective-transfer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scenario C: Team-level collective transfer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-d-pre-trained-package-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scenario D: Pre-trained package deployment
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-what-is-challenging-about-knowledge-propagation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. What is challenging about knowledge propagation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. What is challenging about knowledge propagation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-embedding-model-dependency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Embedding model dependency
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-workspace-specific-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Workspace-specific references
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-belief-context-dependence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Belief context-dependence
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-temporal-validity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Temporal validity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-semantic-deduplication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 Semantic deduplication
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36-provenance-and-auditability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6 Provenance and auditability
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#37-scale-and-packaging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.7 Scale and packaging
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#38-belief-dependency-chain-integrity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.8 Belief dependency chain integrity
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-approaches-evaluated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Approaches evaluated
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Approaches evaluated">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-snapshot-and-restore-full-clone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Snapshot-and-restore (full clone)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-curated-transfer-selective" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Curated transfer (selective)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-re-embedding-bridge-model-independent-transfer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Re-embedding bridge (model-independent transfer)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-distillation-lossy-but-portable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Distillation (lossy but portable)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-layered-transfer-generality-tiered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 Layered transfer (generality-tiered)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-delta-transfer-incremental" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6 Delta transfer (incremental)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-what-exists-in-kaigents-today-vs-whats-missing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. What exists in Kaigents today vs. what's missing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. What exists in Kaigents today vs. what&#39;s missing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#already-available" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Already available
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#missing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Missing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-recommended-approach-for-the-pre-trained-team-product" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Recommended approach for the pre-trained team product
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-open-questions-for-future-research" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Open questions for future research
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="knowledge-propagation-between-kaigents-agents-porting-experience-without-re-computing-ingestion">Knowledge Propagation Between Kaigents Agents: Porting Experience Without Re-Computing Ingestion</h1>
+<p><em>Research Date: July 21, 2026</em>
+<em>Status: Internal use only. Not for external distribution.</em></p>
+<h2 id="0-purpose">0. Purpose</h2>
+<p>This paper investigates how the accumulated experience of one Kaigents agent or team can be ported to another — ideally without repeating the full compute cycle of ingestion, embedding, consolidation, and belief formation. It identifies what is structurally difficult about such knowledge propagation and evaluates approaches within the existing Kaigents architecture.</p>
+<p>The practical driver is the "redeployable team" product concept: a pre-trained agent team packaged with domain knowledge, vectors, embeddings, and weights that an enterprise can deploy, ingest their corpora into, and start using immediately. For that product to work, we need to understand what is portable, what is not, and why.</p>
+<h2 id="1-what-constitutes-experience-in-kaigents">1. What constitutes "experience" in Kaigents</h2>
+<p>An experienced Kaigents agent has accumulated state across three memory tiers, each with different portability characteristics.</p>
+<h3 id="11-short-term-memory-qdrant-vectors">1.1 Short-term memory (Qdrant vectors)</h3>
+<p>Every <code>memory.record</code> call upserts a point into a per-workspace Qdrant collection (<code>workspace-{workspace_id}</code>). Each point contains:</p>
+<ul>
+<li>An <strong>embedding vector</strong> (produced by the configured embedding model at ingest time)</li>
+<li>A <strong>payload</strong> with the original content text, metadata, and <code>run_id</code> provenance</li>
+</ul>
+<p>This is the most compute-expensive layer to regenerate (re-embedding requires access to source content + model inference) and the most model-dependent (vectors are only meaningful relative to the model that produced them).</p>
+<h3 id="12-long-term-memory-rethinkdb-episodes">1.2 Long-term memory (RethinkDB episodes)</h3>
+<p>After each run, <code>consolidate_run_memory</code> extracts a summary episode from the short-term memories of that run. Episodes are stored in the <code>memory_episodes</code> table with:</p>
+<ul>
+<li><code>summary</code> — a natural-language description of what was learned</li>
+<li><code>source_content_ids</code> — back-links to the original Qdrant points</li>
+<li><code>workspace_id</code>, <code>run_id</code>, <code>timestamp_ms</code> — provenance</li>
+</ul>
+<p>Episodes are more portable than vectors because they are text, not model-specific embeddings. They are less portable than they appear because <code>source_content_ids</code> reference Qdrant points that may not exist in the target workspace.</p>
+<h3 id="13-epistemic-memory-rethinkdb-beliefs">1.3 Epistemic memory (RethinkDB beliefs)</h3>
+<p>The <code>memory_beliefs</code> table holds hypotheses and their outcomes:</p>
+<ul>
+<li><code>content</code> — the hypothesis statement</li>
+<li><code>assumptions</code> — IDs of hypotheses this belief depends on</li>
+<li><code>confidence</code> — a numeric confidence value</li>
+<li><code>status</code> — <code>pending</code>, <code>confirmed</code>, or <code>falsified</code></li>
+<li><code>workspace_id</code>, <code>run_id</code>, <code>timestamp_ms</code> — provenance</li>
+</ul>
+<p>Beliefs are the most valuable and the most dangerous to transfer. They encode <em>what worked and what didn't</em> — the core of "experience." But they are also context-bound: a hypothesis that was falsified in one workspace (e.g., "this API supports pagination") may be true in another.</p>
+<h3 id="14-configuration-and-policy">1.4 Configuration and policy</h3>
+<p>Beyond data, an experienced agent has tuned configuration:</p>
+<ul>
+<li><code>MemoryPolicy</code> CRD — retention rules, consolidation triggers, context budget</li>
+<li>System prompts (refined through use)</li>
+<li>Tool allowlists (which MCPs the agent has proven useful)</li>
+<li>Context manager strategy preferences</li>
+</ul>
+<p>This layer is trivially portable (it's YAML/config) but often the most valuable, because it encodes human-curated decisions about what the agent should do.</p>
+<h2 id="2-transfer-scenarios">2. Transfer scenarios</h2>
+<h3 id="scenario-a-clone-for-a-new-customer-same-domain">Scenario A: Clone for a new customer (same domain)</h3>
+<p>A retail strategy team has been operating for months in workspace <code>ws-retail-001</code>. A new customer signs up. We want to create <code>ws-retail-002</code> with the same domain knowledge but none of the first customer's proprietary data.</p>
+<p><strong>What transfers</strong>: domain episodes ("competitor pricing patterns in sustainable kitchenware"), confirmed hypotheses ("Lighthouse SEO scores correlate with conversion rate"), tuned system prompts, tool configurations.</p>
+<p><strong>What doesn't transfer</strong>: customer-specific episodes ("customer X's inventory has these gaps"), customer-specific beliefs, raw ingested vectors (they contain customer data).</p>
+<h3 id="scenario-b-cross-domain-structural-transfer">Scenario B: Cross-domain structural transfer</h3>
+<p>A software engineering agent (Sena) has learned effective patterns: "read test files before implementation files," "run the type checker after each edit." We want to port these <em>structural</em> lessons to a different engineering agent working in a different language ecosystem.</p>
+<p><strong>What transfers</strong>: structural/epistemic beliefs ("approach X is effective for problem class Y").</p>
+<p><strong>What doesn't transfer</strong>: domain-specific episodes ("this codebase uses Framework Z v3.2"), specific code embeddings.</p>
+<h3 id="scenario-c-team-level-collective-transfer">Scenario C: Team-level collective transfer</h3>
+<p>A team of agents (scout + analyst + writer) has developed shared working knowledge through multiple runs. We want to port the <em>team's collective experience</em> to a new team with the same roles but different members.</p>
+<p><strong>What transfers</strong>: inter-agent coordination patterns (encoded in episodes), shared beliefs about effective workflows.</p>
+<p><strong>What doesn't transfer</strong>: individual agent-specific memories that were never consolidated into episodes.</p>
+<h3 id="scenario-d-pre-trained-package-deployment">Scenario D: Pre-trained package deployment</h3>
+<p>The "redeployable team" product: a team is pre-trained on public domain data, packaged with its full memory state, and deployed to an enterprise environment. The enterprise ingests their private corpora on top.</p>
+<p><strong>What transfers</strong>: everything — vectors, episodes, beliefs, config — as a baseline.</p>
+<p><strong>What gets added</strong>: new episodes and beliefs from the enterprise's own runs, layered on top of the pre-trained base.</p>
+<h2 id="3-what-is-challenging-about-knowledge-propagation">3. What is challenging about knowledge propagation</h2>
+<h3 id="31-embedding-model-dependency">3.1 Embedding model dependency</h3>
+<p><strong>Problem</strong>: Qdrant vectors are only meaningful relative to the embedding model that produced them. If the target agent uses a different embedding model (e.g., a different Lemonade-served model, or a different quantization), the transferred vectors are in a different vector space. Cosine similarity between a query vector (from model B) and a stored vector (from model A) is meaningless.</p>
+<p><strong>Severity</strong>: Critical. This is the single biggest barrier to vector-level transfer.</p>
+<p><strong>Mitigation options</strong>:
+- Pin the embedding model as part of the package metadata. Reject transfer if models don't match. (Simple but rigid.)
+- Re-embed source content using the target model. (Requires access to original text, which Qdrant payloads do contain — so this is feasible but compute-expensive.)
+- Use a model-bridging technique (e.g., Procrustes alignment) to map between vector spaces. (Research-grade, unreliable for production.)</p>
+<h3 id="32-workspace-specific-references">3.2 Workspace-specific references</h3>
+<p><strong>Problem</strong>: Episodes and beliefs carry <code>workspace_id</code>, <code>run_id</code>, and <code>source_content_ids</code> that reference entities in the source workspace. In the target workspace, these IDs either don't exist or point to different data. The <code>recall</code> function filters by <code>workspace_id</code>, so transferred episodes would be invisible unless their <code>workspace_id</code> is rewritten.</p>
+<p><strong>Severity</strong>: High. Without ID remapping, transferred knowledge is unreachable.</p>
+<p><strong>Mitigation</strong>: Rewrite <code>workspace_id</code> to the target workspace. Replace <code>run_id</code> and <code>source_content_ids</code> with null or a synthetic "imported" provenance marker. This breaks the back-link chain (you can't trace a transferred episode back to its original run) but makes the knowledge reachable.</p>
+<h3 id="33-belief-context-dependence">3.3 Belief context-dependence</h3>
+<p><strong>Problem</strong>: A hypothesis that was falsified in one context may be valid in another. "This library's API supports streaming" may be true for Library v2 and false for v1. Transferring a <code>falsified</code> belief without its context could cause the target agent to avoid a valid approach.</p>
+<p>The current ATMS implementation has no notion of <em>context scope</em> — beliefs are workspace-scoped, not domain-scoped or context-scoped. A belief is either falsified or it isn't; there's no "falsified in context X but untested in context Y."</p>
+<p><strong>Severity</strong>: High for epistemic transfer. This is the core risk of propagating experience.</p>
+<p><strong>Mitigation options</strong>:
+- Transfer beliefs as <code>pending</code> (not <code>confirmed</code> or <code>falsified</code>) so the target agent re-verifies them. Safer but loses the value of prior testing.
+- Add a <code>context_scope</code> field to beliefs (e.g., "language: Python", "domain: retail") and only transfer beliefs whose scope matches the target. Requires schema change and retroactive tagging.
+- Transfer beliefs with their evidence (the episodes that confirmed/falsified them) so the target agent can reason about applicability. Most robust but requires transferring the full dependency chain.</p>
+<h3 id="34-temporal-validity">3.4 Temporal validity</h3>
+<p><strong>Problem</strong>: Some knowledge is time-sensitive. "This API endpoint returns JSON" may be true today and false after a deprecation. Without temporal metadata (<code>valid_from</code>/<code>valid_to</code>), we can't distinguish timeless knowledge ("recursion is a valid approach for tree traversal") from time-bound knowledge ("this service is up and responding").</p>
+<p>The deferred NebulaGraph temporal layer (ITD-18) was designed to solve this. Without it, all knowledge is implicitly "valid as of when it was recorded," which is correct for the source workspace but potentially stale for the target.</p>
+<p><strong>Severity</strong>: Medium for short-term transfer (same time period). High for long-term transfer or pre-trained packages that age.</p>
+<p><strong>Mitigation</strong>: Use <code>timestamp_ms</code> as a staleness signal. Add a <code>validity_duration</code> or <code>expires_at</code> field to episodes and beliefs. The target agent can then re-verify stale knowledge through its own runs.</p>
+<h3 id="35-semantic-deduplication">3.5 Semantic deduplication</h3>
+<p><strong>Problem</strong>: If the target agent already has independently learned similar knowledge, transferring creates duplicates. Two episodes with slightly different summaries but the same semantic content waste context budget and can create conflicting beliefs.</p>
+<p>Deduplication requires semantic comparison (vector similarity between episode summaries), which is expensive at scale and inexact (what threshold counts as "duplicate"?).</p>
+<p><strong>Severity</strong>: Medium. Accumulates over multiple transfers.</p>
+<p><strong>Mitigation</strong>: Before transfer, embed episode summaries using the target's embedding model and check similarity against existing episodes. Merge or skip above a threshold. This is a batch operation, not a streaming one.</p>
+<h3 id="36-provenance-and-auditability">3.6 Provenance and auditability</h3>
+<p><strong>Problem</strong>: Transferred knowledge needs to track its origin. If a transferred belief causes the target agent to make a bad decision, we need to know: "this belief was learned by agent X in workspace Y under conditions Z." Without provenance, debugging is impossible and trust erodes.</p>
+<p>The current schema has <code>workspace_id</code> and <code>run_id</code> but no <code>origin_workspace_id</code> or <code>transfer_batch_id</code>. Once <code>workspace_id</code> is rewritten for the target, the origin is lost.</p>
+<p><strong>Severity</strong>: Medium for single transfer. High for chained transfers (A → B → C).</p>
+<p><strong>Mitigation</strong>: Add an <code>imported_from</code> field to episodes and beliefs. Preserve the original <code>workspace_id</code> and <code>run_id</code> in a nested <code>provenance</code> object while setting the top-level <code>workspace_id</code> to the target.</p>
+<h3 id="37-scale-and-packaging">3.7 Scale and packaging</h3>
+<p><strong>Problem</strong>: A pre-trained team package must include Qdrant collection snapshots, RethinkDB table exports, configuration files, and metadata about embedding models and schema versions. This is a multi-gigabyte artifact that needs to be versioned, distributed, and applied atomically.</p>
+<p>Qdrant supports collection snapshots (<code>/collections/{collection}/snapshots</code>), which is the right primitive for vector-level transfer. RethinkDB has no native snapshot mechanism — we'd need to export tables to JSON and re-import.</p>
+<p><strong>Severity</strong>: Medium. Engineering work, not research.</p>
+<p><strong>Mitigation</strong>: Use Qdrant snapshots for vectors. Export RethinkDB tables to JSON dumps. Package everything in a tarball with a <code>manifest.json</code> that records schema version, embedding model, and creation date.</p>
+<h3 id="38-belief-dependency-chain-integrity">3.8 Belief dependency chain integrity</h3>
+<p><strong>Problem</strong>: Beliefs form dependency chains via the <code>assumptions</code> array. If belief B depends on hypothesis A, and we transfer B without A, the target agent has a belief with a dangling dependency. The retraction cascade logic (<code>close_experiment</code> → filter on <code>assumptions</code>) would fail to cascade correctly.</p>
+<p><strong>Severity</strong>: High for partial transfers. Not an issue for full transfers.</p>
+<p><strong>Mitigation</strong>: Transfer beliefs as a connected graph, not individual records. Before transfer, compute the transitive closure of dependencies for each selected belief and include all ancestors. Alternatively, flatten dependencies: if A is <code>confirmed</code> and B depends on A, transfer B with <code>assumptions: []</code> and a note that its dependency was pre-validated.</p>
+<h2 id="4-approaches-evaluated">4. Approaches evaluated</h2>
+<h3 id="41-snapshot-and-restore-full-clone">4.1 Snapshot-and-restore (full clone)</h3>
+<p><strong>Method</strong>: Export the entire Qdrant collection and RethinkDB tables from the source workspace. Import into the target workspace with <code>workspace_id</code> rewritten.</p>
+<p><strong>Pros</strong>: Complete fidelity. No knowledge loss. Simple to implement (Qdrant snapshots + JSON export).</p>
+<p><strong>Cons</strong>: Transfers everything including irrelevant or stale knowledge. No deduplication. Embedding model must match. Customer-specific data leaks if not filtered.</p>
+<p><strong>Best for</strong>: Scenario D (pre-trained package deployment) where the entire baseline is meant to transfer.</p>
+<h3 id="42-curated-transfer-selective">4.2 Curated transfer (selective)</h3>
+<p><strong>Method</strong>: A human or meta-agent selects specific episodes and beliefs to transfer. Only selected records are exported, with dependency chains resolved.</p>
+<p><strong>Pros</strong>: Precise control. Can filter out domain-specific or stale knowledge. Can downgrade <code>confirmed</code>/<code>falsified</code> beliefs to <code>pending</code> for re-verification.</p>
+<p><strong>Cons</strong>: Labor-intensive. Requires domain expertise to curate. Doesn't scale to large knowledge bases.</p>
+<p><strong>Best for</strong>: Scenario B (cross-domain structural transfer) where only a subset of knowledge is relevant.</p>
+<h3 id="43-re-embedding-bridge-model-independent-transfer">4.3 Re-embedding bridge (model-independent transfer)</h3>
+<p><strong>Method</strong>: Export episode summaries and belief content as text (not vectors). In the target workspace, re-embed the text using the target's embedding model and upsert as new Qdrant points. Episodes and beliefs are inserted into RethinkDB with rewritten IDs.</p>
+<p><strong>Pros</strong>: Model-independent. Works across different embedding models. Text is human-readable and auditable.</p>
+<p><strong>Cons</strong>: Loses the original vector fidelity (re-embedding introduces quantization differences). Compute-expensive for large knowledge bases. Loses <code>source_content_ids</code> back-links.</p>
+<p><strong>Best for</strong>: Scenario A (clone for new customer) where the embedding model may differ and only domain knowledge (not customer data) should transfer.</p>
+<h3 id="44-distillation-lossy-but-portable">4.4 Distillation (lossy but portable)</h3>
+<p><strong>Method</strong>: Use the experienced source agent to generate a "lessons learned" document — a structured summary of confirmed beliefs, falsified approaches, and effective strategies. The target agent ingests this document as a Case File, giving it the distilled experience without the raw memory.</p>
+<p><strong>Pros</strong>: Maximally portable (it's just text). Model-independent. Human-reviewable. Compact. Works across any agent architecture, not just Kaigents.</p>
+<p><strong>Cons</strong>: Lossy — the nuance of individual episodes and the confidence values of beliefs are flattened into prose. The target agent doesn't get the structured belief graph, just a narrative. Can't do retraction cascades on distilled knowledge.</p>
+<p><strong>Best for</strong>: Scenario B (cross-domain) and as a complement to other approaches. Also the most practical for the "pre-trained team" product: ship a distilled lessons document alongside the full memory snapshot, so the target agent can use either layer.</p>
+<h3 id="45-layered-transfer-generality-tiered">4.5 Layered transfer (generality-tiered)</h3>
+<p><strong>Method</strong>: Tag each episode and belief with a generality level:
+- <strong>Structural</strong> — domain-independent patterns ("read tests before implementation")
+- <strong>Domain</strong> — domain-specific but customer-independent ("retail pricing follows cost-plus models")
+- <strong>Instance</strong> — specific to a workspace/customer ("customer X's API returns these fields")</p>
+<p>Transfer only <code>structural</code> and <code>domain</code> layers. Skip <code>instance</code> layers.</p>
+<p><strong>Pros</strong>: Clean separation of what should and shouldn't transfer. Automatic once tagging is in place.</p>
+<p><strong>Cons</strong>: Requires retroactive tagging of existing knowledge. The current schema has no generality field. Tagging accuracy depends on the consolidation LLM's ability to classify generality, which is unreliable without fine-tuning.</p>
+<p><strong>Best for</strong>: All scenarios. This is the ideal long-term approach but requires schema changes and a tagging pipeline.</p>
+<h3 id="46-delta-transfer-incremental">4.6 Delta transfer (incremental)</h3>
+<p><strong>Method</strong>: After an initial full transfer, subsequent transfers only include episodes and beliefs created or updated since the last transfer. The target agent merges the delta into its existing knowledge base.</p>
+<p><strong>Pros</strong>: Efficient for ongoing knowledge sharing between long-running agents. Avoids re-transferring unchanged knowledge.</p>
+<p><strong>Cons</strong>: Requires tracking transfer history (what was sent, when). Merge conflicts if the target has independently learned conflicting beliefs. Deduplication still needed for overlapping deltas.</p>
+<p><strong>Best for</strong>: Scenario C (team-level collective transfer) where teams share knowledge over time, and for maintaining pre-trained packages that receive updates.</p>
+<h2 id="5-what-exists-in-kaigents-today-vs-whats-missing">5. What exists in Kaigents today vs. what's missing</h2>
+<h3 id="already-available">Already available</h3>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Location</th>
+<th>Transfer utility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Per-workspace Qdrant collections</td>
+<td><code>workspace-{id}</code> naming</td>
+<td>Cloneable via Qdrant snapshot API</td>
+</tr>
+<tr>
+<td>RethinkDB episodes with <code>workspace_id</code> filter</td>
+<td><code>memory_episodes</code> table</td>
+<td>Exportable via <code>filter</code> query</td>
+</tr>
+<tr>
+<td>RethinkDB beliefs with <code>assumptions</code> array</td>
+<td><code>memory_beliefs</code> table</td>
+<td>Exportable with dependency graph</td>
+</tr>
+<tr>
+<td>Consolidation produces text summaries</td>
+<td><code>consolidate_run_memory</code></td>
+<td>Summaries are model-independent and portable</td>
+</tr>
+<tr>
+<td><code>MemoryPolicy</code> CRD</td>
+<td>K8s API</td>
+<td>Trivially portable (YAML)</td>
+</tr>
+<tr>
+<td><code>recall</code> filters by <code>workspace_id</code></td>
+<td><code>kaigents-memory/src/lib.rs</code></td>
+<td>Rewriting <code>workspace_id</code> makes transferred data reachable</td>
+</tr>
+</tbody>
+</table>
+<h3 id="missing">Missing</h3>
+<table>
+<thead>
+<tr>
+<th>Gap</th>
+<th>Impact</th>
+<th>Build effort</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No export/import tooling</td>
+<td>Cannot transfer without manual DB operations</td>
+<td>Medium — CLI command wrapping Qdrant snapshots + RethinkDB export</td>
+</tr>
+<tr>
+<td>No embedding model metadata on collections</td>
+<td>Can't detect model mismatch at transfer time</td>
+<td>Small — store model ID in Qdrant payload metadata</td>
+</tr>
+<tr>
+<td>No <code>origin_workspace_id</code> / provenance tracking on transferred records</td>
+<td>Lost audit trail after transfer</td>
+<td>Small — add field to Episode and Hypothesis structs</td>
+</tr>
+<tr>
+<td>No generality tagging on episodes/beliefs</td>
+<td>Can't distinguish structural from instance-level knowledge</td>
+<td>Medium — requires LLM classification at consolidation time</td>
+</tr>
+<tr>
+<td>No <code>context_scope</code> on beliefs</td>
+<td>Can't scope belief validity to domains/languages</td>
+<td>Medium — schema change + retroactive tagging</td>
+</tr>
+<tr>
+<td>No temporal validity (<code>valid_from</code>/<code>valid_to</code>)</td>
+<td>Can't detect stale knowledge</td>
+<td>Large — requires the deferred NebulaGraph temporal layer (ITD-18)</td>
+</tr>
+<tr>
+<td>No cross-workspace deduplication</td>
+<td>Merges create duplicates</td>
+<td>Medium — batch semantic comparison before import</td>
+</tr>
+<tr>
+<td>No package manifest format</td>
+<td>Can't version or validate transfer artifacts</td>
+<td>Small — JSON schema for manifest with model IDs, schema version, counts</td>
+</tr>
+<tr>
+<td>No delta/incremental transfer tracking</td>
+<td>Can't do efficient ongoing sync</td>
+<td>Medium — transfer log table + watermark tracking</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6-recommended-approach-for-the-pre-trained-team-product">6. Recommended approach for the pre-trained team product</h2>
+<p>For the "redeployable team" product (Scenario D), the pragmatic path is a <strong>hybrid of snapshot-and-restore + distillation</strong>:</p>
+<ol>
+<li><strong>Full snapshot</strong> of the pre-trained agent's Qdrant collection and RethinkDB tables, packaged with:</li>
+<li>Embedding model ID and version</li>
+<li>Schema version</li>
+<li>Creation timestamp</li>
+<li>Episode count, belief count, vector count</li>
+<li>
+<p>A <code>manifest.json</code> declaring all of the above</p>
+</li>
+<li>
+<p><strong>Distilled lessons document</strong> generated by the source agent, included alongside the snapshot. This gives the deploying enterprise:</p>
+</li>
+<li>A human-readable summary of what the team knows</li>
+<li>
+<p>A fallback if the embedding model doesn't match (they can ingest the distilled document instead of restoring the snapshot)</p>
+</li>
+<li>
+<p><strong>Restore pipeline</strong> that:</p>
+</li>
+<li>Validates embedding model compatibility (reject or offer re-embedding)</li>
+<li>Creates the target Qdrant collection from snapshot</li>
+<li>Imports RethinkDB records with <code>workspace_id</code> rewritten and <code>imported_from</code> provenance set</li>
+<li>
+<p>Marks transferred beliefs as <code>pending</code> (re-verification) or preserves status based on a policy flag</p>
+</li>
+<li>
+<p><strong>Post-restore warm-up</strong>: the target agent runs a verification pass — it re-checks a sample of transferred beliefs against its own environment and flags any that fail. This catches context-dependence issues without requiring a full re-test of every belief.</p>
+</li>
+</ol>
+<p>This approach is buildable with the current architecture plus the export/import CLI and package manifest. It doesn't require the generality tagging or temporal validity layers, which can be added incrementally.</p>
+<h2 id="7-open-questions-for-future-research">7. Open questions for future research</h2>
+<ol>
+<li>
+<p><strong>Can consolidation be tuned for transfer-readiness?</strong> If the consolidation LLM is prompted to classify each episode as structural/domain/instance during consolidation, the generality tag comes for free — but does this degrade consolidation quality?</p>
+</li>
+<li>
+<p><strong>What is the half-life of agent knowledge?</strong> Empirically, how long do beliefs remain valid before they need re-verification? This varies by domain (software APIs decay faster than mathematical truths) and determines the staleness policy.</p>
+</li>
+<li>
+<p><strong>Can belief dependency chains be compressed for transfer?</strong> Instead of transferring the full graph, can we compute a "closure certificate" — a summary of which assumptions are confirmed and which are falsified — that preserves cascade semantics without the full graph?</p>
+</li>
+<li>
+<p><strong>Is cross-model vector alignment feasible at our scale?</strong> For collections under 100K points, Procrustes alignment between two embedding models' vector spaces might be accurate enough to avoid re-embedding. This would make snapshot transfer work across model changes.</p>
+</li>
+<li>
+<p><strong>How does team-level knowledge differ from agent-level knowledge?</strong> Do teams develop collective beliefs that no individual agent holds, or is team knowledge always a union of individual knowledge? This determines whether team transfer is just N individual transfers or requires a separate abstraction.</p>
+</li>
+</ol>
+<h2 id="8-references">8. References</h2>
+<ul>
+<li>Kaigents memory architecture: <code>docs/architecture/agent-memory-proposal.md</code></li>
+<li>Memory research basis: <code>docs/research/agent-context-and-memory-research.md</code></li>
+<li>Implementation tracker (Milestones 9-11): <code>docs/implementation/kaigents-implementation-tracker.md</code></li>
+<li>ITD-18 (NebulaGraph temporal layer): <code>docs/research/technology/itd-register.md</code></li>
+<li>Qdrant collection snapshots: https://qdrant.tech/documentation/concepts/snapshots/</li>
+<li>RethinkDB data export: https://rethinkdb.com/docs/dump-restore/</li>
+<li>Procrustes alignment for cross-model vector spaces: https://arxiv.org/abs/2104.08555</li>
+<li>Belief revision (AGM theory): Alchourrón, Gärdenfors, Makinson (1985)</li>
+<li>Assumption-based TMS (de Kleer): https://dekleer.org/Publications/An%20Assumption-Based%20TMS.pdf</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
