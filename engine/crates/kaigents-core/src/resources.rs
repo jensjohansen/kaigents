@@ -107,3 +107,49 @@ pub struct ExecutionContract {
     pub read_tool_name: Option<String>,
     pub context_window_size: Option<u32>,
 }
+
+#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, JsonSchema)]
+#[kube(
+    group = "core.kaigents.io",
+    version = "v1alpha1",
+    kind = "ModelEndpoint",
+    namespaced
+)]
+pub struct ModelEndpointSpec {
+    pub url: Option<String>,
+    #[serde(rename = "serviceDns")]
+    pub service_dns: Option<String>,
+    pub model: Option<String>,
+    pub provider: Option<String>,
+    #[serde(rename = "contextWindowSize")]
+    pub context_window_size: Option<i32>,
+}
+
+#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, JsonSchema)]
+#[kube(
+    group = "core.kaigents.io",
+    version = "v1alpha1",
+    kind = "Tool",
+    namespaced
+)]
+pub struct ToolSpec {
+    #[serde(rename = "mcpServerRef")]
+    pub mcp_server_ref: Option<String>,
+    #[serde(rename = "toolName")]
+    pub tool_name: Option<String>,
+    pub description: Option<String>,
+}
+
+#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, JsonSchema)]
+#[kube(
+    group = "core.kaigents.io",
+    version = "v1alpha1",
+    kind = "MCPServer",
+    namespaced
+)]
+pub struct MCPServerSpec {
+    pub url: Option<String>,
+    #[serde(rename = "kmcpName")]
+    pub kmcp_name: Option<String>,
+    pub transport: Option<String>,
+}

@@ -1,0 +1,68 @@
+apiVersion: core.kaigents.io/v1alpha1
+kind: Task
+metadata:
+  name: research-task
+  namespace: kaigents
+spec:
+  agentName: research-agent
+  prompt: |
+    Research the following topic thoroughly:
+
+    {{input}}
+
+    Use web search to find relevant information, read the top results, and produce
+    a structured research summary with sources. Save the summary as a file named
+    research-summary.md in the workspace.
+  requiresGate: false
+---
+apiVersion: core.kaigents.io/v1alpha1
+kind: Task
+metadata:
+  name: planning-task
+  namespace: kaigents
+spec:
+  agentName: planning-agent
+  prompt: |
+    Read the research summary from the previous step (research-summary.md).
+    Based on the research findings, create an actionable plan for:
+
+    {{input}}
+
+    Write the plan to a file named plan.md in the workspace.
+    Include concrete steps, tools to use, expected outputs, and success criteria.
+  requiresGate: false
+---
+apiVersion: core.kaigents.io/v1alpha1
+kind: Task
+metadata:
+  name: execution-task
+  namespace: kaigents
+spec:
+  agentName: execution-agent
+  prompt: |
+    Read the plan from plan.md. Execute each step in the plan.
+
+    Context: {{input}}
+
+    Write all output files to the workspace. Produce an execution summary
+    saved as execution-summary.md.
+  requiresGate: true
+---
+apiVersion: core.kaigents.io/v1alpha1
+kind: Task
+metadata:
+  name: review-task
+  namespace: kaigents
+spec:
+  agentName: review-agent
+  prompt: |
+    Review the work produced by the execution agent.
+
+    1. Read plan.md to understand what was planned.
+    2. Read execution-summary.md to see what was done.
+    3. Read all files produced by the execution agent.
+    4. Check each plan step was completed correctly.
+    5. Produce a review report saved as review-report.md.
+
+    Include a verdict: PASS, FAIL, or NEEDS_REVISION.
+  requiresGate: false

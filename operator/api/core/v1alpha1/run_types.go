@@ -38,12 +38,12 @@ type RunArtifactRef struct {
 
 // RunStatus defines the observed state of a run.
 type RunStatus struct {
-	ObservedGeneration int64            `json:"observedGeneration,omitempty"`
-	Phase              string           `json:"phase,omitempty"`
-	Message            string           `json:"message,omitempty"`
-	Artifacts          []RunArtifactRef `json:"artifacts,omitempty"`
+	ObservedGeneration int64             `json:"observedGeneration,omitempty"`
+	Phase              string            `json:"phase,omitempty"`
+	Message            string            `json:"message,omitempty"`
+	Artifacts          []RunArtifactRef  `json:"artifacts,omitempty"`
 	Outputs            map[string]string `json:"outputs,omitempty"`
-	Conditions         []Condition      `json:"conditions,omitempty"`
+	Conditions         []Condition       `json:"conditions,omitempty"`
 }
 
 // Run is the schema for Kaigents Run resources.

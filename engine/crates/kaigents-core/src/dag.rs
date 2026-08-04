@@ -337,9 +337,7 @@ impl DAGExecutor {
                     error: None,
                 })
             }
-            StepType::K8sOffload { image, command } => {
-                submit_k8s_offload(image, command).await
-            }
+            StepType::K8sOffload { image, command } => submit_k8s_offload(image, command).await,
         }
     }
 }
@@ -349,8 +347,8 @@ async fn submit_k8s_offload(image: &str, command: &[String]) -> Result<Execution
         .await
         .map_err(|e| format!("Failed to create Kubernetes client: {}", e))?;
 
-    let namespace = std::env::var("KAIGENTS_OFFLOAD_NAMESPACE")
-        .unwrap_or_else(|_| "default".to_string());
+    let namespace =
+        std::env::var("KAIGENTS_OFFLOAD_NAMESPACE").unwrap_or_else(|_| "default".to_string());
 
     let pods: Api<k8s_core::Pod> = Api::namespaced(client.clone(), &namespace);
 
@@ -359,9 +357,10 @@ async fn submit_k8s_offload(image: &str, command: &[String]) -> Result<Execution
     let pod = k8s_core::Pod {
         metadata: kube::api::ObjectMeta {
             name: Some(pod_name.clone()),
-            labels: Some(std::collections::BTreeMap::from([
-                ("app".to_string(), "kaigents-offload".to_string()),
-            ])),
+            labels: Some(std::collections::BTreeMap::from([(
+                "app".to_string(),
+                "kaigents-offload".to_string(),
+            )])),
             ..Default::default()
         },
         spec: Some(k8s_core::PodSpec {
@@ -369,7 +368,7 @@ async fn submit_k8s_offload(image: &str, command: &[String]) -> Result<Execution
             containers: vec![k8s_core::Container {
                 name: "offload".to_string(),
                 image: Some(image.to_string()),
-                command: Some(command.iter().cloned().collect()),
+                command: Some(command.to_vec()),
                 ..Default::default()
             }],
             ..Default::default()
@@ -384,17 +383,24 @@ async fn submit_k8s_offload(image: &str, command: &[String]) -> Result<Execution
     let deadline = std::time::Instant::now() + Duration::from_secs(600);
     loop {
         if std::time::Instant::now() > deadline {
-            let _ = pods.delete(&pod_name, &kube::api::DeleteParams::default()).await;
+            let _ = pods
+                .delete(&pod_name, &kube::api::DeleteParams::default())
+                .await;
             return Err(format!("Offload pod '{}' timed out after 600s", pod_name));
         }
 
-        let pod_obj = pods.get(&pod_name).await.map_err(|e| format!("Failed to get pod status: {}", e))?;
+        let pod_obj = pods
+            .get(&pod_name)
+            .await
+            .map_err(|e| format!("Failed to get pod status: {}", e))?;
 
         if let Some(status) = &pod_obj.status {
             if let Some(phase) = &status.phase {
                 match phase.as_str() {
                     "Succeeded" => {
-                        let _ = pods.delete(&pod_name, &kube::api::DeleteParams::default()).await;
+                        let _ = pods
+                            .delete(&pod_name, &kube::api::DeleteParams::default())
+                            .await;
                         return Ok(ExecutionResult {
                             outputs: HashMap::from([
                                 ("pod".to_string(), pod_name.clone()),
@@ -406,7 +412,9 @@ async fn submit_k8s_offload(image: &str, command: &[String]) -> Result<Execution
                         });
                     }
                     "Failed" => {
-                        let _ = pods.delete(&pod_name, &kube::api::DeleteParams::default()).await;
+                        let _ = pods
+                            .delete(&pod_name, &kube::api::DeleteParams::default())
+                            .await;
                         let msg = status
                             .container_statuses
                             .as_ref()

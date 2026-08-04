@@ -533,10 +533,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let chat_endpoint = contract.model_endpoint_name.clone();
             let embedding_model = std::env::var("KAIGENTS_EMBEDDING_MODEL")
                 .unwrap_or_else(|_| embedding_endpoint.clone().unwrap_or_default());
-            let chat_model = contract
-                .model_name
-                .clone()
-                .unwrap_or_else(|| std::env::var("KAIGENTS_MODEL_NAME").unwrap_or_else(|_| "gpt-oss-20b".to_string()));
+            let chat_model = contract.model_name.clone().unwrap_or_else(|| {
+                std::env::var("KAIGENTS_MODEL_NAME").unwrap_or_else(|_| "gpt-oss-20b".to_string())
+            });
             let memory_manager = {
                 #[allow(unused_mut)]
                 let mut mm = MemoryManager::new(
@@ -584,26 +583,98 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let mut steps = Vec::new();
                 let tasks: kube::Api<kaigents_core::resources::Task> =
                     kube::Api::namespaced(client.clone(), ns);
+                let agents: kube::Api<kaigents_core::resources::Agent> =
+                    kube::Api::namespaced(client.clone(), ns);
+                let endpoints: kube::Api<kaigents_core::resources::ModelEndpoint> =
+                    kube::Api::namespaced(client.clone(), ns);
+                let tools_api: kube::Api<kaigents_core::resources::Tool> =
+                    kube::Api::namespaced(client.clone(), ns);
+                let mcp_api: kube::Api<kaigents_core::resources::MCPServer> =
+                    kube::Api::namespaced(client.clone(), ns);
 
                 for step_def in process.spec.steps {
                     let task = tasks.get(&step_def.task_ref).await?;
+
+                    let mut system_prompt = None;
+                    let mut model_endpoint_url = None;
+                    let mut model_name = None;
+                    let mut mcp_server_url = None;
+                    let mut search_tool_name = None;
+                    let mut read_tool_name = None;
+
+                    if let Some(ref agent_name) = task.spec.agent_name {
+                        if let Ok(agent) = agents.get(agent_name).await {
+                            system_prompt = agent.spec.system_prompt.clone();
+                            model_name = agent.spec.model_name.clone();
+
+                            if let Some(ref me_ref) = agent.spec.model_endpoint_ref {
+                                if let Ok(me) = endpoints.get(me_ref).await {
+                                    model_endpoint_url =
+                                        me.spec.url.clone().or(me.spec.service_dns.clone());
+                                    if model_name.is_none() {
+                                        model_name = me.spec.model.clone();
+                                    }
+                                }
+                            }
+
+                            if let Some(ref tool_refs) = agent.spec.tools {
+                                for tool_ref in tool_refs {
+                                    if let Ok(tool) = tools_api.get(&tool_ref.name).await {
+                                        if search_tool_name.is_none()
+                                            && tool.spec.tool_name.as_deref()
+                                                == Some("searxng_web_search")
+                                        {
+                                            search_tool_name = tool.spec.tool_name.clone();
+                                        }
+                                        if read_tool_name.is_none()
+                                            && tool.spec.tool_name.as_deref()
+                                                == Some("web_url_read")
+                                        {
+                                            read_tool_name = tool.spec.tool_name.clone();
+                                        }
+                                        if mcp_server_url.is_none() {
+                                            if let Some(ref mcp_ref) = tool.spec.mcp_server_ref {
+                                                if let Ok(mcp) = mcp_api.get(mcp_ref).await {
+                                                    mcp_server_url = mcp.spec.url.clone();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     steps.push(TemporalWorkItemDef {
                         work_item_id: format!("{}-{}", run_id.as_uuid(), step_def.id),
                         step_name: step_def.name,
                         agent_name: task.spec.agent_name,
                         prompt: task.spec.prompt.map(|p| p.replace("{{input}}", &run_input)),
                         requires_gate: task.spec.requires_gate,
+                        system_prompt,
+                        model_endpoint_url,
+                        model_name,
+                        mcp_server_url,
+                        search_tool_name,
+                        read_tool_name,
+                        metadata: None,
                     });
                 }
                 steps
             } else {
-                // Default Agent behavior (1 step)
                 vec![TemporalWorkItemDef {
                     work_item_id: format!("{}-exec", run_id.as_uuid()),
                     step_name: "execute".to_string(),
                     agent_name: Some(target_name.clone()),
                     prompt: Some(run_input.clone()),
                     requires_gate: None,
+                    system_prompt: contract.system_prompt.clone(),
+                    model_endpoint_url: contract.model_endpoint_url.clone(),
+                    model_name: contract.model_name.clone(),
+                    mcp_server_url: contract.mcp_server_url.clone(),
+                    search_tool_name: contract.search_tool_name.clone(),
+                    read_tool_name: contract.read_tool_name.clone(),
+                    metadata: None,
                 }]
             };
 
@@ -710,7 +781,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .clone()
                     .unwrap_or_else(|| "web_url_read".to_string());
                 let system_prompt = contract.system_prompt.clone().unwrap_or_else(|| {
-                    "You are a Kaigents AI Agent. Complete the task as specified in the input.".to_string()
+                    "You are a Kaigents AI Agent. Complete the task as specified in the input."
+                        .to_string()
                 });
 
                 let mcp_timeout_ms: u64 = std::env::var("KAIGENTS_MCP_TIMEOUT_MS")
@@ -755,7 +827,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         .inc();
 
                     let mut urls: Vec<String> = Vec::new();
-                    if let Some(results) = search_results.get("results").and_then(|v| v.as_array()) {
+                    if let Some(results) = search_results.get("results").and_then(|v| v.as_array())
+                    {
                         for item in results.iter().take(3) {
                             if let Some(url) = item.get("url").and_then(|v| v.as_str()) {
                                 urls.push(url.to_string());
@@ -837,7 +910,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     case_file_entries,
                     beliefs,
                     budget,
-                    ContextBudgetStrategy::Truncate,
+                    ContextBudgetStrategy::Auto,
                 );
 
                 if !violations.is_empty() {
@@ -1004,12 +1077,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             {
                                 Ok(episode) => {
                                     let episode_id = episode.id.unwrap_or_default();
-                                    info!("In-process consolidation succeeded: episode {}", episode_id);
+                                    info!(
+                                        "In-process consolidation succeeded: episode {}",
+                                        episode_id
+                                    );
                                     let consolidated = TimelineEvent::new(
                                         run_id.clone(),
                                         EventType::MemoryConsolidated { episode_id },
                                     )
-                                    .with_correlation(format!("consolidation-{}", run_id.as_uuid()));
+                                    .with_correlation(format!(
+                                        "consolidation-{}",
+                                        run_id.as_uuid()
+                                    ));
                                     timeline_store.append(consolidated)?;
                                 }
                                 Err(e2) => {
@@ -1112,29 +1191,42 @@ fn serve_memory_api(mm: Arc<MemoryManager>, port: u16) {
                         };
 
                         let mm_clone = mm.clone();
-                        let result = runtime.block_on(async move {
-                            mm_clone.record(record).await
-                        });
+                        let result = runtime.block_on(async move { mm_clone.record(record).await });
 
                         match result {
                             Ok(id) => {
-                                let _ = request.respond(tiny_http::Response::from_string(
-                                    serde_json::json!({ "id": id, "status": "recorded" }).to_string(),
-                                ).with_header(tiny_http::Header::from_bytes(
-                                    b"Content-Type", b"application/json"
-                                ).unwrap()));
+                                let _ = request.respond(
+                                    tiny_http::Response::from_string(
+                                        serde_json::json!({ "id": id, "status": "recorded" })
+                                            .to_string(),
+                                    )
+                                    .with_header(
+                                        tiny_http::Header::from_bytes(
+                                            b"Content-Type",
+                                            b"application/json",
+                                        )
+                                        .unwrap(),
+                                    ),
+                                );
                             }
                             Err(e) => {
-                                let _ = request.respond(tiny_http::Response::from_string(
-                                    serde_json::json!({ "error": e }).to_string(),
-                                ).with_status_code(500));
+                                let _ = request.respond(
+                                    tiny_http::Response::from_string(
+                                        serde_json::json!({ "error": e }).to_string(),
+                                    )
+                                    .with_status_code(500),
+                                );
                             }
                         }
                     }
                     Err(e) => {
-                        let _ = request.respond(tiny_http::Response::from_string(
-                            serde_json::json!({ "error": format!("Invalid JSON: {}", e) }).to_string(),
-                        ).with_status_code(400));
+                        let _ = request.respond(
+                            tiny_http::Response::from_string(
+                                serde_json::json!({ "error": format!("Invalid JSON: {}", e) })
+                                    .to_string(),
+                            )
+                            .with_status_code(400),
+                        );
                     }
                 }
             } else if url == "/api/v1/memory/query" && method == "POST" {
@@ -1159,35 +1251,54 @@ fn serve_memory_api(mm: Arc<MemoryManager>, port: u16) {
                             Ok(results) => {
                                 let json_results: Vec<serde_json::Value> = results
                                     .iter()
-                                    .map(|r| serde_json::json!({
-                                        "content": r.content,
-                                        "score": r.score,
-                                        "run_id": r.run_id,
-                                    }))
+                                    .map(|r| {
+                                        serde_json::json!({
+                                            "content": r.content,
+                                            "score": r.score,
+                                            "run_id": r.run_id,
+                                        })
+                                    })
                                     .collect();
-                                let _ = request.respond(tiny_http::Response::from_string(
-                                    serde_json::json!({ "results": json_results }).to_string(),
-                                ).with_header(tiny_http::Header::from_bytes(
-                                    b"Content-Type", b"application/json"
-                                ).unwrap()));
+                                let _ = request.respond(
+                                    tiny_http::Response::from_string(
+                                        serde_json::json!({ "results": json_results }).to_string(),
+                                    )
+                                    .with_header(
+                                        tiny_http::Header::from_bytes(
+                                            b"Content-Type",
+                                            b"application/json",
+                                        )
+                                        .unwrap(),
+                                    ),
+                                );
                             }
                             Err(e) => {
-                                let _ = request.respond(tiny_http::Response::from_string(
-                                    serde_json::json!({ "error": e }).to_string(),
-                                ).with_status_code(500));
+                                let _ = request.respond(
+                                    tiny_http::Response::from_string(
+                                        serde_json::json!({ "error": e }).to_string(),
+                                    )
+                                    .with_status_code(500),
+                                );
                             }
                         }
                     }
                     Err(e) => {
-                        let _ = request.respond(tiny_http::Response::from_string(
-                            serde_json::json!({ "error": format!("Invalid JSON: {}", e) }).to_string(),
-                        ).with_status_code(400));
+                        let _ = request.respond(
+                            tiny_http::Response::from_string(
+                                serde_json::json!({ "error": format!("Invalid JSON: {}", e) })
+                                    .to_string(),
+                            )
+                            .with_status_code(400),
+                        );
                     }
                 }
             } else {
-                let _ = request.respond(tiny_http::Response::from_string(
-                    serde_json::json!({ "error": "Not found" }).to_string(),
-                ).with_status_code(404));
+                let _ = request.respond(
+                    tiny_http::Response::from_string(
+                        serde_json::json!({ "error": "Not found" }).to_string(),
+                    )
+                    .with_status_code(404),
+                );
             }
         }
     });

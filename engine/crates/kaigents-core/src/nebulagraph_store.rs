@@ -113,9 +113,11 @@ impl NebulaGraphStore {
     }
 
     pub async fn init_schema(&self) -> Result<(), String> {
-        let mut initialized = self.schema_initialized.lock().unwrap();
-        if *initialized {
-            return Ok(());
+        {
+            let initialized = self.schema_initialized.lock().unwrap();
+            if *initialized {
+                return Ok(());
+            }
         }
 
         let space = &self.config.space;
@@ -143,6 +145,7 @@ impl NebulaGraphStore {
         )
         .await?;
 
+        let mut initialized = self.schema_initialized.lock().unwrap();
         *initialized = true;
         Ok(())
     }
@@ -323,7 +326,9 @@ mod tests {
             ..Default::default()
         };
         let store = NebulaGraphStore::new(cfg);
-        let result = store.insert_entity("test-id", "test", "belief", "ws-1").await;
+        let result = store
+            .insert_entity("test-id", "test", "belief", "ws-1")
+            .await;
         assert!(result.is_err());
     }
 

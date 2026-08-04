@@ -1,0 +1,25 @@
+apiVersion: core.kaigents.io/v1alpha1
+kind: ModelEndpoint
+metadata:
+  name: qwen3-coder
+  namespace: kaigents
+spec:
+  provider: lemonade
+  model: Qwen3-Coder-30B-A3B-Instruct-GGUF
+  url: http://your-model-server:13305/v1
+  capabilities:
+    chat: true
+    embeddings: false
+---
+apiVersion: core.kaigents.io/v1alpha1
+kind: ModelEndpoint
+metadata:
+  name: qwen3-5-4b
+  namespace: kaigents
+spec:
+  provider: lemonade
+  model: Qwen3.5-4B-GGUF
+  url: http://your-model-server:13305/v1
+  capabilities:
+    chat: true
+    embeddings: false

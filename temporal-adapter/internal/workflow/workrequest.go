@@ -28,14 +28,21 @@ const (
 )
 
 // WorkItemDef describes a step in the WorkRequest process graph.
-// Kept as a simple, engine-agnostic struct — no Temporal types exposed.
+// Includes per-step resolved agent config so the adapter can execute
+// with the correct system prompt, model endpoint, and MCP tools.
 type WorkItemDef struct {
-	WorkItemID   string            `json:"workItemId"`
-	StepName     string            `json:"stepName"`
-	AgentName    string            `json:"agentName,omitempty"`
-	Prompt       string            `json:"prompt,omitempty"`
-	RequiresGate bool              `json:"requiresGate,omitempty"`
-	Metadata     map[string]string `json:"metadata,omitempty"`
+	WorkItemID       string            `json:"workItemId"`
+	StepName         string            `json:"stepName"`
+	AgentName        string            `json:"agentName,omitempty"`
+	Prompt           string            `json:"prompt,omitempty"`
+	RequiresGate     bool              `json:"requiresGate,omitempty"`
+	SystemPrompt     string            `json:"systemPrompt,omitempty"`
+	ModelEndpointURL string            `json:"modelEndpointUrl,omitempty"`
+	ModelName        string            `json:"modelName,omitempty"`
+	MCPServerURL     string            `json:"mcpServerUrl,omitempty"`
+	SearchToolName   string            `json:"searchToolName,omitempty"`
+	ReadToolName     string            `json:"readToolName,omitempty"`
+	Metadata         map[string]string `json:"metadata,omitempty"`
 }
 
 // WorkRequestInput is the workflow input — pure Kaigents domain, no Temporal types.
@@ -100,11 +107,17 @@ func WorkRequestWorkflow(ctx workflow.Context, input WorkRequestInput) (WorkRequ
 
 		var result activity.WorkItemResult
 		err := workflow.ExecuteActivity(actCtx, activity.ExecuteWorkItem, activity.WorkItemInput{
-			WorkItemID: step.WorkItemID,
-			StepName:   step.StepName,
-			AgentName:  step.AgentName,
-			Prompt:     step.Prompt,
-			Metadata:   step.Metadata,
+			WorkItemID:       step.WorkItemID,
+			StepName:         step.StepName,
+			AgentName:        step.AgentName,
+			Prompt:           step.Prompt,
+			SystemPrompt:     step.SystemPrompt,
+			ModelEndpointURL: step.ModelEndpointURL,
+			ModelName:        step.ModelName,
+			MCPServerURL:     step.MCPServerURL,
+			SearchToolName:   step.SearchToolName,
+			ReadToolName:     step.ReadToolName,
+			Metadata:         step.Metadata,
 		}).Get(ctx, &result)
 
 		if err != nil {

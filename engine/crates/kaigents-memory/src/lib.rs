@@ -6,6 +6,8 @@
 //! License: MIT (see LICENSE)
 
 use async_trait::async_trait;
+use flate2::write::GzEncoder;
+use flate2::Compression;
 use kaigents_core::context_manager::{ContextBudgetStrategy, ContextManager, FittedContext};
 use kaigents_core::model_serving::{
     ChatCompletionRequest, ChatMessage, EmbeddingsRequest, ModelClient,
@@ -15,8 +17,6 @@ use kaigents_core::nebulagraph_store::{NebulaConfig, NebulaGraphStore};
 use kaigents_core::rethinkdb_store::RethinkDbConfig;
 use kaigents_core::run_id::RunId;
 use kaigents_core::tool_plane::{MCPClient, ToolContract};
-use flate2::write::GzEncoder;
-use flate2::Compression;
 use qdrant_client::qdrant::point_id::PointIdOptions;
 use qdrant_client::qdrant::{
     CreateCollectionBuilder, DeletePointsBuilder, Distance, Filter, PointId, PointStruct,
@@ -211,7 +211,10 @@ impl MemoryManager {
         let store = NebulaGraphStore::new(cfg.clone());
         match store.init_schema().await {
             Ok(()) => {
-                info!("NebulaGraph connected and schema initialized for space '{}'", cfg.space);
+                info!(
+                    "NebulaGraph connected and schema initialized for space '{}'",
+                    cfg.space
+                );
                 self.nebula = Some(Arc::new(store));
             }
             Err(e) => {
@@ -245,12 +248,8 @@ impl MemoryManager {
             }
         }
 
-        let mut session = session.ok_or_else(|| {
-            format!(
-                "RethinkDB connect failed after {} attempts",
-                max_retries
-            )
-        })?;
+        let mut session = session
+            .ok_or_else(|| format!("RethinkDB connect failed after {} attempts", max_retries))?;
 
         // Ensure tables exist
         r.db(cfg.database.clone())
@@ -279,7 +278,10 @@ impl MemoryManager {
         if record.vector.is_none() {
             if let (Some(client), Some(endpoint)) = (&self.model_client, &self.embedding_endpoint) {
                 let req = EmbeddingsRequest {
-                    model: self.embedding_model.clone().unwrap_or_else(|| "ignored".to_string()),
+                    model: self
+                        .embedding_model
+                        .clone()
+                        .unwrap_or_else(|| "ignored".to_string()),
                     input: vec![record.content.clone()],
                     encoding_format: None,
                 };
@@ -324,7 +326,11 @@ impl MemoryManager {
             use unreql::r;
             let mut session: tokio::sync::MutexGuard<'_, unreql::Session> =
                 session_mutex.lock().await;
-            let db = self.rethinkdb_db.as_deref().unwrap_or("kaigents").to_string();
+            let db = self
+                .rethinkdb_db
+                .as_deref()
+                .unwrap_or("kaigents")
+                .to_string();
             r.db(db.clone())
                 .table(DEFAULT_BELIEFS_TABLE_NAME)
                 .insert(r.expr(serde_json::to_value(&hypothesis).map_err(|e| e.to_string())?))
@@ -344,14 +350,7 @@ impl MemoryManager {
 
             for assumption_id in &hypothesis.assumptions {
                 let _ = nebula
-                    .insert_temporal_edge(
-                        belief_id,
-                        assumption_id,
-                        "depends_on",
-                        now,
-                        0,
-                        now,
-                    )
+                    .insert_temporal_edge(belief_id, assumption_id, "depends_on", now, 0, now)
                     .await;
             }
         }
@@ -376,7 +375,11 @@ impl MemoryManager {
             use unreql::r;
             let mut session: tokio::sync::MutexGuard<'_, unreql::Session> =
                 session_mutex.lock().await;
-            let db = self.rethinkdb_db.as_deref().unwrap_or("kaigents").to_string();
+            let db = self
+                .rethinkdb_db
+                .as_deref()
+                .unwrap_or("kaigents")
+                .to_string();
             r.db(db.clone())
                 .table(DEFAULT_BELIEFS_TABLE_NAME)
                 .get(outcome.hypothesis_id.clone())
@@ -409,8 +412,8 @@ impl MemoryManager {
                             .filter(r.row().g("workspace_id").eq(workspace_id.to_string()));
 
                         if let Some(pkg) = scope_package_id {
-                            update_q = update_q
-                                .filter(r.row().g("origin_package_id").eq(pkg.to_string()));
+                            update_q =
+                                update_q.filter(r.row().g("origin_package_id").eq(pkg.to_string()));
                         }
 
                         update_q
@@ -423,35 +426,32 @@ impl MemoryManager {
                             .ok();
                     }
                 } else {
-                let mut to_retract = vec![outcome.hypothesis_id.clone()];
-                let mut visited = std::collections::HashSet::new();
-                visited.insert(outcome.hypothesis_id.clone());
+                    let mut to_retract = vec![outcome.hypothesis_id.clone()];
+                    let mut visited = std::collections::HashSet::new();
+                    visited.insert(outcome.hypothesis_id.clone());
 
-                while let Some(current_id) = to_retract.pop() {
-                    let mut query = r
-                        .db(db.clone())
-                        .table(DEFAULT_BELIEFS_TABLE_NAME)
-                        .filter(r.row().g("assumptions").contains(current_id.clone()))
-                        .filter(r.row().g("status").ne("falsified"))
-                        .filter(r.row().g("workspace_id").eq(workspace_id.to_string()));
+                    while let Some(current_id) = to_retract.pop() {
+                        let mut query = r
+                            .db(db.clone())
+                            .table(DEFAULT_BELIEFS_TABLE_NAME)
+                            .filter(r.row().g("assumptions").contains(current_id.clone()))
+                            .filter(r.row().g("status").ne("falsified"))
+                            .filter(r.row().g("workspace_id").eq(workspace_id.to_string()));
 
-                    if let Some(pkg) = scope_package_id {
-                        query = query.filter(
-                            r.row().g("origin_package_id").eq(pkg.to_string()),
-                        );
-                    }
+                        if let Some(pkg) = scope_package_id {
+                            query =
+                                query.filter(r.row().g("origin_package_id").eq(pkg.to_string()));
+                        }
 
-                    let dependents: Vec<serde_json::Value> = query
-                        .exec_to_vec(&mut *session)
-                        .await
-                        .unwrap_or_default();
+                        let dependents: Vec<serde_json::Value> =
+                            query.exec_to_vec(&mut *session).await.unwrap_or_default();
 
-                    for dep in dependents {
-                        if let Some(dep_id) = dep["id"].as_str() {
-                            let dep_id_str = dep_id.to_string();
-                            if visited.insert(dep_id_str.clone()) {
-                                to_retract.push(dep_id_str.clone());
-                                r.db(db.clone())
+                        for dep in dependents {
+                            if let Some(dep_id) = dep["id"].as_str() {
+                                let dep_id_str = dep_id.to_string();
+                                if visited.insert(dep_id_str.clone()) {
+                                    to_retract.push(dep_id_str.clone());
+                                    r.db(db.clone())
                                     .table(DEFAULT_BELIEFS_TABLE_NAME)
                                     .get(dep_id_str)
                                     .update(r.expr(serde_json::json!({
@@ -461,10 +461,10 @@ impl MemoryManager {
                                     .exec::<_, serde_json::Value>(&mut *session)
                                     .await
                                     .ok();
+                                }
                             }
                         }
                     }
-                }
                 }
             }
         }
@@ -492,7 +492,11 @@ impl MemoryManager {
             use unreql::r;
             let mut session: tokio::sync::MutexGuard<'_, unreql::Session> =
                 session_mutex.lock().await;
-            let db = self.rethinkdb_db.as_deref().unwrap_or("kaigents").to_string();
+            let db = self
+                .rethinkdb_db
+                .as_deref()
+                .unwrap_or("kaigents")
+                .to_string();
             r.db(db.clone())
                 .table(DEFAULT_BELIEFS_TABLE_NAME)
                 .get(hypothesis_id.to_string())
@@ -516,11 +520,7 @@ impl MemoryManager {
             .await
             .map_err(|e| format!("Failed to list Qdrant collections: {}", e))?;
 
-        if collections
-            .collections
-            .iter()
-            .any(|c| c.name == name)
-        {
+        if collections.collections.iter().any(|c| c.name == name) {
             return Ok(());
         }
 
@@ -602,7 +602,10 @@ impl MemoryManager {
             .ok_or_else(|| "Embedding endpoint not configured".to_string())?;
 
         let emb_req = EmbeddingsRequest {
-            model: self.embedding_model.clone().unwrap_or_else(|| "ignored".to_string()),
+            model: self
+                .embedding_model
+                .clone()
+                .unwrap_or_else(|| "ignored".to_string()),
             input: vec![query.to_string()],
             encoding_format: None,
         };
@@ -674,7 +677,11 @@ impl MemoryManager {
         if let Some(session_mutex) = &self.rethinkdb_session {
             use unreql::r;
             let mut session = session_mutex.lock().await;
-            let db = self.rethinkdb_db.as_deref().unwrap_or("kaigents").to_string();
+            let db = self
+                .rethinkdb_db
+                .as_deref()
+                .unwrap_or("kaigents")
+                .to_string();
 
             episodes = r
                 .db(db.clone())
@@ -797,20 +804,15 @@ impl MemoryManager {
                             .vectors
                             .as_ref()
                             .and_then(|v| v.get_vector())
-                            .and_then(|vec| match vec {
+                            .map(|vec| match vec {
                                 qdrant_client::qdrant::vector_output::Vector::Dense(d) => {
-                                    Some(d.data)
+                                    d.data
                                 }
                                 qdrant_client::qdrant::vector_output::Vector::Sparse(s) => {
-                                    Some(s.values)
+                                    s.values
                                 }
                                 qdrant_client::qdrant::vector_output::Vector::MultiDense(m) => {
-                                    Some(
-                                        m.vectors
-                                            .into_iter()
-                                            .flat_map(|d| d.data)
-                                            .collect(),
-                                    )
+                                    m.vectors.into_iter().flat_map(|d| d.data).collect()
                                 }
                             })
                             .unwrap_or_default(),
@@ -874,12 +876,18 @@ impl MemoryManager {
         };
 
         let emb_req = EmbeddingsRequest {
-            model: self.embedding_model.clone().unwrap_or_else(|| "ignored".to_string()),
+            model: self
+                .embedding_model
+                .clone()
+                .unwrap_or_else(|| "ignored".to_string()),
             input: vec![text.to_string()],
             encoding_format: None,
         };
 
-        let emb_resp = match client.embeddings(endpoint, emb_req, Duration::from_secs(30)).await {
+        let emb_resp = match client
+            .embeddings(endpoint, emb_req, Duration::from_secs(30))
+            .await
+        {
             Ok(resp) => resp,
             Err(_) => return false,
         };
@@ -895,11 +903,7 @@ impl MemoryManager {
             .build();
 
         match qdrant.search_points(search_req).await {
-            Ok(resp) => resp
-                .result
-                .first()
-                .map(|r| r.score > 0.95)
-                .unwrap_or(false),
+            Ok(resp) => resp.result.first().map(|r| r.score > 0.95).unwrap_or(false),
             Err(_) => false,
         }
     }
@@ -928,21 +932,20 @@ impl MemoryManager {
             } else if path.ends_with("episodes.jsonl") {
                 let s = String::from_utf8(content).map_err(|e| e.to_string())?;
                 for line in s.lines().filter(|l| !l.is_empty()) {
-                    episodes.push(serde_json::from_str::<Episode>(line).map_err(|e| e.to_string())?);
+                    episodes
+                        .push(serde_json::from_str::<Episode>(line).map_err(|e| e.to_string())?);
                 }
             } else if path.ends_with("beliefs.jsonl") {
                 let s = String::from_utf8(content).map_err(|e| e.to_string())?;
                 for line in s.lines().filter(|l| !l.is_empty()) {
-                    beliefs.push(
-                        serde_json::from_str::<Hypothesis>(line).map_err(|e| e.to_string())?,
-                    );
+                    beliefs
+                        .push(serde_json::from_str::<Hypothesis>(line).map_err(|e| e.to_string())?);
                 }
             } else if path.ends_with("points.jsonl") {
                 let s = String::from_utf8(content).map_err(|e| e.to_string())?;
                 for line in s.lines().filter(|l| !l.is_empty()) {
                     points.push(
-                        serde_json::from_str::<ExportedPoint>(line)
-                            .map_err(|e| e.to_string())?,
+                        serde_json::from_str::<ExportedPoint>(line).map_err(|e| e.to_string())?,
                     );
                 }
             }
@@ -980,13 +983,16 @@ impl MemoryManager {
         if let Some(session_mutex) = &self.rethinkdb_session {
             use unreql::r;
             let mut session = session_mutex.lock().await;
-            let db = self.rethinkdb_db.as_deref().unwrap_or("kaigents").to_string();
+            let db = self
+                .rethinkdb_db
+                .as_deref()
+                .unwrap_or("kaigents")
+                .to_string();
 
             for mut episode in episodes {
-                let semantic_dup = self.check_semantic_duplicate(
-                    workspace_id,
-                    &episode.summary,
-                ).await;
+                let semantic_dup = self
+                    .check_semantic_duplicate(workspace_id, &episode.summary)
+                    .await;
 
                 let text_dup: Vec<serde_json::Value> = r
                     .db(db.clone())
@@ -1016,10 +1022,9 @@ impl MemoryManager {
             }
 
             for mut belief in beliefs {
-                let semantic_dup = self.check_semantic_duplicate(
-                    workspace_id,
-                    &belief.content,
-                ).await;
+                let semantic_dup = self
+                    .check_semantic_duplicate(workspace_id, &belief.content)
+                    .await;
 
                 let text_dup: Vec<serde_json::Value> = r
                     .db(db.clone())
@@ -1064,20 +1069,13 @@ impl MemoryManager {
 
                 let mut structs = Vec::new();
                 for p in points {
-                    let search_req = SearchPointsBuilder::new(
-                        collection_name.clone(),
-                        p.vector.clone(),
-                        1,
-                    )
-                    .with_payload(false)
-                    .build();
+                    let search_req =
+                        SearchPointsBuilder::new(collection_name.clone(), p.vector.clone(), 1)
+                            .with_payload(false)
+                            .build();
 
                     let is_dup = match qdrant.search_points(search_req).await {
-                        Ok(resp) => resp
-                            .result
-                            .first()
-                            .map(|r| r.score > 0.95)
-                            .unwrap_or(false),
+                        Ok(resp) => resp.result.first().map(|r| r.score > 0.95).unwrap_or(false),
                         Err(_) => false,
                     };
 
@@ -1104,9 +1102,7 @@ impl MemoryManager {
 
                 if !structs.is_empty() {
                     qdrant
-                        .upsert_points(
-                            UpsertPointsBuilder::new(collection_name, structs).build(),
-                        )
+                        .upsert_points(UpsertPointsBuilder::new(collection_name, structs).build())
                         .await
                         .map_err(|e| e.to_string())?;
                 }
@@ -1124,7 +1120,10 @@ impl MemoryManager {
         workspace_id: &str,
         package_id: &str,
     ) -> Result<String, String> {
-        info!("Removing package {} from workspace {}", package_id, workspace_id);
+        info!(
+            "Removing package {} from workspace {}",
+            package_id, workspace_id
+        );
 
         #[cfg(feature = "rethinkdb")]
         if let Some(session_mutex) = &self.rethinkdb_session {
@@ -1134,7 +1133,11 @@ impl MemoryManager {
             // (cannot hold lock across close_experiment calls — it also acquires the mutex)
             let belief_ids: Vec<String> = {
                 let mut session = session_mutex.lock().await;
-                let db = self.rethinkdb_db.as_deref().unwrap_or("kaigents").to_string();
+                let db = self
+                    .rethinkdb_db
+                    .as_deref()
+                    .unwrap_or("kaigents")
+                    .to_string();
 
                 let beliefs: Vec<serde_json::Value> = r
                     .db(db.clone())
@@ -1168,7 +1171,11 @@ impl MemoryManager {
             // Step 3: Re-acquire lock to remove episodes
             {
                 let mut session = session_mutex.lock().await;
-                let db = self.rethinkdb_db.as_deref().unwrap_or("kaigents").to_string();
+                let db = self
+                    .rethinkdb_db
+                    .as_deref()
+                    .unwrap_or("kaigents")
+                    .to_string();
                 r.db(db.clone())
                     .table(DEFAULT_EPISODES_TABLE_NAME)
                     .filter(r.row().g("workspace_id").eq(workspace_id.to_string()))
@@ -1223,13 +1230,21 @@ impl MemoryManager {
 
             // Simple keyword search on episodes for now, as we don't have episode embeddings yet
             // In a real system, episodes would also be in Qdrant.
-            let db = self.rethinkdb_db.as_deref().unwrap_or("kaigents").to_string();
+            let db = self
+                .rethinkdb_db
+                .as_deref()
+                .unwrap_or("kaigents")
+                .to_string();
             let escaped_query = escape_regex(query);
             let docs: Vec<serde_json::Value> = r
                 .db(db.clone())
                 .table(DEFAULT_EPISODES_TABLE_NAME)
                 .filter(r.row().g("workspace_id").eq(workspace_id.to_string()))
-                .filter(r.row().g("summary").match_(format!("(?i){}", escaped_query)))
+                .filter(
+                    r.row()
+                        .g("summary")
+                        .match_(format!("(?i){}", escaped_query)),
+                )
                 .limit(limit)
                 .exec_to_vec(&mut *session)
                 .await
@@ -1352,7 +1367,10 @@ impl MemoryManager {
         );
 
         let req = ChatCompletionRequest {
-            model: self.chat_model.clone().unwrap_or_else(|| "ignored".to_string()),
+            model: self
+                .chat_model
+                .clone()
+                .unwrap_or_else(|| "ignored".to_string()),
             messages: vec![ChatMessage {
                 role: "user".to_string(),
                 content: consolidation_prompt,
@@ -1393,7 +1411,11 @@ impl MemoryManager {
         if let Some(session_mutex) = &self.rethinkdb_session {
             use unreql::r;
             let mut session = session_mutex.lock().await;
-            let db = self.rethinkdb_db.as_deref().unwrap_or("kaigents").to_string();
+            let db = self
+                .rethinkdb_db
+                .as_deref()
+                .unwrap_or("kaigents")
+                .to_string();
             r.db(db.clone())
                 .table(DEFAULT_EPISODES_TABLE_NAME)
                 .insert(r.expr(serde_json::to_value(&episode).map_err(|e| e.to_string())?))
@@ -1413,14 +1435,7 @@ impl MemoryManager {
 
             for src_id in &episode.source_content_ids {
                 let _ = nebula
-                    .insert_temporal_edge(
-                        episode_id,
-                        src_id,
-                        "consolidated_from",
-                        now,
-                        0,
-                        now,
-                    )
+                    .insert_temporal_edge(episode_id, src_id, "consolidated_from", now, 0, now)
                     .await;
             }
             info!("Episode temporal edges inserted into NebulaGraph");
@@ -1444,14 +1459,22 @@ impl MemoryManager {
             use unreql::r;
             let mut session = session_mutex.lock().await;
 
-            let db = self.rethinkdb_db.as_deref().unwrap_or("kaigents").to_string();
+            let db = self
+                .rethinkdb_db
+                .as_deref()
+                .unwrap_or("kaigents")
+                .to_string();
             let escaped_query = escape_regex(query);
             let falsified_beliefs: Vec<serde_json::Value> = r
                 .db(db.clone())
                 .table(DEFAULT_BELIEFS_TABLE_NAME)
                 .filter(r.row().g("workspace_id").eq(workspace_id.to_string()))
                 .filter(r.row().g("status").eq("falsified"))
-                .filter(r.row().g("content").match_(format!("(?i){}", escaped_query)))
+                .filter(
+                    r.row()
+                        .g("content")
+                        .match_(format!("(?i){}", escaped_query)),
+                )
                 .exec_to_vec(&mut *session)
                 .await
                 .unwrap_or_default();
@@ -1545,7 +1568,7 @@ impl MemoryManager {
             short_term,
             beliefs,
             budget,
-            ContextBudgetStrategy::Truncate,
+            ContextBudgetStrategy::Auto,
         ))
     }
 }
@@ -1835,10 +1858,8 @@ impl MCPClient for InternalMemoryToolClient {
                     .as_str()
                     .ok_or_else(|| "query is required".to_string())?;
                 let budget = arguments["budget"].as_u64().unwrap_or(2048) as u32;
-                let policy = serde_json::from_value::<MemoryPolicy>(
-                    arguments["policy"].clone(),
-                )
-                .ok();
+                let policy =
+                    serde_json::from_value::<MemoryPolicy>(arguments["policy"].clone()).ok();
 
                 let fitted = self
                     .manager
@@ -1878,7 +1899,10 @@ impl MCPClient for InternalMemoryToolClient {
                     .to_string();
                 let outcome: BeliefOutcome = serde_json::from_value(arguments)
                     .map_err(|e| format!("Invalid arguments for experiment.close: {}", e))?;
-                let status = self.manager.close_experiment(&workspace_id, outcome, None).await?;
+                let status = self
+                    .manager
+                    .close_experiment(&workspace_id, outcome, None)
+                    .await?;
                 Ok(serde_json::json!({ "status": status }))
             }
             "experiment.reverify" => {
@@ -2223,7 +2247,10 @@ mod tests {
             .with_embedding_model("bge-m3".to_string());
 
         let result = target.import_memory("ws-target", &bytes).await;
-        assert!(result.is_ok(), "Import should succeed with warning, not error");
+        assert!(
+            result.is_ok(),
+            "Import should succeed with warning, not error"
+        );
     }
 
     #[cfg(feature = "rethinkdb")]
@@ -2289,7 +2316,10 @@ mod tests {
                 return;
             }
 
-            let ws = format!("inttest-{}", uuid::Uuid::new_v4().to_string().get(..8).unwrap());
+            let ws = format!(
+                "inttest-{}",
+                uuid::Uuid::new_v4().to_string().get(..8).unwrap()
+            );
             let run_id = RunId::from_uuid(uuid::Uuid::new_v4());
             let mm = create_manager().await;
 
@@ -2299,7 +2329,8 @@ mod tests {
                 tier: MemoryTier::Short,
                 workspace_id: ws.clone(),
                 run_id: Some(run_id.clone()),
-                content: "The user wants to write an essay about renewable energy sources.".to_string(),
+                content: "The user wants to write an essay about renewable energy sources."
+                    .to_string(),
                 metadata: None,
                 vector: None,
             };
@@ -2317,9 +2348,16 @@ mod tests {
             mm.record(record2).await.unwrap();
 
             let search_results = mm.search(&ws, "renewable energy", 10).await;
-            assert!(search_results.is_ok(), "M9 search failed: {:?}", search_results);
+            assert!(
+                search_results.is_ok(),
+                "M9 search failed: {:?}",
+                search_results
+            );
             let search_results = search_results.unwrap();
-            assert!(!search_results.is_empty(), "M9: search should find recorded memories");
+            assert!(
+                !search_results.is_empty(),
+                "M9: search should find recorded memories"
+            );
             eprintln!("M9: search returned {} results", search_results.len());
 
             eprintln!("=== M10: Long-term memory (consolidate + recall) ===");
@@ -2327,16 +2365,37 @@ mod tests {
             let episode = mm.consolidate_run_memory(&ws, &run_id).await;
             assert!(episode.is_ok(), "M10 consolidate failed: {:?}", episode);
             let episode = episode.unwrap();
-            assert!(!episode.summary.is_empty(), "M10: episode summary should not be empty");
-            eprintln!("M10: consolidated episode: {}...", &episode.summary[..episode.summary.len().min(80)]);
+            assert!(
+                !episode.summary.is_empty(),
+                "M10: episode summary should not be empty"
+            );
+            eprintln!(
+                "M10: consolidated episode: {}...",
+                &episode.summary[..episode.summary.len().min(80)]
+            );
 
             let recall_results = mm.recall(&ws, "renewable", 10).await;
-            assert!(recall_results.is_ok(), "M10 recall failed: {:?}", recall_results);
+            assert!(
+                recall_results.is_ok(),
+                "M10 recall failed: {:?}",
+                recall_results
+            );
             let recall_results = recall_results.unwrap();
-            assert!(!recall_results.is_empty(), "M10: recall should find results");
-            let has_episode = recall_results.iter().any(|r| r.content.starts_with("[EPISODE]"));
-            assert!(has_episode, "M10: recall should include consolidated episode");
-            eprintln!("M10: recall returned {} results (includes episode)", recall_results.len());
+            assert!(
+                !recall_results.is_empty(),
+                "M10: recall should find results"
+            );
+            let has_episode = recall_results
+                .iter()
+                .any(|r| r.content.starts_with("[EPISODE]"));
+            assert!(
+                has_episode,
+                "M10: recall should include consolidated episode"
+            );
+            eprintln!(
+                "M10: recall returned {} results (includes episode)",
+                recall_results.len()
+            );
 
             eprintln!("=== M11: Epistemic memory (belief + close_experiment + validate) ===");
 
@@ -2344,7 +2403,9 @@ mod tests {
                 id: None,
                 workspace_id: ws.clone(),
                 run_id: Some(run_id.clone()),
-                content: "Focusing on solar power is the best approach for renewable energy essays.".to_string(),
+                content:
+                    "Focusing on solar power is the best approach for renewable energy essays."
+                        .to_string(),
                 assumptions: vec![],
                 confidence: 0.8,
                 status: HypothesisStatus::Pending,
@@ -2354,7 +2415,11 @@ mod tests {
                 source_tier: None,
             };
             let belief_id = mm.record_belief(hyp).await;
-            assert!(belief_id.is_ok(), "M11 record_belief failed: {:?}", belief_id);
+            assert!(
+                belief_id.is_ok(),
+                "M11 record_belief failed: {:?}",
+                belief_id
+            );
             let belief_id = belief_id.unwrap();
             eprintln!("M11: recorded belief {}", belief_id);
 
@@ -2362,7 +2427,8 @@ mod tests {
                 id: None,
                 workspace_id: ws.clone(),
                 run_id: Some(run_id.clone()),
-                content: "Solar panel efficiency data strengthens the renewable energy argument.".to_string(),
+                content: "Solar panel efficiency data strengthens the renewable energy argument."
+                    .to_string(),
                 assumptions: vec![belief_id.clone()],
                 confidence: 0.7,
                 status: HypothesisStatus::Pending,
@@ -2380,35 +2446,79 @@ mod tests {
                 justification: "Solar power focus was too narrow for the essay scope.".to_string(),
             };
             let close_result = mm.close_experiment(&ws, outcome, None).await;
-            assert!(close_result.is_ok(), "M11 close_experiment failed: {:?}", close_result);
+            assert!(
+                close_result.is_ok(),
+                "M11 close_experiment failed: {:?}",
+                close_result
+            );
             eprintln!("M11: closed experiment (falsified) - retraction cascade triggered");
 
             let violations = mm.validate_approach(&ws, "solar power").await;
-            assert!(violations.is_ok(), "M11 validate_approach failed: {:?}", violations);
+            assert!(
+                violations.is_ok(),
+                "M11 validate_approach failed: {:?}",
+                violations
+            );
             let violations = violations.unwrap();
-            assert!(!violations.is_empty(), "M11: should find falsified hypothesis for 'solar power'");
-            eprintln!("M11: validate_approach found {} falsified hypotheses", violations.len());
+            assert!(
+                !violations.is_empty(),
+                "M11: should find falsified hypothesis for 'solar power'"
+            );
+            eprintln!(
+                "M11: validate_approach found {} falsified hypotheses",
+                violations.len()
+            );
 
             eprintln!("=== M12: Knowledge propagation (export + import + dedup) ===");
 
             let package_id = format!("pkg-{}", uuid::Uuid::new_v4().to_string().get(..8).unwrap());
             let export_result = mm.export_memory(&ws, &package_id).await;
-            assert!(export_result.is_ok(), "M12 export failed: {:?}", export_result);
+            assert!(
+                export_result.is_ok(),
+                "M12 export failed: {:?}",
+                export_result
+            );
             let pkg_bytes = export_result.unwrap();
-            assert!(!pkg_bytes.is_empty(), "M12: exported package should not be empty");
-            eprintln!("M12: exported package {} ({} bytes)", package_id, pkg_bytes.len());
+            assert!(
+                !pkg_bytes.is_empty(),
+                "M12: exported package should not be empty"
+            );
+            eprintln!(
+                "M12: exported package {} ({} bytes)",
+                package_id,
+                pkg_bytes.len()
+            );
 
-            let target_ws = format!("inttest-target-{}", uuid::Uuid::new_v4().to_string().get(..8).unwrap());
+            let target_ws = format!(
+                "inttest-target-{}",
+                uuid::Uuid::new_v4().to_string().get(..8).unwrap()
+            );
             let import_result = mm.import_memory(&target_ws, &pkg_bytes).await;
-            assert!(import_result.is_ok(), "M12 import failed: {:?}", import_result);
+            assert!(
+                import_result.is_ok(),
+                "M12 import failed: {:?}",
+                import_result
+            );
             let import_msg = import_result.unwrap();
-            assert!(import_msg.contains("Imported package"), "M12: import result should say 'Imported package': {}", import_msg);
+            assert!(
+                import_msg.contains("Imported package"),
+                "M12: import result should say 'Imported package': {}",
+                import_msg
+            );
             eprintln!("M12: first import: {}", import_msg);
 
             let import_result2 = mm.import_memory(&target_ws, &pkg_bytes).await;
-            assert!(import_result2.is_ok(), "M12 second import failed: {:?}", import_result2);
+            assert!(
+                import_result2.is_ok(),
+                "M12 second import failed: {:?}",
+                import_result2
+            );
             let import_msg2 = import_result2.unwrap();
-            assert!(import_msg2.contains("skipped"), "M12: second import should skip duplicates: {}", import_msg2);
+            assert!(
+                import_msg2.contains("skipped"),
+                "M12: second import should skip duplicates: {}",
+                import_msg2
+            );
             eprintln!("M12: second import (dedup): {}", import_msg2);
 
             eprintln!("=== ALL INTEGRATION TESTS PASSED (M9-M12) ===");
@@ -2421,7 +2531,10 @@ mod tests {
                 return;
             }
 
-            let ws = format!("inttest-rc-{}", uuid::Uuid::new_v4().to_string().get(..8).unwrap());
+            let ws = format!(
+                "inttest-rc-{}",
+                uuid::Uuid::new_v4().to_string().get(..8).unwrap()
+            );
             let run_id = RunId::from_uuid(uuid::Uuid::new_v4());
             let mm = create_manager().await;
 
@@ -2478,8 +2591,15 @@ mod tests {
             mm.close_experiment(&ws, outcome, None).await.unwrap();
 
             let violations = mm.validate_approach(&ws, "hypothesis").await.unwrap();
-            assert_eq!(violations.len(), 3, "All 3 hypotheses should be falsified by cascade");
-            eprintln!("M11 retraction cascade: {} hypotheses falsified (expected 3)", violations.len());
+            assert_eq!(
+                violations.len(),
+                3,
+                "All 3 hypotheses should be falsified by cascade"
+            );
+            eprintln!(
+                "M11 retraction cascade: {} hypotheses falsified (expected 3)",
+                violations.len()
+            );
         }
 
         #[tokio::test]
@@ -2489,11 +2609,17 @@ mod tests {
                 return;
             }
 
-            let ws = format!("inttest-psr-{}", uuid::Uuid::new_v4().to_string().get(..8).unwrap());
+            let ws = format!(
+                "inttest-psr-{}",
+                uuid::Uuid::new_v4().to_string().get(..8).unwrap()
+            );
             let run_id = RunId::from_uuid(uuid::Uuid::new_v4());
             let mm = create_manager().await;
 
-            let pkg_id = format!("pkg-scope-{}", uuid::Uuid::new_v4().to_string().get(..8).unwrap());
+            let pkg_id = format!(
+                "pkg-scope-{}",
+                uuid::Uuid::new_v4().to_string().get(..8).unwrap()
+            );
 
             let h1 = Hypothesis {
                 id: None,
@@ -2545,13 +2671,27 @@ mod tests {
                 status: HypothesisStatus::Falsified,
                 justification: "Base falsified via package removal.".to_string(),
             };
-            mm.close_experiment(&ws, outcome, Some(&pkg_id)).await.unwrap();
+            mm.close_experiment(&ws, outcome, Some(&pkg_id))
+                .await
+                .unwrap();
 
             let violations = mm.validate_approach(&ws, "hypothesis").await.unwrap();
-            let falsified_ids: Vec<&str> = violations.iter().map(|h| h.id.as_deref().unwrap_or("")).collect();
-            assert!(falsified_ids.contains(&h2_id.as_str()), "Same-package dependent should be falsified");
-            assert!(!falsified_ids.contains(&h3_id.as_str()), "Different-package dependent should NOT be falsified");
-            eprintln!("M12 package-scoped retraction: {} hypotheses falsified (h2=yes, h3=no)", violations.len());
+            let falsified_ids: Vec<&str> = violations
+                .iter()
+                .map(|h| h.id.as_deref().unwrap_or(""))
+                .collect();
+            assert!(
+                falsified_ids.contains(&h2_id.as_str()),
+                "Same-package dependent should be falsified"
+            );
+            assert!(
+                !falsified_ids.contains(&h3_id.as_str()),
+                "Different-package dependent should NOT be falsified"
+            );
+            eprintln!(
+                "M12 package-scoped retraction: {} hypotheses falsified (h2=yes, h3=no)",
+                violations.len()
+            );
         }
 
         #[tokio::test]
@@ -2561,7 +2701,10 @@ mod tests {
                 return;
             }
 
-            let ws = format!("codeexpert-{}", uuid::Uuid::new_v4().to_string().get(..8).unwrap());
+            let ws = format!(
+                "codeexpert-{}",
+                uuid::Uuid::new_v4().to_string().get(..8).unwrap()
+            );
             let run_id = RunId::from_uuid(uuid::Uuid::new_v4());
             let mm = create_manager().await;
 
@@ -2582,13 +2725,17 @@ mod tests {
                 source_tier: None,
             };
             let h1_id = mm.record_belief(h1).await.unwrap();
-            eprintln!("Assignment 1: recorded hypothesis {} (bubble sort is efficient)", h1_id);
+            eprintln!(
+                "Assignment 1: recorded hypothesis {} (bubble sort is efficient)",
+                h1_id
+            );
 
             let h2 = Hypothesis {
                 id: None,
                 workspace_id: ws.clone(),
                 run_id: Some(run_id.clone()),
-                content: "Bubble sort with early termination handles nearly-sorted data well.".to_string(),
+                content: "Bubble sort with early termination handles nearly-sorted data well."
+                    .to_string(),
                 assumptions: vec![h1_id.clone()],
                 confidence: 0.6,
                 status: HypothesisStatus::Pending,
@@ -2598,28 +2745,46 @@ mod tests {
                 source_tier: None,
             };
             let h2_id = mm.record_belief(h2).await.unwrap();
-            eprintln!("Assignment 1: recorded dependent hypothesis {} (early termination variant)", h2_id);
+            eprintln!(
+                "Assignment 1: recorded dependent hypothesis {} (early termination variant)",
+                h2_id
+            );
 
             eprintln!("Assignment 1: bubble sort timed out on 1M elements — falsifying hypothesis");
             let outcome = BeliefOutcome {
                 hypothesis_id: h1_id.clone(),
                 status: HypothesisStatus::Falsified,
-                justification: "Bubble sort O(n^2) timed out on 1M elements. Use O(n log n) algorithm.".to_string(),
+                justification:
+                    "Bubble sort O(n^2) timed out on 1M elements. Use O(n log n) algorithm."
+                        .to_string(),
             };
             mm.close_experiment(&ws, outcome, None).await.unwrap();
-            eprintln!("Assignment 1: hypothesis falsified, retraction cascade triggered for dependent");
+            eprintln!(
+                "Assignment 1: hypothesis falsified, retraction cascade triggered for dependent"
+            );
 
             let violations = mm.validate_approach(&ws, "bubble sort").await.unwrap();
             assert_eq!(
-                violations.len(), 2,
+                violations.len(),
+                2,
                 "Both bubble sort hypotheses should be falsified (base + dependent)"
             );
-            eprintln!("Assignment 1: validate_approach found {} falsified hypotheses", violations.len());
+            eprintln!(
+                "Assignment 1: validate_approach found {} falsified hypotheses",
+                violations.len()
+            );
 
-            let has_base = violations.iter().any(|h| h.content.contains("Bubble sort is efficient"));
-            let has_dep = violations.iter().any(|h| h.content.contains("early termination"));
+            let has_base = violations
+                .iter()
+                .any(|h| h.content.contains("Bubble sort is efficient"));
+            let has_dep = violations
+                .iter()
+                .any(|h| h.content.contains("early termination"));
             assert!(has_base, "Base hypothesis should be falsified");
-            assert!(has_dep, "Dependent hypothesis should be falsified via cascade");
+            assert!(
+                has_dep,
+                "Dependent hypothesis should be falsified via cascade"
+            );
 
             eprintln!("=== Code Expert Agent PoC: Assignment 2 ===");
             eprintln!("Agent starts a new assignment involving sorting");
@@ -2629,22 +2794,28 @@ mod tests {
                 !violations2.is_empty(),
                 "Assignment 2: validate_approach should surface falsified sorting hypotheses"
             );
-            eprintln!("Assignment 2: quality gate found {} falsified hypotheses for 'sort'", violations2.len());
+            eprintln!(
+                "Assignment 2: quality gate found {} falsified hypotheses for 'sort'",
+                violations2.len()
+            );
 
-            let fitted = mm.assemble_context(
-                &ws,
-                "You are a code expert agent. Write efficient code.",
-                "Sort a large dataset of 1M elements.",
-                "sort",
-                4096,
-                None,
-            ).await;
+            let fitted = mm
+                .assemble_context(
+                    &ws,
+                    "You are a code expert agent. Write efficient code.",
+                    "Sort a large dataset of 1M elements.",
+                    "sort",
+                    4096,
+                    None,
+                )
+                .await;
             assert!(fitted.is_ok(), "assemble_context failed: {:?}", fitted);
             let fitted = fitted.unwrap();
 
-            let has_warning = fitted.messages.iter().any(|m| {
-                m.role == "user" && m.content.contains("Precedence/Belief")
-            });
+            let has_warning = fitted
+                .messages
+                .iter()
+                .any(|m| m.role == "user" && m.content.contains("Precedence/Belief"));
             assert!(
                 has_warning,
                 "Assignment 2: assembled context should include falsified belief as precedence signal"
@@ -2655,8 +2826,15 @@ mod tests {
             eprintln!("Agent deliberately re-verifies the bubble sort hypothesis");
 
             let reverify_result = mm.reverify_hypothesis(&h1_id).await;
-            assert!(reverify_result.is_ok(), "reverify_hypothesis failed: {:?}", reverify_result);
-            eprintln!("Re-verification: {} — hypothesis re-opened for testing", reverify_result.unwrap());
+            assert!(
+                reverify_result.is_ok(),
+                "reverify_hypothesis failed: {:?}",
+                reverify_result
+            );
+            eprintln!(
+                "Re-verification: {} — hypothesis re-opened for testing",
+                reverify_result.unwrap()
+            );
 
             eprintln!("=== Code Expert Agent PoC: Assignment 3 (new approach) ===");
             eprintln!("Agent records a new hypothesis about quicksort");
@@ -2666,7 +2844,8 @@ mod tests {
                 id: None,
                 workspace_id: ws.clone(),
                 run_id: Some(run_id3.clone()),
-                content: "Quicksort with median-of-three pivot is efficient for large datasets.".to_string(),
+                content: "Quicksort with median-of-three pivot is efficient for large datasets."
+                    .to_string(),
                 assumptions: vec![],
                 confidence: 0.8,
                 status: HypothesisStatus::Pending,
@@ -2676,12 +2855,16 @@ mod tests {
                 source_tier: None,
             };
             let h3_id = mm.record_belief(h3).await.unwrap();
-            eprintln!("Assignment 3: recorded new hypothesis {} (quicksort)", h3_id);
+            eprintln!(
+                "Assignment 3: recorded new hypothesis {} (quicksort)",
+                h3_id
+            );
 
             let outcome3 = BeliefOutcome {
                 hypothesis_id: h3_id.clone(),
                 status: HypothesisStatus::Confirmed,
-                justification: "Quicksort sorted 1M elements in 200ms. Approach validated.".to_string(),
+                justification: "Quicksort sorted 1M elements in 200ms. Approach validated."
+                    .to_string(),
             };
             mm.close_experiment(&ws, outcome3, None).await.unwrap();
             eprintln!("Assignment 3: quicksort hypothesis confirmed");
@@ -2696,7 +2879,9 @@ mod tests {
             eprintln!("=== Code Expert Agent PoC: Summary ===");
             eprintln!("- Assignment 1: bubble sort hypothesis recorded + falsified (cascade to dependent)");
             eprintln!("- Assignment 2: quality gate surfaced falsified hypotheses, agent avoids repeating");
-            eprintln!("- Re-verification: explicit reverify_hypothesis re-opens falsified hypothesis");
+            eprintln!(
+                "- Re-verification: explicit reverify_hypothesis re-opens falsified hypothesis"
+            );
             eprintln!("- Assignment 3: new quicksort approach recorded + confirmed, no violations");
             eprintln!("=== CODE EXPERT AGENT PoC PASSED ===");
         }

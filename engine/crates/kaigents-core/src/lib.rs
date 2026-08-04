@@ -29,8 +29,8 @@ pub use artifacts::{
     ArtifactStore, InMemoryArtifactStore,
 };
 pub use context_manager::{
-    ContextBudgetStrategy, ContextItem, ContextManager, ContextTier, FittedContext,
-    ModelCandidate, RoutingPolicy, SummaryProvider,
+    ContextBudgetStrategy, ContextItem, ContextManager, ContextTier, DecomposedContext,
+    FittedContext, ModelCandidate, RoutingPolicy, SummaryProvider,
 };
 pub use dag::{CancellationToken, DAGExecutor, ExecutionResult, Node, NodeId, StepType, DAG};
 pub use file_backed::{

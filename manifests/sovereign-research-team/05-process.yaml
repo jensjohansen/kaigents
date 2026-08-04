@@ -1,0 +1,20 @@
+apiVersion: core.kaigents.io/v1alpha1
+kind: Process
+metadata:
+  name: sovereign-research-process
+  namespace: kaigents
+spec:
+  maxReworkAttempts: 1
+  steps:
+    - id: research
+      name: Research
+      taskRef: research-task
+    - id: planning
+      name: Planning
+      taskRef: planning-task
+    - id: execution
+      name: Execution
+      taskRef: execution-task
+    - id: review
+      name: Review
+      taskRef: review-task

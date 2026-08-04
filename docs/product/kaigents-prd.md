@@ -262,6 +262,7 @@ Minimum bar (connector UX):
   - UI preview
   - downstream automation
 - **Artifact storage must support cloud-agnostic S3-compatible backends** (AWS S3, MinIO, Ceph RGW) via standard S3 credentials/endpoints.
+- **Artifacts must be organized by project** — the S3 key structure must include a project dimension (`{project}/{run_id}/{artifact_name}`) so artifacts from multiple related runs are grouped and browsable by project. This enables humans and agents to collaborate on project artifacts inside and outside the Kubernetes cluster.
 - **The platform must preserve key HTTP response semantics** (Range reads) for large artifacts.
 - **Observability must be first-class** via JSON structured logging for Loki and Prometheus metrics endpoints.
 - **Analytics readiness**: The platform must emit schema-stable event logs suitable for downstream real-time analytics (Data Lake integration).
@@ -342,8 +343,20 @@ Run timeline UX requirements:
   - Support explicit, history-informed re-verification of failed approaches.
 - **Context Manager**:
   - The platform must own the context window, assembling a budget-fitted context for every model call.
-  - Support summarization, compression, and hierarchical demotion to fit models with different context window sizes.
+  - Support summarization, compression, hierarchical demotion, and work decomposition to fit models with different context window sizes. Nothing is ever truncated or dropped — if the context cannot fit through selection, compression, and demotion alone, the Context Manager decomposes the work into multiple model calls, each receiving the relevant slice for its sub-task.
   - Support context-aware model selection ("right model at the right time") as part of execution routing.
+
+### 6.8 Project lifecycle and artifact organization
+
+- Kaigents must provide a **Project** concept that groups multiple Runs across lifecycle stages (e.g., define → research → PRD → tech design → plan → build → launch → finalize).
+- A Project must support:
+  - **Stage tracking**: the current lifecycle stage, stage history, and stage transitions.
+  - **Human approval gates**: pause execution at stage boundaries for CEO/owner review and approval before proceeding.
+  - **Pause/resume**: the ability to pause a project and resume it later, preserving all state and artifacts.
+  - **Artifact passing**: outputs from one stage become inputs to the next stage, stored under the project's S3 prefix.
+  - **Artifact organization**: all artifacts within a project are stored under `{project}/{run_id}/{artifact_name}` in S3-compatible storage, enabling browsing by project and sharing between humans and agents.
+- The Project CRD must be a first-class Kubernetes custom resource, manageable via CRD/GitOps workflow, CLI, and dashboard.
+- The dashboard must support browsing projects, their stages, and artifacts grouped by project.
 
 ## 7. Quality Attributes (Non-Functional Requirements)
 

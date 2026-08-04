@@ -240,15 +240,22 @@ impl HttpOpenAIModelClient {
 
         let api_key = std::env::var("KAIGENTS_MODEL_API_KEY").ok();
 
+        let context_window = contract.context_window_size.unwrap_or(8192);
+        let max_tokens = if context_window > 4096 {
+            4096
+        } else {
+            context_window / 2
+        };
+
         let endpoint = ModelEndpoint {
             name,
             url,
             capabilities: ModelCapabilities {
                 chat: true,
-                embeddings: true, // assume both for transition
-                max_tokens: Some(4096),
+                embeddings: true,
+                max_tokens: Some(max_tokens),
                 supports_streaming: true,
-                context_window_size: Some(8192), // Default for transition
+                context_window_size: Some(context_window),
             },
             provider,
             metadata: HashMap::new(),

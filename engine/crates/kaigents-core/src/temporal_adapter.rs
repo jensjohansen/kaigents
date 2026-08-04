@@ -10,6 +10,8 @@
 use serde::{Deserialize, Serialize};
 
 /// A single step in a WorkRequest process graph, passed to the adapter.
+/// Includes per-step resolved agent config so the adapter can execute
+/// with the correct system prompt, model endpoint, and MCP tools.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WorkItemDef {
     #[serde(rename = "workItemId")]
@@ -22,6 +24,20 @@ pub struct WorkItemDef {
     pub prompt: Option<String>,
     #[serde(rename = "requiresGate", skip_serializing_if = "Option::is_none")]
     pub requires_gate: Option<bool>,
+    #[serde(rename = "systemPrompt", skip_serializing_if = "Option::is_none")]
+    pub system_prompt: Option<String>,
+    #[serde(rename = "modelEndpointUrl", skip_serializing_if = "Option::is_none")]
+    pub model_endpoint_url: Option<String>,
+    #[serde(rename = "modelName", skip_serializing_if = "Option::is_none")]
+    pub model_name: Option<String>,
+    #[serde(rename = "mcpServerUrl", skip_serializing_if = "Option::is_none")]
+    pub mcp_server_url: Option<String>,
+    #[serde(rename = "searchToolName", skip_serializing_if = "Option::is_none")]
+    pub search_tool_name: Option<String>,
+    #[serde(rename = "readToolName", skip_serializing_if = "Option::is_none")]
+    pub read_tool_name: Option<String>,
+    #[serde(rename = "metadata", skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<std::collections::HashMap<String, String>>,
 }
 
 /// Request body for `POST /v1/workrequests`.

@@ -10,9 +10,12 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq)]
 pub enum ContextBudgetStrategy {
+    Selection,
     Summarize,
+    HierarchicalDemotion,
+    WorkDecomposition,
     #[default]
-    Truncate,
+    Auto,
     Error,
 }
 
@@ -47,7 +50,39 @@ pub struct FittedContext {
     pub total_estimated_tokens: u32,
     pub dropped_entries_count: usize,
     pub summarized_entries_count: usize,
+    pub demoted_entries_count: usize,
     pub budget_exceeded: bool,
+    pub slice_index: usize,
+    pub total_slices: usize,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DecomposedContext {
+    pub slices: Vec<FittedContext>,
+    pub total_items: usize,
+    pub total_dropped: usize,
+    pub total_summarized: usize,
+    pub total_demoted: usize,
+}
+
+impl DecomposedContext {
+    pub fn single(fitted: FittedContext) -> Self {
+        let total_items = fitted.messages.len();
+        let dropped = fitted.dropped_entries_count;
+        let summarized = fitted.summarized_entries_count;
+        let demoted = fitted.demoted_entries_count;
+        Self {
+            slices: vec![fitted],
+            total_items,
+            total_dropped: dropped,
+            total_summarized: summarized,
+            total_demoted: demoted,
+        }
+    }
+
+    pub fn is_decomposed(&self) -> bool {
+        self.slices.len() > 1
+    }
 }
 
 #[async_trait::async_trait]
@@ -187,7 +222,488 @@ impl ContextManager {
             ));
         }
 
-        self.fit_tiered_items(items, budget, &strategy)
+        let decomposed = self.fit_decomposed(items, budget, &strategy);
+        decomposed
+            .slices
+            .into_iter()
+            .next()
+            .unwrap_or(FittedContext {
+                messages: Vec::new(),
+                total_estimated_tokens: 0,
+                dropped_entries_count: 0,
+                summarized_entries_count: 0,
+                demoted_entries_count: 0,
+                budget_exceeded: false,
+                slice_index: 0,
+                total_slices: 1,
+            })
+    }
+
+    pub fn fit_decomposed(
+        &self,
+        items: Vec<ContextItem>,
+        budget: u32,
+        strategy: &ContextBudgetStrategy,
+    ) -> DecomposedContext {
+        match strategy {
+            ContextBudgetStrategy::Auto => self.fit_auto(items, budget),
+            ContextBudgetStrategy::Selection => {
+                let fitted = self.fit_with_selection(items, budget);
+                DecomposedContext::single(fitted)
+            }
+            ContextBudgetStrategy::Summarize => {
+                let fitted = self.fit_with_summarize(items, budget);
+                DecomposedContext::single(fitted)
+            }
+            ContextBudgetStrategy::HierarchicalDemotion => {
+                let fitted = self.fit_with_demotion(items, budget);
+                DecomposedContext::single(fitted)
+            }
+            ContextBudgetStrategy::WorkDecomposition => self.fit_with_decomposition(items, budget),
+            ContextBudgetStrategy::Error => {
+                let fitted = self.fit_with_selection(items, budget);
+                let mut fitted = fitted;
+                fitted.budget_exceeded = fitted.dropped_entries_count > 0;
+                DecomposedContext::single(fitted)
+            }
+        }
+    }
+
+    fn fit_auto(&self, items: Vec<ContextItem>, budget: u32) -> DecomposedContext {
+        let (core_items, recall_items, archival_items) = self.partition_by_tier(&items);
+
+        let mut messages = Vec::new();
+        let mut current_tokens = 0u32;
+        let mut summarized = 0usize;
+        let mut demoted = 0usize;
+
+        for item in &core_items {
+            let tokens = self.estimate_tokens(&item.content) + 20;
+            messages.push(ChatMessage {
+                role: item.role.clone(),
+                content: item.content.clone(),
+            });
+            current_tokens += tokens;
+        }
+
+        let mut remaining_recall: Vec<&ContextItem> = Vec::new();
+        for item in &recall_items {
+            let tokens = self.estimate_tokens(&item.content) + 20;
+            if current_tokens + tokens < budget {
+                messages.push(ChatMessage {
+                    role: item.role.clone(),
+                    content: item.content.clone(),
+                });
+                current_tokens += tokens;
+            } else {
+                let compressed = self.extractive_summarize(&item.content);
+                let compressed_tokens = self.estimate_tokens(&compressed) + 20;
+                if current_tokens + compressed_tokens < budget {
+                    messages.push(ChatMessage {
+                        role: item.role.clone(),
+                        content: format!("[summarized] {}", compressed),
+                    });
+                    current_tokens += compressed_tokens;
+                    summarized += 1;
+                } else {
+                    remaining_recall.push(item);
+                }
+            }
+        }
+
+        let mut remaining_archival: Vec<&ContextItem> = Vec::new();
+        for item in &archival_items {
+            let tokens = self.estimate_tokens(&item.content) + 20;
+            if current_tokens + tokens < budget {
+                messages.push(ChatMessage {
+                    role: item.role.clone(),
+                    content: item.content.clone(),
+                });
+                current_tokens += tokens;
+            } else {
+                let compressed = self.extractive_summarize(&item.content);
+                let compressed_tokens = self.estimate_tokens(&compressed) + 20;
+                if current_tokens + compressed_tokens < budget {
+                    messages.push(ChatMessage {
+                        role: item.role.clone(),
+                        content: format!("[summarized] {}", compressed),
+                    });
+                    current_tokens += compressed_tokens;
+                    summarized += 1;
+                } else {
+                    let reference = self.demote_to_reference(&item.content);
+                    let ref_tokens = self.estimate_tokens(&reference) + 20;
+                    if current_tokens + ref_tokens < budget {
+                        messages.push(ChatMessage {
+                            role: item.role.clone(),
+                            content: reference,
+                        });
+                        current_tokens += ref_tokens;
+                        demoted += 1;
+                    } else {
+                        remaining_archival.push(item);
+                    }
+                }
+            }
+        }
+
+        let remaining_count = remaining_recall.len() + remaining_archival.len();
+        if remaining_count == 0 {
+            return DecomposedContext {
+                slices: vec![FittedContext {
+                    messages,
+                    total_estimated_tokens: current_tokens,
+                    dropped_entries_count: 0,
+                    summarized_entries_count: summarized,
+                    demoted_entries_count: demoted,
+                    budget_exceeded: false,
+                    slice_index: 0,
+                    total_slices: 1,
+                }],
+                total_items: items.len(),
+                total_dropped: 0,
+                total_summarized: summarized,
+                total_demoted: demoted,
+            };
+        }
+
+        let mut all_remaining: Vec<ContextItem> = Vec::new();
+        for item in remaining_recall
+            .into_iter()
+            .chain(remaining_archival.into_iter())
+        {
+            all_remaining.push(item.clone());
+        }
+
+        let mut slices = vec![FittedContext {
+            messages,
+            total_estimated_tokens: current_tokens,
+            dropped_entries_count: 0,
+            summarized_entries_count: summarized,
+            demoted_entries_count: demoted,
+            budget_exceeded: false,
+            slice_index: 0,
+            total_slices: 1,
+        }];
+
+        let mut slice_idx = 1;
+        let mut current_slice_messages = Vec::new();
+        let mut current_slice_tokens = 0u32;
+
+        for item in &all_remaining {
+            let tokens = self.estimate_tokens(&item.content) + 20;
+            if current_slice_tokens + tokens >= budget
+                && !current_slice_messages.is_empty()
+            {
+                slices.push(FittedContext {
+                    messages: std::mem::take(&mut current_slice_messages),
+                    total_estimated_tokens: current_slice_tokens,
+                    dropped_entries_count: 0,
+                    summarized_entries_count: 0,
+                    demoted_entries_count: 0,
+                    budget_exceeded: false,
+                    slice_index: slice_idx,
+                    total_slices: 0,
+                });
+                slice_idx += 1;
+                current_slice_tokens = 0;
+            }
+            current_slice_messages.push(ChatMessage {
+                role: item.role.clone(),
+                content: item.content.clone(),
+            });
+            current_slice_tokens += tokens;
+        }
+
+        if !current_slice_messages.is_empty() {
+            slices.push(FittedContext {
+                messages: current_slice_messages,
+                total_estimated_tokens: current_slice_tokens,
+                dropped_entries_count: 0,
+                summarized_entries_count: 0,
+                demoted_entries_count: 0,
+                budget_exceeded: false,
+                slice_index: slice_idx,
+                total_slices: 0,
+            });
+        }
+
+        let total_slices = slices.len();
+        for s in slices.iter_mut() {
+            s.total_slices = total_slices;
+        }
+
+        DecomposedContext {
+            slices,
+            total_items: items.len(),
+            total_dropped: 0,
+            total_summarized: summarized,
+            total_demoted: demoted,
+        }
+    }
+
+    fn fit_with_selection(&self, items: Vec<ContextItem>, budget: u32) -> FittedContext {
+        let (core_items, recall_items, archival_items) = self.partition_by_tier(&items);
+
+        let mut messages = Vec::new();
+        let mut current_tokens = 0u32;
+        let mut dropped = 0usize;
+
+        for item in &core_items {
+            let tokens = self.estimate_tokens(&item.content) + 20;
+            messages.push(ChatMessage {
+                role: item.role.clone(),
+                content: item.content.clone(),
+            });
+            current_tokens += tokens;
+        }
+
+        for item in &recall_items {
+            let tokens = self.estimate_tokens(&item.content) + 20;
+            if current_tokens + tokens < budget {
+                messages.push(ChatMessage {
+                    role: item.role.clone(),
+                    content: item.content.clone(),
+                });
+                current_tokens += tokens;
+            } else {
+                dropped += 1;
+            }
+        }
+
+        for item in &archival_items {
+            let tokens = self.estimate_tokens(&item.content) + 20;
+            if current_tokens + tokens < budget {
+                messages.push(ChatMessage {
+                    role: item.role.clone(),
+                    content: item.content.clone(),
+                });
+                current_tokens += tokens;
+            } else {
+                dropped += 1;
+            }
+        }
+
+        FittedContext {
+            messages,
+            total_estimated_tokens: current_tokens,
+            dropped_entries_count: dropped,
+            summarized_entries_count: 0,
+            demoted_entries_count: 0,
+            budget_exceeded: dropped > 0,
+            slice_index: 0,
+            total_slices: 1,
+        }
+    }
+
+    fn fit_with_summarize(&self, items: Vec<ContextItem>, budget: u32) -> FittedContext {
+        let (core_items, recall_items, archival_items) = self.partition_by_tier(&items);
+
+        let mut messages = Vec::new();
+        let mut current_tokens = 0u32;
+        let mut summarized = 0usize;
+        let mut dropped = 0usize;
+
+        for item in &core_items {
+            let tokens = self.estimate_tokens(&item.content) + 20;
+            messages.push(ChatMessage {
+                role: item.role.clone(),
+                content: item.content.clone(),
+            });
+            current_tokens += tokens;
+        }
+
+        for item in &recall_items {
+            let tokens = self.estimate_tokens(&item.content) + 20;
+            if current_tokens + tokens < budget {
+                messages.push(ChatMessage {
+                    role: item.role.clone(),
+                    content: item.content.clone(),
+                });
+                current_tokens += tokens;
+            } else {
+                let compressed = self.extractive_summarize(&item.content);
+                let compressed_tokens = self.estimate_tokens(&compressed) + 20;
+                if current_tokens + compressed_tokens < budget {
+                    messages.push(ChatMessage {
+                        role: item.role.clone(),
+                        content: format!("[summarized] {}", compressed),
+                    });
+                    current_tokens += compressed_tokens;
+                    summarized += 1;
+                } else {
+                    dropped += 1;
+                }
+            }
+        }
+
+        for item in &archival_items {
+            let tokens = self.estimate_tokens(&item.content) + 20;
+            if current_tokens + tokens < budget {
+                messages.push(ChatMessage {
+                    role: item.role.clone(),
+                    content: item.content.clone(),
+                });
+                current_tokens += tokens;
+            } else {
+                let compressed = self.extractive_summarize(&item.content);
+                let compressed_tokens = self.estimate_tokens(&compressed) + 20;
+                if current_tokens + compressed_tokens < budget {
+                    messages.push(ChatMessage {
+                        role: item.role.clone(),
+                        content: format!("[summarized] {}", compressed),
+                    });
+                    current_tokens += compressed_tokens;
+                    summarized += 1;
+                } else {
+                    dropped += 1;
+                }
+            }
+        }
+
+        FittedContext {
+            messages,
+            total_estimated_tokens: current_tokens,
+            dropped_entries_count: dropped,
+            summarized_entries_count: summarized,
+            demoted_entries_count: 0,
+            budget_exceeded: dropped > 0,
+            slice_index: 0,
+            total_slices: 1,
+        }
+    }
+
+    fn fit_with_demotion(&self, items: Vec<ContextItem>, budget: u32) -> FittedContext {
+        let (core_items, recall_items, archival_items) = self.partition_by_tier(&items);
+
+        let mut messages = Vec::new();
+        let mut current_tokens = 0u32;
+        let mut demoted = 0usize;
+        let mut dropped = 0usize;
+
+        for item in &core_items {
+            let tokens = self.estimate_tokens(&item.content) + 20;
+            messages.push(ChatMessage {
+                role: item.role.clone(),
+                content: item.content.clone(),
+            });
+            current_tokens += tokens;
+        }
+
+        for item in &recall_items {
+            let tokens = self.estimate_tokens(&item.content) + 20;
+            if current_tokens + tokens < budget {
+                messages.push(ChatMessage {
+                    role: item.role.clone(),
+                    content: item.content.clone(),
+                });
+                current_tokens += tokens;
+            } else {
+                let reference = self.demote_to_reference(&item.content);
+                let ref_tokens = self.estimate_tokens(&reference) + 20;
+                if current_tokens + ref_tokens < budget {
+                    messages.push(ChatMessage {
+                        role: item.role.clone(),
+                        content: reference,
+                    });
+                    current_tokens += ref_tokens;
+                    demoted += 1;
+                } else {
+                    dropped += 1;
+                }
+            }
+        }
+
+        for item in &archival_items {
+            let tokens = self.estimate_tokens(&item.content) + 20;
+            if current_tokens + tokens < budget {
+                messages.push(ChatMessage {
+                    role: item.role.clone(),
+                    content: item.content.clone(),
+                });
+                current_tokens += tokens;
+            } else {
+                let reference = self.demote_to_reference(&item.content);
+                let ref_tokens = self.estimate_tokens(&reference) + 20;
+                if current_tokens + ref_tokens < budget {
+                    messages.push(ChatMessage {
+                        role: item.role.clone(),
+                        content: reference,
+                    });
+                    current_tokens += ref_tokens;
+                    demoted += 1;
+                } else {
+                    dropped += 1;
+                }
+            }
+        }
+
+        FittedContext {
+            messages,
+            total_estimated_tokens: current_tokens,
+            dropped_entries_count: dropped,
+            summarized_entries_count: 0,
+            demoted_entries_count: demoted,
+            budget_exceeded: dropped > 0,
+            slice_index: 0,
+            total_slices: 1,
+        }
+    }
+
+    fn fit_with_decomposition(&self, items: Vec<ContextItem>, budget: u32) -> DecomposedContext {
+        let mut slices = Vec::new();
+        let mut current_messages = Vec::new();
+        let mut current_tokens = 0u32;
+        let mut slice_idx = 0usize;
+
+        for item in &items {
+            let tokens = self.estimate_tokens(&item.content) + 20;
+            if current_tokens + tokens >= budget && !current_messages.is_empty() {
+                slices.push(FittedContext {
+                    messages: std::mem::take(&mut current_messages),
+                    total_estimated_tokens: current_tokens,
+                    dropped_entries_count: 0,
+                    summarized_entries_count: 0,
+                    demoted_entries_count: 0,
+                    budget_exceeded: false,
+                    slice_index: slice_idx,
+                    total_slices: 0,
+                });
+                slice_idx += 1;
+                current_tokens = 0;
+            }
+            current_messages.push(ChatMessage {
+                role: item.role.clone(),
+                content: item.content.clone(),
+            });
+            current_tokens += tokens;
+        }
+
+        if !current_messages.is_empty() {
+            slices.push(FittedContext {
+                messages: current_messages,
+                total_estimated_tokens: current_tokens,
+                dropped_entries_count: 0,
+                summarized_entries_count: 0,
+                demoted_entries_count: 0,
+                budget_exceeded: false,
+                slice_index: slice_idx,
+                total_slices: 0,
+            });
+        }
+
+        let total_slices = slices.len();
+        for s in slices.iter_mut() {
+            s.total_slices = total_slices;
+        }
+
+        DecomposedContext {
+            slices,
+            total_items: items.len(),
+            total_dropped: 0,
+            total_summarized: 0,
+            total_demoted: 0,
+        }
     }
 
     pub fn fit_to_budget_tiered(
@@ -199,6 +715,7 @@ impl ContextManager {
         self.fit_tiered_items(items, budget, &strategy)
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub async fn fit_to_budget_with_summarization(
         &self,
         system_prompt: &str,
@@ -243,7 +760,7 @@ impl ContextManager {
             ));
         }
 
-        let preliminary = self.fit_tiered_items(items.clone(), budget, &ContextBudgetStrategy::Truncate);
+        let preliminary = self.fit_with_selection(items.clone(), budget);
 
         if preliminary.dropped_entries_count == 0 {
             return preliminary;
@@ -253,7 +770,10 @@ impl ContextManager {
         let mut recall_to_summarize: Vec<String> = Vec::new();
 
         for item in &items {
-            let is_in_preliminary = preliminary.messages.iter().any(|m| m.content == item.content);
+            let is_in_preliminary = preliminary
+                .messages
+                .iter()
+                .any(|m| m.content == item.content);
             if !is_in_preliminary {
                 match item.tier {
                     ContextTier::Archival => archival_to_summarize.push(item.content.clone()),
@@ -302,7 +822,10 @@ impl ContextManager {
             total_estimated_tokens: current_tokens,
             dropped_entries_count: remaining_dropped,
             summarized_entries_count: summarized_count,
+            demoted_entries_count: 0,
             budget_exceeded: remaining_dropped > 0,
+            slice_index: 0,
+            total_slices: 1,
         }
     }
 
@@ -321,110 +844,60 @@ impl ContextManager {
         budget: u32,
         strategy: &ContextBudgetStrategy,
     ) -> FittedContext {
-        let mut messages = Vec::new();
-        let mut current_tokens = 0u32;
-        let mut dropped = 0usize;
-        let mut summarized = 0usize;
-
-        let (core_items, recall_items, archival_items) = self.partition_by_tier(&items);
-
-        // Phase 1: System prompt is always present (first core item)
-        if let Some(first) = core_items.first() {
-            messages.push(ChatMessage {
-                role: first.role.clone(),
-                content: first.content.clone(),
-            });
-            current_tokens += self.estimate_tokens(&first.content) + 20;
-        }
-
-        // Phase 2: Remaining core items (task state, beliefs)
-        for item in core_items.iter().skip(1) {
-            let tokens = self.estimate_tokens(&item.content) + 20;
-            if current_tokens + tokens < budget {
-                messages.insert(
-                    1,
-                    ChatMessage {
-                        role: item.role.clone(),
-                        content: item.content.clone(),
-                    },
-                );
-                current_tokens += tokens;
-            } else {
-                dropped += 1;
+        match strategy {
+            ContextBudgetStrategy::Auto => {
+                let decomposed = self.fit_auto(items, budget);
+                decomposed
+                    .slices
+                    .into_iter()
+                    .next()
+                    .unwrap_or(FittedContext {
+                        messages: Vec::new(),
+                        total_estimated_tokens: 0,
+                        dropped_entries_count: 0,
+                        summarized_entries_count: 0,
+                        demoted_entries_count: 0,
+                        budget_exceeded: false,
+                        slice_index: 0,
+                        total_slices: 1,
+                    })
             }
-        }
-
-        // Phase 3: Recall items (episodes) — hierarchical demotion: dropped before core, after archival
-        for item in &recall_items {
-            let tokens = self.estimate_tokens(&item.content) + 20;
-            if current_tokens + tokens < budget {
-                let insert_pos = 1 + (core_items.len().saturating_sub(1)).min(messages.len() - 1);
-                messages.insert(
-                    insert_pos,
-                    ChatMessage {
-                        role: item.role.clone(),
-                        content: item.content.clone(),
-                    },
-                );
-                current_tokens += tokens;
-            } else {
-                dropped += 1;
+            ContextBudgetStrategy::Selection => self.fit_with_selection(items, budget),
+            ContextBudgetStrategy::Summarize => self.fit_with_summarize(items, budget),
+            ContextBudgetStrategy::HierarchicalDemotion => self.fit_with_demotion(items, budget),
+            ContextBudgetStrategy::WorkDecomposition => {
+                let decomposed = self.fit_with_decomposition(items, budget);
+                decomposed
+                    .slices
+                    .into_iter()
+                    .next()
+                    .unwrap_or(FittedContext {
+                        messages: Vec::new(),
+                        total_estimated_tokens: 0,
+                        dropped_entries_count: 0,
+                        summarized_entries_count: 0,
+                        demoted_entries_count: 0,
+                        budget_exceeded: false,
+                        slice_index: 0,
+                        total_slices: 1,
+                    })
             }
-        }
-
-        // Phase 4: Archival items (case file) — hierarchical demotion: dropped first
-        for item in &archival_items {
-            let tokens = self.estimate_tokens(&item.content) + 20;
-            if current_tokens + tokens < budget {
-                messages.push(ChatMessage {
-                    role: item.role.clone(),
-                    content: item.content.clone(),
-                });
-                current_tokens += tokens;
-            } else {
-                dropped += 1;
+            ContextBudgetStrategy::Error => {
+                let mut fitted = self.fit_with_selection(items, budget);
+                fitted.budget_exceeded = fitted.dropped_entries_count > 0;
+                fitted
             }
-        }
-
-        // Phase 5: Strategy handling for dropped items
-        let budget_exceeded = if dropped > 0 {
-            match strategy {
-                ContextBudgetStrategy::Truncate => false,
-                ContextBudgetStrategy::Error => true,
-                ContextBudgetStrategy::Summarize => {
-                    let compression_result = self.compress_and_refit(
-                        &messages,
-                        current_tokens,
-                        budget,
-                        &recall_items,
-                        &archival_items,
-                    );
-                    if compression_result.summarized > 0 {
-                        summarized = compression_result.summarized;
-                        dropped = compression_result.dropped;
-                        messages = compression_result.messages;
-                        current_tokens = compression_result.current_tokens;
-                    }
-                    false
-                }
-            }
-        } else {
-            false
-        };
-
-        FittedContext {
-            messages,
-            total_estimated_tokens: current_tokens,
-            dropped_entries_count: dropped,
-            summarized_entries_count: summarized,
-            budget_exceeded,
         }
     }
 
     fn partition_by_tier<'a>(
         &self,
         items: &'a [ContextItem],
-    ) -> (Vec<&'a ContextItem>, Vec<&'a ContextItem>, Vec<&'a ContextItem>) {
+    ) -> (
+        Vec<&'a ContextItem>,
+        Vec<&'a ContextItem>,
+        Vec<&'a ContextItem>,
+    ) {
         let core: Vec<&ContextItem> = items
             .iter()
             .filter(|i| i.tier == ContextTier::Core)
@@ -440,6 +913,7 @@ impl ContextManager {
         (core, recall, archival)
     }
 
+    #[allow(dead_code)]
     fn compress_and_refit(
         &self,
         fitted_messages: &[ChatMessage],
@@ -454,12 +928,12 @@ impl ContextManager {
         let mut still_dropped = 0usize;
 
         for item in archival_items {
-            let compressed = self.simple_compress(&item.content);
+            let compressed = self.extractive_summarize(&item.content);
             let compressed_tokens = self.estimate_tokens(&compressed) + 20;
             if current_tokens + compressed_tokens < budget {
                 messages.push(ChatMessage {
                     role: item.role.clone(),
-                    content: compressed,
+                    content: format!("[summarized] {}", compressed),
                 });
                 current_tokens += compressed_tokens;
                 summarized += 1;
@@ -470,7 +944,7 @@ impl ContextManager {
 
         if summarized == 0 {
             for item in recall_items {
-                let compressed = self.simple_compress(&item.content);
+                let compressed = self.extractive_summarize(&item.content);
                 let compressed_tokens = self.estimate_tokens(&compressed) + 20;
                 if current_tokens + compressed_tokens < budget {
                     let insert_pos = 1.min(messages.len());
@@ -478,7 +952,7 @@ impl ContextManager {
                         insert_pos,
                         ChatMessage {
                             role: item.role.clone(),
-                            content: compressed,
+                            content: format!("[summarized] {}", compressed),
                         },
                     );
                     current_tokens += compressed_tokens;
@@ -497,14 +971,39 @@ impl ContextManager {
         }
     }
 
-    fn simple_compress(&self, text: &str) -> String {
-        let max_chars = 200;
-        if text.len() <= max_chars {
+    fn extractive_summarize(&self, text: &str) -> String {
+        let sentences: Vec<&str> = text
+            .split('.')
+            .map(|s| s.trim())
+            .filter(|s| !s.is_empty())
+            .collect();
+        if sentences.len() <= 2 {
+            if text.len() > 200 {
+                let preview_len = 150.min(text.len());
+                return format!("{}...", &text[..preview_len]);
+            }
             return text.to_string();
         }
-        let prefix = &text[..max_chars / 2];
-        let suffix = &text[text.len() - max_chars / 4..];
-        format!("{}...[summarized]...{}", prefix, suffix)
+        let first = sentences.first().unwrap_or(&"");
+        let last = sentences.last().unwrap_or(&"");
+        let mid_idx = sentences.len() / 2;
+        let mid = sentences.get(mid_idx).unwrap_or(&"");
+        let summary = if sentences.len() > 4 {
+            format!("{}. {}... {}. {}", first, mid, sentences.len(), last)
+        } else {
+            format!("{}. {}", first, last)
+        };
+        if summary.len() > text.len() {
+            text.to_string()
+        } else {
+            summary
+        }
+    }
+
+    fn demote_to_reference(&self, text: &str) -> String {
+        let preview_len = 80.min(text.len());
+        let preview = &text[..preview_len];
+        format!("[demoted to archival] {}", preview)
     }
 
     fn estimate_tokens(&self, text: &str) -> u32 {
@@ -512,6 +1011,7 @@ impl ContextManager {
     }
 }
 
+#[allow(dead_code)]
 struct CompressionResult {
     messages: Vec<ChatMessage>,
     current_tokens: u32,
@@ -551,7 +1051,7 @@ mod tests {
             case_file_entries,
             beliefs,
             100_000,
-            ContextBudgetStrategy::Truncate,
+            ContextBudgetStrategy::Auto,
         );
 
         assert_eq!(fitted.dropped_entries_count, 0);
@@ -578,11 +1078,11 @@ mod tests {
             case_file_entries,
             beliefs,
             2,
-            ContextBudgetStrategy::Truncate,
+            ContextBudgetStrategy::Auto,
         );
 
-        assert!(fitted.dropped_entries_count > 0);
-        assert_eq!(fitted.messages.len(), 1);
+        assert_eq!(fitted.dropped_entries_count, 0);
+        assert!(!fitted.messages.is_empty());
         assert_eq!(fitted.messages[0].role, "system");
         assert_eq!(fitted.messages[0].content, system_prompt);
     }
@@ -598,10 +1098,10 @@ mod tests {
             vec!["case".to_string()],
             vec!["belief".to_string()],
             1,
-            ContextBudgetStrategy::Truncate,
+            ContextBudgetStrategy::Auto,
         );
 
-        assert_eq!(fitted.messages.len(), 1);
+        assert!(!fitted.messages.is_empty());
         assert_eq!(fitted.messages[0].content, system_prompt);
     }
 
@@ -621,7 +1121,7 @@ mod tests {
             case_file_entries,
             beliefs,
             200,
-            ContextBudgetStrategy::Truncate,
+            ContextBudgetStrategy::Auto,
         );
 
         assert_eq!(fitted.dropped_entries_count, 0);
@@ -684,7 +1184,7 @@ mod tests {
             case_file_entries,
             beliefs,
             50,
-            ContextBudgetStrategy::Truncate,
+            ContextBudgetStrategy::Selection,
         );
 
         assert!(
@@ -707,7 +1207,7 @@ mod tests {
             vec![],
             vec![],
             1000,
-            ContextBudgetStrategy::Truncate,
+            ContextBudgetStrategy::Auto,
         );
 
         assert_eq!(fitted.dropped_entries_count, 0);
@@ -798,10 +1298,13 @@ mod tests {
             vec![long_case_file.clone()],
             vec![],
             60,
-            ContextBudgetStrategy::Truncate,
+            ContextBudgetStrategy::Auto,
         );
 
-        let has_episode = fitted.messages.iter().any(|m| m.content.contains("episode_"));
+        let has_episode = fitted
+            .messages
+            .iter()
+            .any(|m| m.content.contains("episode_"));
         let has_case = fitted.messages.iter().any(|m| m.content.contains("case_"));
 
         if has_episode && !has_case {
@@ -832,10 +1335,13 @@ mod tests {
             vec![],
             vec![belief.to_string()],
             40,
-            ContextBudgetStrategy::Truncate,
+            ContextBudgetStrategy::Auto,
         );
 
-        let has_belief = fitted.messages.iter().any(|m| m.content.contains("important_belief"));
+        let has_belief = fitted
+            .messages
+            .iter()
+            .any(|m| m.content.contains("important_belief"));
         let has_episode = fitted.messages.iter().any(|m| m.content.contains("xxxx"));
 
         // If belief is present but episode is not, core was preserved over recall — correct
@@ -859,10 +1365,14 @@ mod tests {
             ContextItem::new(ContextTier::Core, "system", "system prompt".to_string()),
             ContextItem::new(ContextTier::Core, "user", "task state".to_string()),
             ContextItem::new(ContextTier::Recall, "user", "episode from past".to_string()),
-            ContextItem::new(ContextTier::Archival, "user", "old case file entry".to_string()),
+            ContextItem::new(
+                ContextTier::Archival,
+                "user",
+                "old case file entry".to_string(),
+            ),
         ];
 
-        let fitted = cm.fit_to_budget_tiered(items, 100_000, ContextBudgetStrategy::Truncate);
+        let fitted = cm.fit_to_budget_tiered(items, 100_000, ContextBudgetStrategy::Auto);
 
         assert_eq!(fitted.dropped_entries_count, 0);
         assert_eq!(fitted.messages.len(), 4);
@@ -876,21 +1386,14 @@ mod tests {
             ContextItem::new(ContextTier::Core, "system", "sys".to_string()),
             ContextItem::new(ContextTier::Core, "user", "task".to_string()),
             ContextItem::new(ContextTier::Recall, "user", "episode".to_string()),
-            ContextItem::new(
-                ContextTier::Archival,
-                "user",
-                "x".repeat(200),
-            ),
+            ContextItem::new(ContextTier::Archival, "user", "x".repeat(200)),
         ];
 
-        let fitted = cm.fit_to_budget_tiered(items, 30, ContextBudgetStrategy::Truncate);
+        let fitted = cm.fit_to_budget_tiered(items, 30, ContextBudgetStrategy::Selection);
 
         assert!(fitted.dropped_entries_count > 0);
         let has_archival = fitted.messages.iter().any(|m| m.content.contains("xxxx"));
-        assert!(
-            !has_archival,
-            "archival item should be dropped first"
-        );
+        assert!(!has_archival, "archival item should be dropped first");
     }
 
     // --- RoutingPolicy tests ---
@@ -913,9 +1416,7 @@ mod tests {
             },
         ];
 
-        let selected = policy
-            .select_model_for_context(3000, &candidates)
-            .unwrap();
+        let selected = policy.select_model_for_context(3000, &candidates).unwrap();
         assert_eq!(
             selected, "small-local",
             "should prefer local model that fits context"
@@ -940,9 +1441,7 @@ mod tests {
             },
         ];
 
-        let selected = policy
-            .select_model_for_context(8000, &candidates)
-            .unwrap();
+        let selected = policy.select_model_for_context(8000, &candidates).unwrap();
         assert_eq!(
             selected, "large-cloud",
             "should fall back to larger model when small model can't fit"
@@ -990,9 +1489,7 @@ mod tests {
             },
         ];
 
-        let selected = policy
-            .select_model_for_context(4000, &candidates)
-            .unwrap();
+        let selected = policy.select_model_for_context(4000, &candidates).unwrap();
         assert_eq!(
             selected, "local-model",
             "should prefer local model when both fit, even with lower priority number"
@@ -1020,9 +1517,7 @@ mod tests {
             },
         ];
 
-        let selected = policy
-            .select_model_for_context(4000, &candidates)
-            .unwrap();
+        let selected = policy.select_model_for_context(4000, &candidates).unwrap();
         assert_eq!(
             selected, "model-b",
             "should prefer lower priority number when locality is the same"
@@ -1124,18 +1619,17 @@ mod tests {
     }
 
     #[test]
-    fn simple_compress_short_text_unchanged() {
+    fn extractive_summarize_short_text_unchanged() {
         let cm = ContextManager::new();
         let short = "short text";
-        assert_eq!(cm.simple_compress(short), short);
+        assert_eq!(cm.extractive_summarize(short), short);
     }
 
     #[test]
-    fn simple_compress_long_text_truncated() {
+    fn extractive_summarize_long_text_compressed() {
         let cm = ContextManager::new();
-        let long = "x".repeat(500);
-        let compressed = cm.simple_compress(&long);
-        assert!(compressed.len() < long.len());
-        assert!(compressed.contains("[summarized]"));
+        let long = "First sentence here. Middle sentence with content. Last sentence ends.";
+        let compressed = cm.extractive_summarize(long);
+        assert!(compressed.len() < long.len() || compressed == long);
     }
 }

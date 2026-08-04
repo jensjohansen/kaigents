@@ -170,6 +170,56 @@ func (r *RunReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 			} else {
 				resolvedModelName = runModelName
 			}
+		} else if run.Spec.Target.Kind == "Process" {
+			process := &corev1alpha1.Process{}
+			if err := r.Client.Get(ctx, types.NamespacedName{Name: run.Spec.Target.Name, Namespace: req.Namespace}, process); err == nil && len(process.Spec.Steps) > 0 {
+				firstStep := process.Spec.Steps[0]
+				task := &corev1alpha1.Task{}
+				if err := r.Client.Get(ctx, types.NamespacedName{Name: firstStep.TaskRef, Namespace: req.Namespace}, task); err == nil && task.Spec.AgentName != "" {
+					agent := &corev1alpha1.Agent{}
+					if err := r.Client.Get(ctx, types.NamespacedName{Name: task.Spec.AgentName, Namespace: req.Namespace}, agent); err == nil {
+						modelEndpointRef = firstNonEmpty(modelEndpointRef, agent.Spec.ModelEndpointRef)
+						resolvedModelName = firstNonEmpty(runModelName, agent.Spec.ModelName)
+						resolvedSystemPrompt = agent.Spec.SystemPrompt
+
+						if agent.Spec.Routing != nil {
+							if preferredWindow == 0 {
+								preferredWindow = agent.Spec.Routing.PreferredContextWindow
+							}
+							for k, v := range agent.Spec.Routing.NodeSelector {
+								if _, exists := resolvedNodeSelector[k]; !exists {
+									resolvedNodeSelector[k] = v
+								}
+							}
+						}
+
+						for _, toolRef := range agent.Spec.Tools {
+							tool := &corev1alpha1.Tool{}
+							if err := r.Client.Get(ctx, types.NamespacedName{Name: toolRef.Name, Namespace: req.Namespace}, tool); err != nil {
+								continue
+							}
+							if resolvedSearchToolName == "" && tool.Spec.ToolName == "searxng_web_search" {
+								resolvedSearchToolName = tool.Spec.ToolName
+							}
+							if resolvedReadToolName == "" && tool.Spec.ToolName == "web_url_read" {
+								resolvedReadToolName = tool.Spec.ToolName
+							}
+							if resolvedMCPServerName == "" {
+								resolvedMCPServerName = firstNonEmpty(tool.Spec.MCPServerRef, resolvedMCPServerName)
+							}
+							if tool.Spec.MCPServerRef != "" && resolvedMCPServerURL == "" {
+								mcpServer := &corev1alpha1.MCPServer{}
+								if err := r.Client.Get(ctx, types.NamespacedName{Name: tool.Spec.MCPServerRef, Namespace: req.Namespace}, mcpServer); err == nil {
+									resolvedMCPServerName = firstNonEmpty(resolvedMCPServerName, mcpServer.Name, mcpServer.Spec.KMCPName)
+									resolvedMCPServerURL = firstNonEmpty(deriveMCPServerURL(mcpServer, req.Namespace), resolvedMCPServerURL)
+								}
+							}
+						}
+					}
+				}
+			} else {
+				resolvedModelName = runModelName
+			}
 		} else {
 			resolvedModelName = runModelName
 		}
@@ -225,8 +275,9 @@ func (r *RunReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 			"KAIGENTS_RETHINKDB_USER",
 			"KAIGENTS_RETHINKDB_PASSWORD",
 			"KAIGENTS_MODEL_TIMEOUT_SECS",
-		"KAIGENTS_MCP_TIMEOUT_MS",
-		"KAIGENTS_TEMPORAL_ADAPTER_URL",
+			"KAIGENTS_MCP_TIMEOUT_MS",
+			"KAIGENTS_TEMPORAL_ADAPTER_URL",
+			"KAIGENTS_QDRANT_URL",
 		}
 		for _, name := range passThroughEnvNames {
 			if value := os.Getenv(name); value != "" {

@@ -730,8 +730,11 @@ Section 13 and are intentional design trade-offs for the PoC scope:
 1. NebulaGraph temporal graph layer (ITD-18) — deferred, stub only.
 2. Retraction cascades use RethinkDB filter, not NebulaGraph graph
    traversals.
-3. Context Manager v2 — only `Truncate` strategy implemented;
-   summarization/compression and hierarchical demotion not implemented.
+3. Context Manager v2 — only `Truncate` strategy implemented (incorrect —
+   truncation is not in the spec). Spec requires: selection →
+   summarization/compression → hierarchical demotion → work decomposition
+   (multiple model calls, nothing truncated/dropped). All four strategies
+   are unimplemented; `Truncate` must be replaced.
 4. Consolidation — in-process, not Temporal durable workflow.
 
 **Newly discovered gaps (12)** — Not previously documented; identified

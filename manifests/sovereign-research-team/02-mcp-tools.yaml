@@ -1,0 +1,57 @@
+apiVersion: core.kaigents.io/v1alpha1
+kind: MCPServer
+metadata:
+  name: searxng
+  namespace: kaigents
+spec:
+  transport: http
+  url: http://mcp-searxng.mcp-tools.svc.cluster.local:3000/mcp
+---
+apiVersion: core.kaigents.io/v1alpha1
+kind: Tool
+metadata:
+  name: web-search
+  namespace: kaigents
+spec:
+  mcpServerRef: searxng
+  toolName: searxng_web_search
+  description: Search the web using SearXNG
+---
+apiVersion: core.kaigents.io/v1alpha1
+kind: Tool
+metadata:
+  name: web-read
+  namespace: kaigents
+spec:
+  mcpServerRef: searxng
+  toolName: web_url_read
+  description: Read the content of a web URL
+---
+apiVersion: core.kaigents.io/v1alpha1
+kind: MCPServer
+metadata:
+  name: filesystem
+  namespace: kaigents
+spec:
+  transport: http
+  url: http://mcp-filesystem.mcp-tools.svc.cluster.local:3000/mcp
+---
+apiVersion: core.kaigents.io/v1alpha1
+kind: Tool
+metadata:
+  name: file-read
+  namespace: kaigents
+spec:
+  mcpServerRef: filesystem
+  toolName: read_file
+  description: Read a file from the workspace
+---
+apiVersion: core.kaigents.io/v1alpha1
+kind: Tool
+metadata:
+  name: file-write
+  namespace: kaigents
+spec:
+  mcpServerRef: filesystem
+  toolName: write_file
+  description: Write content to a file in the workspace
